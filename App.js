@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { StackNavigator } from 'react-navigation';
+import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
-import Register from './app/scenes/Register';
-import Login from './app/scenes/Login';
-import Profile from './app/scenes/Profile';
+import Register from 'app/scenes/Register';
+import Login from 'app/scenes/Login';
+import Profile from 'app/scenes/Profile';
+import Order from 'app/scenes/Order';
+import Usuals from 'app/scenes/Usuals';
 
 import { signIn, signOut, getToken } from './util';
 
@@ -30,13 +32,29 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 });
 
-const AuthStack = StackNavigator({
+const AuthStack = createStackNavigator({
   Register: { screen: Register, navigationOptions: { headerTitle: 'Register' } },
   Login: { screen: Login, navigationOptions: { headerTitle: 'Login' } },
 });
 
-const LoggedInStack = StackNavigator({
-  Profile: { screen: Profile, navigationOptions: { headerTitle: 'Profile' } },
+const HomeStack = createStackNavigator({
+  Usuals: { screen: Usuals },
+},
+{
+  headerMode: 'none',
+});
+
+const OrderStack = createStackNavigator({
+  Order: { screen: Order },
+},
+{
+  headerMode: 'none',
+});
+
+const MainStack = createBottomTabNavigator({
+  Home: HomeStack,
+  Order: OrderStack,
+  Profile: Profile,
 });
 
 export default class App extends Component {
@@ -50,14 +68,12 @@ export default class App extends Component {
 
   async componentWillMount() {
     const token = await getToken();
-    console.log('token: ', token)
     if (token) {
       this.setState({ loggedIn: true });
     }
   }
 
   handleChangeLoginState = (loggedIn = false, jwt) => {
-    console.log('handleChangeLoginState, jwt; ', jwt)
     this.setState({ loggedIn });
     if (loggedIn) {
       signIn(jwt);
@@ -70,7 +86,7 @@ export default class App extends Component {
     return (
       <ApolloProvider client={client}>
         {this.state.loggedIn ?
-          <LoggedInStack screenProps={{ changeLoginState: this.handleChangeLoginState }} /> :
+          <MainStack screenProps={{ changeLoginState: this.handleChangeLoginState }} /> :
           <AuthStack screenProps={{ changeLoginState: this.handleChangeLoginState }} />}
       </ApolloProvider>
     );
