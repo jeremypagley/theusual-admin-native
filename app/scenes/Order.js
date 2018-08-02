@@ -1,10 +1,11 @@
 import React from 'react';
-import OrderContainer from 'app/container/Order';
+import OrderContainer from 'app/containers/Order';
+import { SafeAreaView } from 'react-navigation';
 
 class Order extends React.Component {
   render() {
     return (
-      <OrderContainer />
+        <OrderContainer />
     );
   }
 }

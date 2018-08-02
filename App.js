@@ -35,6 +35,9 @@ const client = new ApolloClient({
 const AuthStack = createStackNavigator({
   Register: { screen: Register, navigationOptions: { headerTitle: 'Register' } },
   Login: { screen: Login, navigationOptions: { headerTitle: 'Login' } },
+},
+{
+  headerMode: 'none',
 });
 
 const HomeStack = createStackNavigator({
@@ -52,9 +55,12 @@ const OrderStack = createStackNavigator({
 });
 
 const MainStack = createBottomTabNavigator({
-  Home: HomeStack,
   Order: OrderStack,
+  Home: HomeStack,
   Profile: Profile,
+},
+{
+  headerMode: 'none',
 });
 
 export default class App extends Component {
