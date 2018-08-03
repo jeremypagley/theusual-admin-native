@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Button, Content, Form, Item, Input, Text } from 'native-base';
+import { Container, Header, Button, Content, Form, Item, Input, Text } from 'native-base';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
@@ -56,6 +56,7 @@ class Login extends React.Component {
 
     return (
       <Container>
+        <Header />
         <Content>
           <Form>
             <Item error={emailError}>

@@ -12,7 +12,8 @@ import {
   Form,
   Input,
   Item,
-  Label
+  Label,
+  H1
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { View } from 'react-native';
@@ -49,7 +50,7 @@ class Order extends React.Component {
       <Container>
         <Header>
           <Body>
-            <Title>Header</Title>
+            <H1>Header</H1>
           </Body>
           <Right />
         </Header>
@@ -73,6 +74,8 @@ class Order extends React.Component {
             <Content>
               <Query query={StoresQuery}>
                 {({ loading, error, data }) => {
+                    console.log('error: ', error)
+
                   if (loading) return <Text key="loading">Loading...</Text>;
                   if (error) return <Text key="error">Error :(</Text>;
 
@@ -95,25 +98,30 @@ class Order extends React.Component {
     );
   }
 
-  getListItems = ({ stores }) => {
+  getListItems = (data) => {
     const { search } = this.state;
 
     if (search !== '') {
-      stores = stores.filter(store => {
+      data.stores = data.stores.filter(store => {
         return store.title.toLowerCase().indexOf(search.toLowerCase()) != -1 ? store : null
       });
     }
 
-    return stores.map(({ _id, title, location }) => {
+    return data.stores.map((store) => {
       return (
-        <ListItem key={_id}>
+        <ListItem onPress={() => this.onItemPress(store)} key={store._id}>
           <Body>
-            <Text>{title}</Text>
-            <Text note>{location.address}</Text>
+            <Text>{store.title}</Text>
+            <Text note>{store.location.address}</Text>
           </Body>
         </ListItem>
       )
     })
+  }
+
+  onItemPress = (data) => {
+    const { navigation } = this.props;
+    navigation.navigate('Store', {store: data});
   }
 
 }
@@ -131,8 +139,13 @@ const StoresQuery = gql`
       address
     },
     productCategories {
+      _id,
       title,
-      products
+      products {
+        _id,
+        title,
+        description
+      }
     }
   }
 }

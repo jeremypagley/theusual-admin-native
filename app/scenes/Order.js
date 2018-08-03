@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-navigation';
 class Order extends React.Component {
   render() {
     return (
-        <OrderContainer />
+        <OrderContainer {...this.props} />
     );
   }
 }
