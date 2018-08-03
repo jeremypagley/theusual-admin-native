@@ -9,6 +9,8 @@ import {
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { SectionList } from 'react-native';
+import { Query } from 'react-apollo';
+import gql from 'graphql-tag';
 
 class Store extends React.Component {
   render() {

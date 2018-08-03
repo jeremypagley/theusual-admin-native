@@ -5,18 +5,19 @@ import {
   Title,
   Header,
   Body,
-  ListItem
+  ListItem,
+  Right,
+  Button
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { SectionList } from 'react-native';
+import { FlatList } from 'react-native';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 
-class Product extends React.Component {
+class Products extends React.Component {
   render() {
     const productCategory = this.props.navigation.getParam('productCategory', null);
-    console.log(productCategory)
-    let productCategoryId = productCategory._id
+    const productCategoryId = productCategory._id
     
     return (
       <Container>
@@ -35,14 +36,9 @@ class Product extends React.Component {
                     if (error) return <Text key="error">Error :(</Text>;
 
                     return (
-                      <SectionList
-                        renderItem={({item, index, section}) => this.getListItem(item)}
-                        renderSectionHeader={({section: {title}}) => (
-                          <Text style={{fontWeight: 'bold'}}>{title}</Text>
-                        )}
-                        sections={[
-                          {title: 'MENU', data: store.productCategories},
-                        ]}
+                      <FlatList
+                        renderItem={({item, index}) => this.getListItem(item)}
+                        data={data.products}
                         keyExtractor={(item, index) => item._id}
                       />
                     )
@@ -58,10 +54,20 @@ class Product extends React.Component {
 
   getListItem = (item) => {
     return (
-      <ListItem onPress={() => this.onItemPress(item)} key={item._id}>
-        <Text>{item.title}</Text>
+      <ListItem onPress={() => this.onItemPress(item)} key={item._id} icon>
+        <Body>
+          <Text>{item.title}</Text>
+        </Body>
+        <Right>
+          <Button transparent primary>
+            <Text>Add</Text>
+          </Button>
+          <Button transparent primary>
+            <Text>Edit</Text>
+          </Button>
+        </Right>
       </ListItem>
-    )
+    );
   }
 
   onItemPress = (data) => {
@@ -87,4 +93,4 @@ const ProductsQuery = gql`
   }
 `;
 
-export default Product;
+export default Products;

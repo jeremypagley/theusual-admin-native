@@ -1,12 +1,12 @@
 import React from 'react';
-import ProductContainer from 'app/containers/Product';
+import ProductsContainer from 'app/containers/Products';
 
-class Product extends React.Component {
+class Products extends React.Component {
   render() {
     return (
-        <ProductContainer {...this.props} />
+        <ProductsContainer {...this.props} />
     );
   }
 }
 
-export default Product;
+export default Products;
