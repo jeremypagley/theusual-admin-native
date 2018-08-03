@@ -3,6 +3,7 @@ import {
   Container,
   Text,
   Title,
+  H1,
   Header,
   Body,
   ListItem,
@@ -23,7 +24,7 @@ class Products extends React.Component {
       <Container>
         <Header>
           <Body>
-            <Title>{productCategory.title}</Title>
+            <H1>{productCategory.title}</H1>
           </Body>
         </Header>
 
@@ -54,7 +55,7 @@ class Products extends React.Component {
 
   getListItem = (item) => {
     return (
-      <ListItem onPress={() => this.onItemPress(item)} key={item._id} icon>
+      <ListItem key={item._id} icon>
         <Body>
           <Text>{item.title}</Text>
         </Body>
@@ -62,7 +63,7 @@ class Products extends React.Component {
           <Button transparent primary>
             <Text>Add</Text>
           </Button>
-          <Button transparent primary>
+          <Button transparent primary onPress={() => this.onItemPress(item)}>
             <Text>Edit</Text>
           </Button>
         </Right>
@@ -72,7 +73,7 @@ class Products extends React.Component {
 
   onItemPress = (data) => {
     const { navigation } = this.props;
-    navigation.navigate('Product', {products: data});
+    navigation.navigate('Product', {product: data});
   }
 
 }
@@ -87,7 +88,11 @@ const ProductsQuery = gql`
       usual,
       productModifiers {
         _id,
-        title
+        title,
+        options {
+          title,
+          price
+        }
       }
     }
   }

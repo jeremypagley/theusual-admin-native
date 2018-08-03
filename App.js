@@ -7,6 +7,7 @@ import Profile from 'app/scenes/Profile';
 import Order from 'app/scenes/Order';
 import Store from 'app/scenes/Store';
 import Products from 'app/scenes/Products';
+import Product from 'app/scenes/Product';
 import Usuals from 'app/scenes/Usuals';
 
 import { signIn, signOut, getToken } from './util';
@@ -53,6 +54,7 @@ const OrderStack = createStackNavigator({
   Order: { screen: Order },
   Store: { screen: Store },
   Products: { screen: Products },
+  Product: { screen: Product },
 },
 {
   headerMode: 'none',
