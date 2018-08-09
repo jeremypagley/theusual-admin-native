@@ -1,22 +1,18 @@
 import React, { Component } from 'react';
-import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
-
-import Register from 'app/scenes/Register';
-import Login from 'app/scenes/Login';
-import Profile from 'app/scenes/Profile';
-import Order from 'app/scenes/Order';
-import Store from 'app/scenes/Store';
-import Products from 'app/scenes/Products';
-import Product from 'app/scenes/Product';
-import Usuals from 'app/scenes/Usuals';
 
 import { signIn, signOut, getToken } from './util';
+import AppNavigator from 'app/nav/AppNavigator';
+import AuthNavigator from 'app/nav/AuthNavigator';
 
 import { ApolloProvider } from 'react-apollo';
-import { ApolloClient, HttpLink, InMemoryCache } from 'apollo-client-preset';
+import { ApolloClient, HttpLink, InMemoryCache, ApolloLink } from 'apollo-client-preset';
 import { setContext } from 'apollo-link-context';
+import { withClientState } from 'apollo-link-state';
+import resolvers from 'app/graphql/resolvers';
+import typeDefs from 'app/graphql/typeDefs';
 
 const httpLink = new HttpLink({ uri: 'http://localhost:4000' });
+const cache = new InMemoryCache();
 
 const authLink = setContext(async (req, { headers }) => {
   const token = await getToken();
@@ -29,44 +25,26 @@ const authLink = setContext(async (req, { headers }) => {
   };
 });
 
+const defaultLocalState = {
+  todos: [],
+  visibilityFilter: 'SHOW_ALL',
+  networkStatus: {
+    __typename: 'NetworkStatus',
+    isConnected: false,
+  }
+};
+
+const stateLink = withClientState({
+  cache,
+  resolvers,
+  typeDefs: [typeDefs],
+  defaults: defaultLocalState
+});
+
 const link = authLink.concat(httpLink);
 const client = new ApolloClient({
-  link,
-  cache: new InMemoryCache()
-});
-
-const AuthStack = createStackNavigator({
-  Register: { screen: Register, navigationOptions: { headerTitle: 'Register' } },
-  Login: { screen: Login, navigationOptions: { headerTitle: 'Login' } },
-},
-{
-  headerMode: 'none',
-});
-
-const HomeStack = createStackNavigator({
-  Usuals: { screen: Usuals },
-},
-{
-  headerMode: 'none',
-});
-
-const OrderStack = createStackNavigator({
-  Order: { screen: Order },
-  Store: { screen: Store },
-  Products: { screen: Products },
-  Product: { screen: Product },
-},
-{
-  headerMode: 'none',
-});
-
-const MainStack = createBottomTabNavigator({
-  Order: OrderStack,
-  Home: HomeStack,
-  Profile: Profile,
-},
-{
-  headerMode: 'none',
+  cache: cache,
+  link:  ApolloLink.from([stateLink, link]),
 });
 
 export default class App extends Component {
@@ -98,8 +76,8 @@ export default class App extends Component {
     return (
       <ApolloProvider client={client}>
         {this.state.loggedIn ?
-          <MainStack screenProps={{ changeLoginState: this.handleChangeLoginState }} /> :
-          <AuthStack screenProps={{ changeLoginState: this.handleChangeLoginState }} />}
+          <AppNavigator screenProps={{ changeLoginState: this.handleChangeLoginState }} /> :
+          <AuthNavigator screenProps={{ changeLoginState: this.handleChangeLoginState }} />}
       </ApolloProvider>
     );
   }
