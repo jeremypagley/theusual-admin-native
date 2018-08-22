@@ -3,7 +3,11 @@ import Colors from 'app/styles/Colors';
 
 const Styles = StyleSheet.create({
   container: {
-    marginTop: 30,
+    // margin: 20,
+  },
+
+  innerContainer: {
+    margin: 10,
   },
 });
 

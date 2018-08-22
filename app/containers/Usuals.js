@@ -8,61 +8,38 @@ import {
   Right,
   Container,
   Header,
-  H1
+  H1,
+  H3
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { View, ScrollView } from 'react-native';
-import { Query, Mutation } from 'react-apollo';
+import { View, ScrollView, Dimensions } from 'react-native';
+import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 import ExpandableCard from 'app/components/ExpandableCard';
+import ContainerStyles from 'app/styles/generic/ContainerStyles';
+
+console.ignoredYellowBox = ['Remote debugger'];
 
 class UsualsContainer extends React.Component {
 
   render() {
     const { currentUser } = this.props.data;
-    console.log('this.props: ', this.props)
-
     if (!currentUser) return null;
 
-    // TODO: not show view?
-
     return (
-      <Container>
+      <Container style={ContainerStyles.container}>
         <Header>
           <Body>
             <H1>Usuals</H1>
           </Body>
         </Header>
 
-        <ScrollView>
+        <ScrollView style={ContainerStyles.innerContainer}>
           <Mutation mutation={ADD_ORDER_BY_ID}>
             {(addOrderById, { data }) => {
               return currentUser.usuals.map(usual => {
-                return (
-                  <Card style={{flex: 1, width: screenWidth-20}}>
-                    <CardItem header>
-                      <Text>{usual.store}</Text>
-                    </CardItem>
-                    <CardItem>
-                      <Body>
-                        {this.getOrderProducts(usual.items, usual._id)}
-                      </Body>
-                    </CardItem>
-                    <CardItem>
-                      <Right>
-                        <Button
-                          transparent 
-                          primary 
-                          block
-                          // onPress={() => addOrderById({variables: {id: usualId}})}
-                        >
-                          <Text>Add order</Text>
-                        </Button>
-                      </Right>
-                    </CardItem>
-                  </Card>
-                )
+                return this.getUsualCard(usual);
               })
             }}
           </Mutation>
@@ -71,27 +48,36 @@ class UsualsContainer extends React.Component {
     );
   }
 
-  getOrderProducts = (items, usualId, addOrderById) => {
-    return items.map(item => {
-      const combinedPrice = this.getCombinedPrices(item);
-      let subLabels = [];
+  getUsualCard = (usual) => {
+    const usualItems = usual.items;
 
-      item.productModifiersOptions.forEach(mod => {
-        subLabels.push(mod.title)
-      });
-
-      subLabels.push(`$${combinedPrice}`);
-
-      return (
-        <View key={item._id}>
-          <ExpandableCard 
-            title={item.product.title}
-            actionTitle="Add order"
-            subLabels={subLabels}
-          />
-        </View>
-      )
+    const items = usualItems.map(item => {
+      const options = this.getUsualOptions(item);      
+      return {title: item.product.title, options: options}
     });
+
+    return (
+      <View key={usual._id}>
+        <ExpandableCard 
+          title={usual.store.location.address}
+          actionTitle="Add order"
+          items={items}
+        />
+      </View>
+    )
+  }
+
+  getUsualOptions = (item) => {
+    let options = [];
+    const combinedPrice = this.getCombinedPrices(item);
+
+    item.productModifiersOptions.forEach(mod => {
+      options.push(mod.title)
+    });
+
+    options.push(`$${combinedPrice}`);
+
+    return options
   }
 
   getCombinedPrices = (item) => {
@@ -117,20 +103,31 @@ export default graphql(
   gql`
     query User {
       currentUser {
-        _id
-        email
-        order
+        _id,
+        email,
+        order,
         usuals {
-          _id
-          store
+          _id,
           items {
-            _id
+            _id,
+            product {
+              _id,
+              title,
+              description,
+              price,
+            }
             productModifiersOptions {
-              title
+              title,
               price
             }
-            product {
-              _id
+          }
+          store {
+            _id,
+            title,
+            location {
+              longitude,
+              latitude,
+              address
             }
           }
         }

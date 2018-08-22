@@ -77,6 +77,8 @@ class Order extends React.Component {
                   if (loading) return <Text key="loading">Loading...</Text>;
                   if (error) return <Text key="error">Error :(</Text>;
 
+                    console.log('StoresQuery data: ', data)
+
                   return (
                     <List>
                       <ListItem itemHeader first>
@@ -106,6 +108,8 @@ class Order extends React.Component {
     }
 
     return data.stores.map((store) => {
+      // Temp fix for when navigating to another stack calls this query but server doesnt return all values?
+      if (!store.location) return null;
       return (
         <ListItem onPress={() => this.onItemPress(store)} key={store._id}>
           <Body>

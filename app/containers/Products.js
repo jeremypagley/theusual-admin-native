@@ -19,6 +19,8 @@ class Products extends React.Component {
   render() {
     const productCategory = this.props.navigation.getParam('productCategory', null);
     const productCategoryId = productCategory._id
+
+    console.log('productCategoryId: ', productCategoryId)
     
     return (
       <Container>
@@ -34,6 +36,8 @@ class Products extends React.Component {
                 <Query query={ProductsQuery} variables={{ productCategoryId }}>
                   {({ loading, error, data }) => {
                     if (loading) return <Text key="loading">Loading...</Text>;
+                    console.log('data: ', data)
+                    console.log('error: ', error)
                     if (error) return <Text key="error">Error :(</Text>;
 
                     return (
@@ -84,7 +88,10 @@ const ProductsQuery = gql`
       title,
       description,
       price,
-      usual,
+      store {
+        _id,
+        title
+      },
       productModifiers {
         _id,
         title,

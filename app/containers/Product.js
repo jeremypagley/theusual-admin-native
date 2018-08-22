@@ -70,6 +70,7 @@ class Product extends React.Component {
   getAddItemButton = (product) => {
     const productModifiersOptions = this.getOrderItemMappedData();
     const productId = product._id;
+    const storeId = product.store._id;
     
     return (
       <Mutation mutation={CREATE_ORDER_ITEM}>
@@ -78,7 +79,7 @@ class Product extends React.Component {
               transparent 
               block 
               primary 
-              onPress={() => createOrderItem({variables: {productId, productModifiersOptions}})}
+              onPress={() => createOrderItem({variables: {productId, productModifiersOptions, storeId}})}
             >
             <Text>Add item</Text>
           </Button>
@@ -173,12 +174,11 @@ class Product extends React.Component {
 }
 
 const CREATE_ORDER_ITEM = gql`
-  mutation createOrderItem($productId: String!, $productModifiersOptions: [ModifierOptionInput]) {
-    createOrderItem(productId: $productId, productModifiersOptions: $productModifiersOptions) {
+  mutation createOrderItem($productId: String!, $productModifiersOptions: [ModifierOptionInput], $storeId: String!) {
+    createOrderItem(productId: $productId, productModifiersOptions: $productModifiersOptions, storeId: $storeId) {
       _id,
       product {
         _id,
-        title,
       }
       productModifiersOptions {
         title,
