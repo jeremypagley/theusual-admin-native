@@ -15,6 +15,8 @@ import ContainerStyles from 'app/styles/generic/ContainerStyles.js'
 import OrderStatusStyles from 'app/styles/OrderStatusStyles.js'
 import { Ionicons } from '@expo/vector-icons';
 import ExpandableCard from 'app/components/ExpandableCard';
+import GET_ORDER from 'app/graphql/query/getOrder';
+import GET_CURRENT_USER from 'app/graphql/query/getCurrentUser';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -31,47 +33,44 @@ class OrderStatus extends React.Component {
     let open = this.state.open;
 
     return (
-      <View>
-        <Query query={GET_ORDER}>
-          {({ loading, error, data }) => {
-            if (error) return <View><Text>Error</Text></View>;
-            let items = [];
-            let modalContent = null;
+      <Query query={GET_ORDER}>
+        {({ loading, error, data }) => {
+          if (error) return <View><Text>Error</Text></View>;
+          let items = [];
+          let modalContent = null;
 
-            if (data.order && data.order.length > 0) {
-              items = data.order[0].items;
-              modalContent = this.renderModalContent(items);
-            } else {
-              modalContent = <View><Text>Sorry no items added to order yet</Text></View>
-            }
+          if (data.order && data.order.length > 0) {
+            items = data.order[0].items;
+            modalContent = this.renderModalContent(items);
+          } else {
+            modalContent = <View><Text>Sorry no items added to order yet</Text></View>
+          }
 
-            return (
-              <View>
-                <Modal
-                  isVisible={open}
-                  onSwipe={() => this.setState({ open: false })}
-                  swipeDirection="down"
-                  style={OrderStatusStyles.container}
-                >
-                  {modalContent}
-                </Modal>
+          return (
+            <View>
+              <Modal
+                isVisible={open}
+                onSwipe={() => this.setState({ open: false })}
+                swipeDirection="down"
+                style={OrderStatusStyles.container}
+              >
+                {modalContent}
+              </Modal>
 
-                <View style={{ flex: 1 }}>
-                  <Fab
-                    containerStyle={{ }}
-                    style={{ backgroundColor: 'lightgreen' }}
-                    position="bottomRight"
-                    onPress={() => this.setState({ open: !this.state.open })}
-                  >
-                    <Text>{items.length}</Text>
-                    <Text>Items</Text>
-                  </Fab>
-                </View>
-              </View>
-            )
-          }}
-        </Query>
-      </View>
+              <Fab
+                containerStyle={{ }}
+                active={false}
+                style={{ backgroundColor: 'springgreen' }}
+                position="bottomRight"
+                onPress={() => this.setState({ open: !this.state.open })}
+              >
+                <Text>{items.length}</Text>
+                <Text>Items</Text>
+              </Fab>
+            </View>
+          )
+        }}
+      </Query>
     );
 
   }
@@ -91,7 +90,14 @@ class OrderStatus extends React.Component {
           {this.getOrderProducts(items)}
 
           <View style={OrderStatusStyles.actionBtnWrapper}>
-            <Mutation mutation={CONFIRM_ORDER}>
+            <Mutation 
+              mutation={CONFIRM_ORDER}
+              refetchQueries={() => {
+                return [{
+                   query: GET_ORDER,
+                }];
+              }}
+            >
               {confirmOrder => (
                 <Button 
                   transparent 
@@ -109,7 +115,14 @@ class OrderStatus extends React.Component {
           </View>
 
           <View style={OrderStatusStyles.actionBtnWrapper}>
-            <Mutation mutation={ADD_ORDER_TO_USUALS}>
+            <Mutation 
+              mutation={ADD_ORDER_TO_USUALS}
+              refetchQueries={() => {
+                return [{
+                   query: GET_CURRENT_USER,
+                }];
+              }}
+            >
               {addOrderToUsualsById => (
                 <Button 
                   transparent 
@@ -185,26 +198,6 @@ const ADD_ORDER_TO_USUALS = gql`
   mutation addOrderToUsualsById($id: String!) {
     addOrderToUsualsById(id: $id) {
       _id
-    }
-  }
-`
-
-const GET_ORDER = gql`
-  {
-    order {
-      _id,
-      items {
-        _id,
-        productModifiersOptions {
-          title,
-          price
-        },
-        product {
-          _id,
-          title,
-          price
-        }
-      }
     }
   }
 `

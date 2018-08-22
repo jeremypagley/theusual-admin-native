@@ -17,6 +17,8 @@ import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 import OrderStatus from 'app/containers/OrderStatus';
+import GET_ORDER from 'app/graphql/query/getOrder';
+import GET_CURRENT_USER from 'app/graphql/query/getCurrentUser';
 
 import ExpandableCard from 'app/components/ExpandableCard';
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
@@ -38,7 +40,14 @@ class UsualsContainer extends React.Component {
         </Header>
 
         <ScrollView style={ContainerStyles.innerContainer}>
-          <Mutation mutation={ADD_ORDER_BY_ID}>
+          <Mutation 
+            mutation={ADD_ORDER_BY_ID}
+            refetchQueries={() => {
+              return [{
+                 query: GET_ORDER,
+              }];
+            }}
+          >
             {(addOrderById, { data }) => {
               return currentUser.usuals.map(usual => {
                 return this.getUsualCard(usual, addOrderById);
@@ -104,39 +113,4 @@ const ADD_ORDER_BY_ID = gql`
   }
 `
 
-export default graphql(
-  gql`
-    query User {
-      currentUser {
-        _id,
-        email,
-        order,
-        usuals {
-          _id,
-          items {
-            _id,
-            product {
-              _id,
-              title,
-              description,
-              price,
-            }
-            productModifiersOptions {
-              title,
-              price
-            }
-          }
-          store {
-            _id,
-            title,
-            location {
-              longitude,
-              latitude,
-              address
-            }
-          }
-        }
-      }
-    }
-  `
-)(UsualsContainer);
+export default graphql(GET_CURRENT_USER)(UsualsContainer);

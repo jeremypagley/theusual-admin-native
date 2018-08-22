@@ -20,6 +20,7 @@ import OrderStatus from 'app/containers/OrderStatus';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { Query, Mutation, graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import GET_ORDER from 'app/graphql/query/getOrder';
 
 class Product extends React.Component {
   constructor(props) {
@@ -73,7 +74,14 @@ class Product extends React.Component {
     const storeId = product.store._id;
     
     return (
-      <Mutation mutation={CREATE_ORDER_ITEM}>
+      <Mutation 
+        mutation={CREATE_ORDER_ITEM}
+        refetchQueries={() => {
+          return [{
+             query: GET_ORDER,
+          }];
+        }}
+      >
          {createOrderItem => (
             <Button 
               transparent 
