@@ -16,6 +16,8 @@ import { View, ScrollView, Dimensions } from 'react-native';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
+import OrderStatus from 'app/containers/OrderStatus';
+
 import ExpandableCard from 'app/components/ExpandableCard';
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
 
@@ -39,16 +41,18 @@ class UsualsContainer extends React.Component {
           <Mutation mutation={ADD_ORDER_BY_ID}>
             {(addOrderById, { data }) => {
               return currentUser.usuals.map(usual => {
-                return this.getUsualCard(usual);
+                return this.getUsualCard(usual, addOrderById);
               })
             }}
           </Mutation>
         </ScrollView>
+
+        <OrderStatus />
       </Container>
     );
   }
 
-  getUsualCard = (usual) => {
+  getUsualCard = (usual, addOrderById) => {
     const usualItems = usual.items;
 
     const items = usualItems.map(item => {
@@ -62,6 +66,7 @@ class UsualsContainer extends React.Component {
           title={usual.store.location.address}
           actionTitle="Add order"
           items={items}
+          onActionPress={() => addOrderById({variables: {id: usual._id}})}
         />
       </View>
     )

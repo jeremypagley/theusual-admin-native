@@ -6,7 +6,7 @@ import {
   Fab
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, Dimensions } from 'react-native';
 import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
@@ -15,6 +15,8 @@ import ContainerStyles from 'app/styles/generic/ContainerStyles.js'
 import OrderStatusStyles from 'app/styles/OrderStatusStyles.js'
 import { Ionicons } from '@expo/vector-icons';
 import ExpandableCard from 'app/components/ExpandableCard';
+
+const screenWidth = Dimensions.get('window').width;
 
 class OrderStatus extends React.Component {
   constructor(props) {
@@ -128,22 +130,21 @@ class OrderStatus extends React.Component {
   getOrderProducts = (items) => {
     return items.map(item => {
       const combinedPrice = this.getCombinedPrices(item);
-      let subLabels = [];
+      let options = [];
 
       item.productModifiersOptions.forEach(mod => {
-        subLabels.push(mod.title)
+        options.push(mod.title)
       });
 
-      subLabels.push(`$${combinedPrice}`);
+      options.push(`$${combinedPrice}`);
 
       return (
-        <View key={item._id}>
+        <View key={item._id} style={OrderStatusStyles.cardWrapper}>
           <Mutation mutation={REMOVE_ORDER_ITEM}>
             {(removeOrderItem, { data }) => (
               <ExpandableCard 
-                title={item.product.title}
                 actionTitle="Remove item"
-                subLabels={subLabels}
+                items={[{title: item.product.title, options}]}
                 onActionPress={() => removeOrderItem({variables: {id: item._id}})}
               />
             )}

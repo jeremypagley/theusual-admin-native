@@ -14,6 +14,11 @@ const Styles = StyleSheet.create({
     width: screenWidth,
     height: screenHeight-80
   },
+  
+  cardWrapper: {
+    width: screenWidth-10
+  },
+
   actionBtnWrapper: {
     alignSelf: 'center',
     paddingTop: 20

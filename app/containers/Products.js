@@ -20,8 +20,6 @@ class Products extends React.Component {
     const productCategory = this.props.navigation.getParam('productCategory', null);
     const productCategoryId = productCategory._id
 
-    console.log('productCategoryId: ', productCategoryId)
-    
     return (
       <Container>
         <Header>

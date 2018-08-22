@@ -38,9 +38,11 @@ class ExpandableCard extends React.Component {
     
     return (
       <Card>
+        {title ? 
         <CardItem header>
           <Text note>{title}</Text>
         </CardItem>
+        : null}
 
         {items.map((item, index) => {
           return (
@@ -58,12 +60,15 @@ class ExpandableCard extends React.Component {
         })}
 
         <CardItem>
-          <Body style={{alignItems: 'flex-end'}}>
-            <Right>
-              <Button transparent primary onPress={onActionPress}>
-                <Text>{actionTitle}</Text>
-              </Button>
-            </Right>
+          <Body>
+            <Button
+              block 
+              transparent 
+              primary 
+              onPress={onActionPress}
+            >
+              <Text>{actionTitle}</Text>
+            </Button>
           </Body>
         </CardItem>
       </Card>

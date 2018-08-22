@@ -25,8 +25,8 @@ const OrderStack = createStackNavigator({
 });
 
 const AppStack = createBottomTabNavigator({
-  Order: OrderStack,
   Home: HomeStack,
+  Order: OrderStack,
   Profile: Profile,
 },
 {
