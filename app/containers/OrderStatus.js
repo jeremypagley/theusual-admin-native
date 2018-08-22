@@ -76,7 +76,7 @@ class OrderStatus extends React.Component {
 
   renderModalContent = (items) => {
     const { currentUser } = this.props.data;
-    if (!currentUser) return 
+    if (!currentUser) return;
     
     return (
       <View style={OrderStatusStyles.modalContent}>

@@ -4,7 +4,7 @@ import ProductContainer from 'app/containers/Product';
 class Product extends React.Component {
   render() {
     return (
-        <ProductContainer {...this.props} />
+      <ProductContainer {...this.props} />
     );
   }
 }
