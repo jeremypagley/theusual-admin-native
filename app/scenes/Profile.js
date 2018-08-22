@@ -1,6 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Container, Text, Button, Content } from 'native-base';
+import { Container, Text, Button, Content, Header } from 'native-base';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
@@ -14,6 +14,7 @@ class Logout extends React.Component {
 
     return (
       <Container>
+        <Header />
         <Content>
           {currentUser &&
             <View>

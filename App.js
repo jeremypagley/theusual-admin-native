@@ -26,19 +26,31 @@ const authLink = setContext(async (req, { headers }) => {
 });
 
 const defaultLocalState = {
-  todos: [],
-  visibilityFilter: 'SHOW_ALL',
-  networkStatus: {
-    __typename: 'NetworkStatus',
-    isConnected: false,
+  order: {
+    __typename: 'LocalOrder',
+    products: [
+      // {
+      //   __typename: 'LocalProduct',
+      //   _id: '99',
+      //   title: 'Product Title Coffee',
+      //   price: 4.0,
+      //   modifiers: [
+      //     {
+      //       __typename: 'LocalModifier',
+      //       title: 'Modifier Title Milk',
+      //       price: 1.0
+      //     }
+      //   ]
+      // }
+    ],
   }
 };
 
 const stateLink = withClientState({
   cache,
-  resolvers,
-  typeDefs: [typeDefs],
-  defaults: defaultLocalState
+  // resolvers,
+  // typeDefs: [typeDefs],
+  // defaults: defaultLocalState
 });
 
 const link = authLink.concat(httpLink);

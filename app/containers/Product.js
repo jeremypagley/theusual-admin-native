@@ -15,10 +15,10 @@ import {
   Text
 } from 'native-base';
 import { Ionicons } from '@expo/vector-icons';
+import OrderStatus from 'app/containers/OrderStatus';
 
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { FlatList } from 'react-native';
-import { Query } from 'react-apollo';
+import { Query, Mutation, graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 
 class Product extends React.Component {
@@ -32,7 +32,7 @@ class Product extends React.Component {
 
   render() {
     const product = this.props.navigation.getParam('product', null);
-    const modifiersArray = this._getModifiersDataArray(product.productModifiers);
+    const modifiersArray = this.getModifiersDataArray(product.productModifiers);
 
     return (
       <Container>
@@ -57,13 +57,33 @@ class Product extends React.Component {
           </Row>
           <Row size={10}>
             <Col>
-              <Button transparent block primary>
-                <Text>Add item</Text>
-              </Button>
+              {this.getAddItemButton(product)}
             </Col>
           </Row>
         </Grid>
+
+        <OrderStatus />
       </Container>
+    );
+  }
+
+  getAddItemButton = (product) => {
+    const productModifiersOptions = this.getOrderItemMappedData();
+    const productId = product._id;
+    
+    return (
+      <Mutation mutation={CREATE_ORDER_ITEM}>
+         {createOrderItem => (
+            <Button 
+              transparent 
+              block 
+              primary 
+              onPress={() => createOrderItem({variables: {productId, productModifiersOptions}})}
+            >
+            <Text>Add item</Text>
+          </Button>
+        )}
+      </Mutation>
     );
   }
 
@@ -124,12 +144,27 @@ class Product extends React.Component {
   onModifierOptionPress = (option, modifier) => {
     let { addedModifiers } = this.state;
     addedModifiers[modifier._id] = addedModifiers[modifier._id] ? addedModifiers[modifier._id] : [];
-    addedModifiers[modifier._id].push(option);
+
+    // Doing this to remove __typename from options
+    const opt = Object.assign({}, {title: option.title, price: option.price});
+    addedModifiers[modifier._id].push(opt);
 
     this.setState({ addedModifiers: addedModifiers });
   }
 
-  _getModifiersDataArray = (modifiers) => {
+  getOrderItemMappedData = (productId) => {
+    const { addedModifiers } = this.state;
+    let productModifiersOptions = [];
+
+    Object.keys(addedModifiers).forEach(id => {
+      const modifier = addedModifiers[id];
+      productModifiersOptions.push(...modifier)
+    });
+
+    return productModifiersOptions;
+  }
+
+  getModifiersDataArray = (modifiers) => {
     return modifiers.map(modifier => {
       return {title: modifier.title, modifier: modifier}
     })
@@ -137,24 +172,26 @@ class Product extends React.Component {
 
 }
 
-// const StoresQuery = gql`
-// {
-//   stores {
-//     _id,
-//     title,
-//     description,
-//     hours,
-//     phone,
-//     website,
-//     location {
-//       address
-//     },
-//     productCategories {
-//       title,
-//       products
-//     }
-//   }
-// }
-// `
+const CREATE_ORDER_ITEM = gql`
+  mutation createOrderItem($productId: String!, $productModifiersOptions: [ModifierOptionInput]) {
+    createOrderItem(productId: $productId, productModifiersOptions: $productModifiersOptions) {
+      _id,
+      product {
+        _id,
+        title,
+      }
+      productModifiersOptions {
+        title,
+        price
+      }
+    }
+  }
+`;
+
+// const WrappedComponent = graphql(CREATE_ORDER_ITEM, {
+//   props: ({ mutate }) => ({
+//     createOrderItem: (data) => mutate({ variables: { productId: data._id, productModifiersOptions: data.productModifiersOptions } }),
+//   }),
+// })(Product);
 
 export default Product;

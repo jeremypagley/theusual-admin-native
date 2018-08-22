@@ -45,7 +45,6 @@ class Products extends React.Component {
                     )
                   }}
                 </Query>
-
               </Col>
             </Row>
           </Grid>

@@ -74,8 +74,6 @@ class Order extends React.Component {
             <Content>
               <Query query={StoresQuery}>
                 {({ loading, error, data }) => {
-                    console.log('error: ', error)
-
                   if (loading) return <Text key="loading">Loading...</Text>;
                   if (error) return <Text key="error">Error :(</Text>;
 
