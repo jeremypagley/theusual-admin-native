@@ -3,6 +3,7 @@ import {
   Text,
   Button,
   H1,
+  H3,
   Fab
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
@@ -11,8 +12,8 @@ import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 import Modal from 'react-native-modal';
-import ContainerStyles from 'app/styles/generic/ContainerStyles.js'
-import OrderStatusStyles from 'app/styles/OrderStatusStyles.js'
+import OrderStatusStyles from 'app/styles/OrderStatusStyles';
+import Colors from 'app/styles/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import ExpandableCard from 'app/components/ExpandableCard';
 import GET_ORDER from 'app/graphql/query/getOrder';
@@ -43,7 +44,7 @@ class OrderStatus extends React.Component {
             items = data.order[0].items;
             modalContent = this.renderModalContent(items);
           } else {
-            modalContent = <View><Text>Sorry no items added to order yet</Text></View>
+            items = [];
           }
 
           return (
@@ -60,7 +61,7 @@ class OrderStatus extends React.Component {
               <Fab
                 containerStyle={{ }}
                 active={false}
-                style={{ backgroundColor: 'springgreen' }}
+                style={{ backgroundColor: Colors.Brand }}
                 position="bottomRight"
                 onPress={() => this.setState({ open: !this.state.open })}
               >
@@ -78,17 +79,20 @@ class OrderStatus extends React.Component {
   renderModalContent = (items) => {
     const { currentUser } = this.props.data;
     if (!currentUser) return;
+
+    const noOrderItems = items.length < 1;
     
     return (
       <View style={OrderStatusStyles.modalContent}>
         <View>
           <Ionicons name="ios-arrow-down" size={60} color="lightgrey" />
         </View>
-        <H1>Modal Title</H1>
+        <H1>Review Order</H1>
 
         <ScrollView>
-          {this.getOrderProducts(items)}
+          {this.getOrderProducts(items, noOrderItems)}
 
+          {!noOrderItems ?
           <View style={OrderStatusStyles.actionBtnWrapper}>
             <Mutation 
               mutation={CONFIRM_ORDER}
@@ -113,7 +117,9 @@ class OrderStatus extends React.Component {
               )}
             </Mutation>
           </View>
-
+          : null}
+          
+          {!noOrderItems ?
           <View style={OrderStatusStyles.actionBtnWrapper}>
             <Mutation 
               mutation={ADD_ORDER_TO_USUALS}
@@ -135,12 +141,20 @@ class OrderStatus extends React.Component {
               )}
             </Mutation>
           </View>
+          : null}
         </ScrollView>
       </View>
     );
   }
 
-  getOrderProducts = (items) => {
+  getOrderProducts = (items, noOrderItems) => {
+
+    if (noOrderItems) return (
+      <View>
+        <H3>No order items have been added 😕</H3>
+      </View>
+    )
+
     return items.map(item => {
       const combinedPrice = this.getCombinedPrices(item);
       let options = [];
