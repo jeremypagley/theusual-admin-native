@@ -48,11 +48,23 @@ class UsualsContainer extends React.Component {
               }];
             }}
           >
-            {(addOrderById, { data }) => {
-              return currentUser.usuals.map(usual => {
-                return this.getUsualCard(usual, addOrderById);
-              })
-            }}
+            {(createOrderByUsualId, { data }) => (
+              <Mutation 
+               mutation={REMOVE_USUAL_BY_ID}
+               refetchQueries={() => {
+                 return [{
+                    query: GET_CURRENT_USER,
+                 }];
+               }}
+              >
+               {(removeUsualById, { data }) => {
+                  return currentUser.usuals.map(usual => {
+                    if (usual.deleted) return null;
+                    return this.getUsualCard(usual, createOrderByUsualId, removeUsualById);
+                  })
+                }}
+              </Mutation>
+            )}
           </Mutation>
         </ScrollView>
 
@@ -61,7 +73,7 @@ class UsualsContainer extends React.Component {
     );
   }
 
-  getUsualCard = (usual, addOrderById) => {
+  getUsualCard = (usual, createOrderByUsualId, removeUsualById) => {
     const usualItems = usual.items;
 
     const items = usualItems.map(item => {
@@ -75,7 +87,9 @@ class UsualsContainer extends React.Component {
           title={usual.store.location.address}
           actionTitle="Add order"
           items={items}
-          onActionPress={() => addOrderById({variables: {id: usual._id}})}
+          removable
+          removableOnPress={() => removeUsualById({variables: {id: usual._id}})}
+          onActionPress={() => createOrderByUsualId({variables: {id: usual._id}})}
         />
       </View>
     )
@@ -106,8 +120,16 @@ class UsualsContainer extends React.Component {
 }
 
 const ADD_ORDER_BY_ID = gql`
-  mutation addOrderById($id: String!) {
-    addOrderById(id: $id) {
+  mutation createOrderByUsualId($id: String!) {
+    createOrderByUsualId(id: $id) {
+      _id
+    }
+  }
+`
+
+const REMOVE_USUAL_BY_ID = gql`
+  mutation removeUsualById($id: String!) {
+    removeUsualById(id: $id) {
       _id
     }
   }

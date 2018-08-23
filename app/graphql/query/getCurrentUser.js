@@ -8,6 +8,7 @@ const GET_CURRENT_USER = gql`
       order,
       usuals {
         _id,
+        deleted,
         items {
           _id,
           product {

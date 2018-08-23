@@ -38,11 +38,9 @@ class OrderStatus extends React.Component {
         {({ loading, error, data }) => {
           if (error) return <View><Text>Error</Text></View>;
           let items = [];
-          let modalContent = null;
 
           if (data.order && data.order.length > 0) {
             items = data.order[0].items;
-            modalContent = this.renderModalContent(items);
           } else {
             items = [];
           }
@@ -55,7 +53,7 @@ class OrderStatus extends React.Component {
                 swipeDirection="down"
                 style={OrderStatusStyles.container}
               >
-                {modalContent}
+                {this.renderModalContent(items)}
               </Modal>
 
               <Fab
@@ -84,10 +82,10 @@ class OrderStatus extends React.Component {
     
     return (
       <View style={OrderStatusStyles.modalContent}>
-        <View>
+        <View style={OrderStatusStyles.closeIconWrapper}>
           <Ionicons name="ios-arrow-down" size={60} color="lightgrey" />
         </View>
-        <H1>Review Order</H1>
+        <H1 style={OrderStatusStyles.title}>Review Order</H1>
 
         <ScrollView>
           {this.getOrderProducts(items, noOrderItems)}
@@ -106,7 +104,9 @@ class OrderStatus extends React.Component {
                 <Button 
                   transparent 
                   block 
-                  primary 
+                  primary
+                  large
+                  style={OrderStatusStyles.actionBtn}
                   onPress={() => {
                     confirmOrder();
                     this.setState({ open: false });
@@ -122,19 +122,21 @@ class OrderStatus extends React.Component {
           {!noOrderItems ?
           <View style={OrderStatusStyles.actionBtnWrapper}>
             <Mutation 
-              mutation={ADD_ORDER_TO_USUALS}
+              mutation={CREATE_USUAL}
               refetchQueries={() => {
                 return [{
                    query: GET_CURRENT_USER,
                 }];
               }}
             >
-              {addOrderToUsualsById => (
+              {createUsualByOrderId => (
                 <Button 
                   transparent 
                   block 
-                  primary 
-                  onPress={() => addOrderToUsualsById({variables: {id: currentUser.order}})}
+                  primary
+                  large
+                  style={OrderStatusStyles.actionBtn}
+                  onPress={() => createUsualByOrderId({variables: {id: currentUser.order}})}
                 >
                   <Text>Add order to usuals</Text>
                 </Button>
@@ -150,7 +152,7 @@ class OrderStatus extends React.Component {
   getOrderProducts = (items, noOrderItems) => {
 
     if (noOrderItems) return (
-      <View>
+      <View style={OrderStatusStyles.noItemsWrapper}>
         <H3>No order items have been added 😕</H3>
       </View>
     )
@@ -167,12 +169,19 @@ class OrderStatus extends React.Component {
 
       return (
         <View key={item._id} style={OrderStatusStyles.cardWrapper}>
-          <Mutation mutation={REMOVE_ORDER_ITEM}>
+          <Mutation 
+            mutation={REMOVE_ORDER_ITEM}
+            refetchQueries={() => {
+              return [{
+                 query: GET_ORDER,
+              }];
+            }}
+          >
             {(removeOrderItem, { data }) => (
               <ExpandableCard 
-                actionTitle="Remove item"
                 items={[{title: item.product.title, options}]}
-                onActionPress={() => removeOrderItem({variables: {id: item._id}})}
+                removable
+                removableOnPress={() => removeOrderItem({variables: {id: item._id}})}
               />
             )}
           </Mutation>
@@ -208,9 +217,9 @@ const CONFIRM_ORDER = gql`
   }
 `
 
-const ADD_ORDER_TO_USUALS = gql`
-  mutation addOrderToUsualsById($id: String!) {
-    addOrderToUsualsById(id: $id) {
+const CREATE_USUAL = gql`
+  mutation createUsualByOrderId($id: String!) {
+    createUsualByOrderId(id: $id) {
       _id
     }
   }

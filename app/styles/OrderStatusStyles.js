@@ -21,7 +21,23 @@ const Styles = StyleSheet.create({
 
   actionBtnWrapper: {
     alignSelf: 'center',
-    paddingTop: 20
+    marginTop: 10
+  },
+
+  actionBtn: {
+    height: 40
+  },
+  
+  noItemsWrapper: {
+    marginTop: 10
+  },
+
+  closeIconWrapper: {
+    height: 45
+  },
+
+  title: {
+    margin: 15
   },
   // button: {
   //   backgroundColor: "lightblue",

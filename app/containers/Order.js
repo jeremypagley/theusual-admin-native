@@ -52,7 +52,6 @@ class Order extends React.Component {
           <Body>
             <H1>Header</H1>
           </Body>
-          <Right />
         </Header>
 
         <Grid>
