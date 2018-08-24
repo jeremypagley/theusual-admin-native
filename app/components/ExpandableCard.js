@@ -1,9 +1,6 @@
 import React from 'react';
 import { 
-  Container,
   Text,
-  Title,
-  Header,
   Body,
   H2,
   Left,
@@ -11,7 +8,6 @@ import {
   View,
   Card, 
   CardItem,
-  Content,
   Button
 } from 'native-base';
 import { EvilIcons } from '@expo/vector-icons';

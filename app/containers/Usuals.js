@@ -23,6 +23,8 @@ import GET_CURRENT_USER from 'app/graphql/query/getCurrentUser';
 import ExpandableCard from 'app/components/ExpandableCard';
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
 
+const screenWidth = Dimensions.get('window').width;
+
 console.ignoredYellowBox = ['Remote debugger'];
 
 class UsualsContainer extends React.Component {
@@ -33,7 +35,12 @@ class UsualsContainer extends React.Component {
 
     return (
       <Container style={ContainerStyles.container}>
-        <Header>
+        <Header style={ContainerStyles.header}>
+          {/* 
+          Use this to let align the title, still need a back arrow
+          <View style={{width: screenWidth, alignSelf: 'flex-start', marginLeft: 30}}>
+            <H1 style={{textAlign: 'left'}}>Usuals</H1>
+          </View> */}
           <Body>
             <H1>Usuals</H1>
           </Body>

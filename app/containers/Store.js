@@ -9,16 +9,15 @@ import {
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { SectionList } from 'react-native';
-import { Query } from 'react-apollo';
-import gql from 'graphql-tag';
+import ContainerStyles from 'app/styles/generic/ContainerStyles';
 
 class Store extends React.Component {
   render() {
     const store = this.props.navigation.getParam('store', null);
     
     return (
-      <Container>
-        <Header>
+      <Container style={ContainerStyles.container}>
+        <Header style={ContainerStyles.header}>
           <Body>
             <Title>Company Logo</Title>
           </Body>
@@ -49,7 +48,7 @@ class Store extends React.Component {
                 <SectionList
                   renderItem={({item, index, section}) => this.getListItem(item)}
                   renderSectionHeader={({section: {title}}) => (
-                    <Text style={{fontWeight: 'bold'}}>{title}</Text>
+                    <Text style={{color: 'lightgrey'}}>{title}</Text>
                   )}
                   sections={[
                     {title: 'MENU', data: store.productCategories},

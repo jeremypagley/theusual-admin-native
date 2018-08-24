@@ -21,6 +21,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { Query, Mutation, graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import GET_ORDER from 'app/graphql/query/getOrder';
+import ContainerStyles from 'app/styles/generic/ContainerStyles';
 
 class Product extends React.Component {
   constructor(props) {
@@ -36,8 +37,8 @@ class Product extends React.Component {
     const modifiersArray = this.getModifiersDataArray(product.productModifiers);
 
     return (
-      <Container>
-        <Header>
+      <Container style={ContainerStyles.container}>
+        <Header style={ContainerStyles.header}>
           <Body>
             <H1>{product.title}</H1>
           </Body>

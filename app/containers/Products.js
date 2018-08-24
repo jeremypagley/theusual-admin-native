@@ -14,6 +14,7 @@ import { Col, Row, Grid } from 'react-native-easy-grid';
 import { FlatList } from 'react-native';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
+import ContainerStyles from 'app/styles/generic/ContainerStyles';
 
 class Products extends React.Component {
   render() {
@@ -21,8 +22,8 @@ class Products extends React.Component {
     const productCategoryId = productCategory._id
 
     return (
-      <Container>
-        <Header>
+      <Container style={ContainerStyles.container}>
+        <Header style={ContainerStyles.header}>
           <Body>
             <H1>{productCategory.title}</H1>
           </Body>

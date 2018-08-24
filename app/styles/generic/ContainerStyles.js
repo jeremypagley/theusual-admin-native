@@ -3,11 +3,18 @@ import Colors from 'app/styles/Colors';
 
 const Styles = StyleSheet.create({
   container: {
-    // margin: 20,
+    backgroundColor: Colors.Grey,
+  },
+
+  header: {
+    borderBottomWidth: 0
   },
 
   innerContainer: {
-    margin: 10,
+    marginTop: 0,
+    marginRight: 10,
+    marginBottom: 10,
+    marginLeft: 10,
   },
 });
 

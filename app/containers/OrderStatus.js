@@ -4,10 +4,10 @@ import {
   Button,
   H1,
   H3,
-  Fab
+  Fab,
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { View, ScrollView, Dimensions } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
@@ -18,8 +18,6 @@ import { Ionicons } from '@expo/vector-icons';
 import ExpandableCard from 'app/components/ExpandableCard';
 import GET_ORDER from 'app/graphql/query/getOrder';
 import GET_CURRENT_USER from 'app/graphql/query/getCurrentUser';
-
-const screenWidth = Dimensions.get('window').width;
 
 class OrderStatus extends React.Component {
   constructor(props) {
