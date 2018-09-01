@@ -44,7 +44,7 @@ class OrderStatus extends React.Component {
           }
 
           return (
-            <View>
+            <View style={{position: "absolute", bottom: 80, right: -5}}>
               <Modal
                 isVisible={open}
                 onSwipe={() => this.setState({ open: false })}

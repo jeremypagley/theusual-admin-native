@@ -8,8 +8,13 @@ import { ApolloProvider } from 'react-apollo';
 import { ApolloClient, HttpLink, InMemoryCache, ApolloLink } from 'apollo-client-preset';
 import { setContext } from 'apollo-link-context';
 import { withClientState } from 'apollo-link-state';
+import { View } from 'react-native';
+import OrderStatus from 'app/containers/OrderStatus';
+
 import resolvers from 'app/graphql/resolvers';
 import typeDefs from 'app/graphql/typeDefs';
+
+console.ignoredYellowBox = ['Remote debugger'];
 
 const httpLink = new HttpLink({ uri: 'http://localhost:4000' });
 const cache = new InMemoryCache();
@@ -87,9 +92,17 @@ export default class App extends Component {
   render() {
     return (
       <ApolloProvider client={client}>
-        {this.state.loggedIn ?
-          <AppNavigator screenProps={{ changeLoginState: this.handleChangeLoginState }} /> :
-          <AuthNavigator screenProps={{ changeLoginState: this.handleChangeLoginState }} />}
+        {this.state.loggedIn
+        ? (
+            <View style={{flex: 1}}>
+              <AppNavigator screenProps={{ changeLoginState: this.handleChangeLoginState }} />
+              <OrderStatus />
+            </View>
+          )
+        : (
+            <AuthNavigator screenProps={{ changeLoginState: this.handleChangeLoginState }} />
+          )
+        }
       </ApolloProvider>
     );
   }

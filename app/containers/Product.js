@@ -15,7 +15,6 @@ import {
   Text
 } from 'native-base';
 import { Ionicons } from '@expo/vector-icons';
-import OrderStatus from 'app/containers/OrderStatus';
 
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { Query, Mutation, graphql } from 'react-apollo';
@@ -63,8 +62,6 @@ class Product extends React.Component {
             </Col>
           </Row>
         </Grid>
-
-        <OrderStatus />
       </Container>
     );
   }

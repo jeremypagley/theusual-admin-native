@@ -16,7 +16,6 @@ import { View, ScrollView, Dimensions } from 'react-native';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
-import OrderStatus from 'app/containers/OrderStatus';
 import GET_ORDER from 'app/graphql/query/getOrder';
 import GET_CURRENT_USER from 'app/graphql/query/getCurrentUser';
 
@@ -24,8 +23,6 @@ import ExpandableCard from 'app/components/ExpandableCard';
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
 
 const screenWidth = Dimensions.get('window').width;
-
-console.ignoredYellowBox = ['Remote debugger'];
 
 class UsualsContainer extends React.Component {
 
@@ -74,8 +71,6 @@ class UsualsContainer extends React.Component {
             )}
           </Mutation>
         </ScrollView>
-
-        <OrderStatus />
       </Container>
     );
   }
