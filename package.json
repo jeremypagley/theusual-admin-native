@@ -1,34 +1,36 @@
 {
-  "name": "theusual-native",
-  "version": "0.1.0",
+  "name": "my-new-project",
+  "main": "node_modules/expo/AppEntry.js",
   "private": true,
-  "devDependencies": {
-    "jest-expo": "~27.0.0",
-    "react-native-scripts": "1.14.0",
-    "react-test-renderer": "16.3.1"
-  },
-  "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
   "scripts": {
-    "start": "react-native-scripts start",
-    "eject": "react-native-scripts eject",
-    "android": "react-native-scripts android",
-    "ios": "react-native-scripts ios",
-    "test": "jest"
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "eject": "expo eject",
+    "test": "node ./node_modules/jest/bin/jest.js --watchAll"
   },
   "jest": {
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@expo/samples": "2.1.1",
+    "apollo-boost": "^0.1.16",
     "apollo-client-preset": "^1.0.8",
-    "apollo-link-context": "^1.0.8",
-    "expo": "^27.0.1",
-    "graphql": "^0.13.2",
+    "apollo-link-context": "^1.0.9",
+    "apollo-link-state": "^0.4.2",
+    "expo": "^30.0.1",
+    "expokit": "^1.7.0",
+    "graphql": "^14.0.2",
     "graphql-tag": "^2.9.2",
-    "mongodb-stitch-browser-sdk": "^4.0.0",
-    "native-base": "^2.7.2",
-    "react": "^16.4.1",
-    "react-apollo": "^2.1.9",
-    "react-native": "~0.55.2",
-    "react-navigation": "^2.9.1"
+    "mongodb-stitch-browser-sdk": "^4.0.13",
+    "native-base": "^2.8.0",
+    "react": "16.3.1",
+    "react-apollo": "^2.1.11",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz",
+    "react-native-modal": "^6.5.0",
+    "react-navigation": "^2.9.3"
+  },
+  "devDependencies": {
+    "jest-expo": "30.0.0"
   }
 }
