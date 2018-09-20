@@ -1,12 +1,9 @@
 import React from 'react';
 import { 
-  Text,
-  Button,
   H1,
   H3,
-  Fab,
 } from 'native-base';
-import { View, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
 import { Query, Mutation } from 'react-apollo';
 import { Left, Right } from 'native-base';
 import gql from 'graphql-tag';
@@ -16,8 +13,7 @@ import PaymentManagerStyles from 'app/styles/PaymentManagerStyles';
 import Colors from 'app/styles/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import GET_CURRENT_USER from 'app/graphql/query/getCurrentUser';
-import { Dialog, Button as UIButton, View as UIView, Text as UIText } from 'react-native-ui-lib';
-import PaymentMethods from 'app/containers/PaymentMethods';
+import { Dialog, Button, View, Text } from 'react-native-ui-lib';
 import CardForm from 'app/components/stripe/CardForm';
 
 class PaymentManager extends React.Component {
@@ -27,29 +23,17 @@ class PaymentManager extends React.Component {
     this.state = {
       open: false,
       selectedPaymentMethod: null,
-      showCustom: false,
-      paymentManagerOpen: false
+      showPaymentMethodsDialog: false
     }
   }
 
   render() {
     let open = this.state.open;
-    const { paymentManagerOpen } = this.state;
 
     return (
       <View>
-        <Button 
-          transparent 
-          block 
-          primary
-          large
-          style={PaymentManagerStyles.actionBtn}
-          onPress={() => {
-            this.setState({ open: true });
-          }}
-        >
-          <Text>Reload</Text>
-        </Button>
+        <Button text60 label="Reload" link onPress={() => this.setState({ open: true })} />
+
         <Modal
           isVisible={open}
           onSwipe={() => this.setState({ open: false })}
@@ -63,27 +47,8 @@ class PaymentManager extends React.Component {
 
   }
 
-  pickOption = (index) => {
-    this.setState({
-      pickedOption: index,
-    });
-  }
-
-  renderDialogContent = (dialogIndex, extraProps) => {
-    return (
-      <UIView bg-white flex br20 padding-18 spread {...extraProps}>
-        <UIText text50>List of existing Sources</UIText>
-        <CardForm />
-        <UIView right>
-          <UIButton text60 label="Done" link onPress={() => this.setState({[`showDialog${dialogIndex}`]: false})} />
-        </UIView>
-      </UIView>
-    );
-  }
-
   renderModalContent = () => {
     const { currentUser } = this.props.data;
-    const { showCustom } = this.state;
     if (!currentUser) return;
 
     return (
@@ -93,57 +58,24 @@ class PaymentManager extends React.Component {
         </View>
         <H1 style={PaymentManagerStyles.title}>22</H1>
         <H3 style={PaymentManagerStyles.subtitle}>Balance</H3>
-
-        {/* <Button 
-          transparent 
-          block 
-          primary
-          large
-          style={PaymentManagerStyles.actionBtn}
-          onPress={() => {
-            this.setState({ showCustom: !showCustom });
-          }}
-        >
-          <View>
-            <View>
-              <Text>Paying with</Text>
-            </View>
-          </View>
-        </UIButton> */}
         
-        {/* For more custom just use Dialog */}
-
-        
-        {/* <ActionSheet
-          title="Select payment method"
-          message="Message of action sheet"
-          cancelButtonIndex={3}
-          destructiveButtonIndex={0}
-          options={[
-            {label: 'option 1', onPress: () => this.pickOption('option 1')},
-            {label: 'option 2', onPress: () => this.pickOption('option 2')},
-            {label: <View>{this.getAddPaymentNode()}</View>},
-          ]}
-          visible={showCustom}
-          onDismiss={() => this.setState({showCustom: false})}
-        /> */}
-        <UIButton
+        <Button
           marginT-20
           size={'small'}
           label="Paying with"
-          onPress={() => this.setState({showDialog2: true})}
+          onPress={() => this.setState({showPaymentMethodsDialog: true})}
         />
 
         <Dialog
-          visible={this.state.showDialog2}
+          visible={this.state.showPaymentMethodsDialog}
           width="100%"
-          height="35%"
+          height="40%"
           bottom
           centerH
-          onDismiss={() => this.setState({showDialog2: false})}
+          onDismiss={() => this.setState({showPaymentMethodsDialog: false})}
           animationConfig={{duration: 250}}
         >
-          {this.renderDialogContent(2, {br0: true})}
+          {this.renderDialogContent()}
         </Dialog>
 
         <ScrollView>
@@ -208,29 +140,18 @@ class PaymentManager extends React.Component {
     );
   }
 
-  addPaymentMethod = (index) => {
-    this.setState({ paymentManagerOpen: true });
-  }
-
-  getAddPaymentNode = () => {
+  renderDialogContent = () => {
     return (
-      <View>
-        <PaymentMethods />
-        {/* <Button 
-          transparent 
-          block 
-          primary
-          large
-          style={PaymentManagerStyles.actionBtn}
-          onPress={() => this.addPaymentMethod()}
-        >
-          <View>
-            <Ionicons name="md-add" size={10} color="lightgrey" />
-            <Text>Add a payment method</Text>
-          </View>
-        </Button> */}
+      <View bg-white flex br20 padding-18 spread br0>
+        <Text text50>List of existing Sources</Text>
+
+        <CardForm />
+
+        <View right>
+          <Button text60 label="Done" link onPress={() => this.setState({showPaymentMethodsDialog: false})} />
+        </View>
       </View>
-    )
+    );
   }
 
 }

@@ -1,15 +1,13 @@
 import React, { PureComponent } from 'react';
 import {
-  View,
-  Text,
-  TouchableHighlight,
   ActivityIndicator,
   Platform,
   StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { Button, Text } from 'react-native-ui-lib';
 
-export default class Button extends PureComponent {
+export default class ActivityButton extends PureComponent {
   static propTypes = {
     text: PropTypes.string.isRequired,
     disabledText: PropTypes.string,
@@ -39,10 +37,22 @@ export default class Button extends PureComponent {
   };
 
   render() {
-    const { text, loading, disabled, style, ...rest } = this.props;
+    const { label, loading, disabled } = this.props;
 
     return (
-      <TouchableHighlight
+      <Button
+        text90
+        link 
+        onPress={this.handlePress} 
+        {...this.props} 
+        // iconSource={''} 
+        label={this.props.label} 
+      />
+    );
+  }
+}
+
+{/* <TouchableHighlight
         {...rest}
         style={[styles.button, style]}
         underlayColor="rgba(0,0,0,0.5)"
@@ -52,10 +62,7 @@ export default class Button extends PureComponent {
           {!loading && !disabled && <Text>{text}</Text>}
           {!loading && disabled && <Text>{text}</Text>}
         </View>
-      </TouchableHighlight>
-    );
-  }
-}
+      </TouchableHighlight> */}
 
 const styles = StyleSheet.create({
   button: {

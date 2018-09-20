@@ -57,7 +57,7 @@ class PaymentMethods extends React.Component {
           // onSearchChange={value => console.warn('value', value)}
         >
           {existingSources.map(option => <Picker.Item key={option.value} value={option} disabled={option.disabled} />)}
-          <Picker.Item key={'addCard'} value={this.getAddCardNode()} />
+          {/* <Picker.Item key={'addCard'} value={this.getAddCardNode()} /> */}
         </Picker>
       </View>
     );
@@ -66,46 +66,6 @@ class PaymentMethods extends React.Component {
 
   getCustomPickerItem = (item) => {
     console.log('getCustomPickerItem item:', item)
-    return (
-      <View>
-        <Ionicons name="md-add" size={10} color="lightgrey" />
-        <Text>Add a payment method</Text>
-      </View>
-    )
-  }
-
-  getAddCardNode = () => {
-    return (
-      <View>
-        <Ionicons name="md-add" size={10} color="lightgrey" />
-        {/* <Text>Add a credit card</Text> */}
-      </View>
-    )
-  }
-
-  pickOption = (index) => {
-    this.setState({
-      pickedOption: index,
-    });
-  }
-
-  renderModalContent = () => {
-    const { currentUser } = this.props.data;
-    const { showCustom } = this.state;
-    if (!currentUser) return;
-
-    return (
-      <View style={PaymentMethodsStyles.modalContent}>
-        <View style={PaymentMethodsStyles.closeIconWrapper}>
-          <Ionicons name="ios-arrow-down" size={60} color="lightgrey" />
-        </View>
-        <H1 style={PaymentMethodsStyles.title}>22</H1>
-        <H3 style={PaymentMethodsStyles.subtitle}>Balance</H3>
-      </View>
-    );
-  }
-
-  getAddPaymentButton = () => {
     return (
       <View>
         <Ionicons name="md-add" size={10} color="lightgrey" />

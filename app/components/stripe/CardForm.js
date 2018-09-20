@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Platform } from 'react-native';
 import { PaymentsStripe as Stripe } from 'expo-payments-stripe';
-import Button from './Button';
+import ActivityButton from 'app/components/ActivityButton';
 
 function testID(id) {
   return Platform.OS === 'android' ? { accessible: true, accessibilityLabel: id } : { testID: id };
@@ -42,6 +42,7 @@ export default class CardFormScreen extends React.Component {
       });
 
       this.setState({ loading: false, token });
+      this.props.handleCardPayPress(token);
     } catch (error) {
       this.setState({ loading: false });
     }
@@ -52,10 +53,8 @@ export default class CardFormScreen extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Text style={styles.header}>Card Form Example</Text>
-        <Text style={styles.instruction}>Click button to show Card Form dialog.</Text>
-        <Button
-          text="Enter your card and pay"
+        <ActivityButton
+          label="Add credit card"
           loading={loading}
           onPress={this.handleCardPayPress}
           {...testID('cardFormButton')}
