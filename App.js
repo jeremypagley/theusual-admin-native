@@ -92,7 +92,7 @@ export default class App extends Component {
   render() {
     return (
       <ApolloProvider client={client}>
-        {/* {this.state.loggedIn
+        {this.state.loggedIn
         ? (
             <View style={{flex: 1}}>
               <AppNavigator screenProps={{ changeLoginState: this.handleChangeLoginState }} />
@@ -102,9 +102,7 @@ export default class App extends Component {
         : (
             <AuthNavigator screenProps={{ changeLoginState: this.handleChangeLoginState }} />
           )
-        } */}
-              <AppNavigator screenProps={{ changeLoginState: this.handleChangeLoginState }} />
-
+        }
       </ApolloProvider>
     );
   }

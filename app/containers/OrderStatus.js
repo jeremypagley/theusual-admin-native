@@ -18,6 +18,7 @@ import { Ionicons } from '@expo/vector-icons';
 import ExpandableCard from 'app/components/ExpandableCard';
 import GET_ORDER from 'app/graphql/query/getOrder';
 import GET_CURRENT_USER from 'app/graphql/query/getCurrentUser';
+import PaymentManager from 'app/containers/PaymentManager';
 
 class OrderStatus extends React.Component {
   constructor(props) {
@@ -51,7 +52,7 @@ class OrderStatus extends React.Component {
                 swipeDirection="down"
                 style={OrderStatusStyles.container}
               >
-                {this.renderModalContent(items)}
+                <View>{this.renderModalContent(items)}</View>
               </Modal>
 
               <Fab
@@ -142,6 +143,10 @@ class OrderStatus extends React.Component {
             </Mutation>
           </View>
           : null}
+
+          <View style={OrderStatusStyles.actionBtnWrapper}>
+            <PaymentManager />
+          </View>
         </ScrollView>
       </View>
     );
