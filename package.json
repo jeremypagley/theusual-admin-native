@@ -28,6 +28,7 @@
     "react-apollo": "^2.1.11",
     "react-native": "https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz",
     "react-native-modal": "^6.5.0",
+    "react-native-ui-lib": "^3.3.239",
     "react-navigation": "2.15.0"
   },
   "devDependencies": {
