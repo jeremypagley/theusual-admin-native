@@ -2,10 +2,17 @@ import React from 'react';
 import { 
   H1,
   H3,
+  ListItem,
+  Icon,
+  Right,
+  Left,
+  Body,
+  Switch,
+  Text,
+  Button
 } from 'native-base';
 import { ScrollView } from 'react-native';
 import { Query, Mutation } from 'react-apollo';
-import { Left, Right } from 'native-base';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 import Modal from 'react-native-modal';
@@ -13,8 +20,8 @@ import PaymentManagerStyles from 'app/styles/PaymentManagerStyles';
 import Colors from 'app/styles/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import GET_CURRENT_USER from 'app/graphql/query/getCurrentUser';
-import { Dialog, Button, View, Text } from 'react-native-ui-lib';
-import CardForm from 'app/components/stripe/CardForm';
+import { Dialog, View } from 'react-native-ui-lib';
+import PaymentMethods from 'app/containers/PaymentMethods';
 
 class PaymentManager extends React.Component {
   constructor(props) {
@@ -32,7 +39,16 @@ class PaymentManager extends React.Component {
 
     return (
       <View>
-        <Button text60 label="Reload" link onPress={() => this.setState({ open: true })} />
+        <Button 
+          transparent 
+          block 
+          primary
+          large
+          style={PaymentManagerStyles.actionBtn}
+          onPress={() => this.setState({ open: true })}
+        >
+          <Text>Reload</Text>
+        </Button>
 
         <Modal
           isVisible={open}
@@ -54,17 +70,17 @@ class PaymentManager extends React.Component {
     return (
       <View style={PaymentManagerStyles.modalContent}>
         <View style={PaymentManagerStyles.closeIconWrapper}>
-          <Ionicons name="ios-arrow-down" size={60} color="lightgrey" />
+          <Ionicons name="ios-arrow-down" size={50} color="lightgrey" />
         </View>
-        <H1 style={PaymentManagerStyles.title}>22</H1>
-        <H3 style={PaymentManagerStyles.subtitle}>Balance</H3>
         
-        <Button
-          marginT-20
-          size={'small'}
-          label="Paying with"
-          onPress={() => this.setState({showPaymentMethodsDialog: true})}
-        />
+        <Text style={PaymentManagerStyles.title}>22</Text>
+        <Text style={PaymentManagerStyles.subtitle}>My balance</Text>
+
+        <View style={PaymentManagerStyles.listItemWrapper}>
+          {this.getAmountField()}
+          {this.getPayingWithField()}
+          {this.getAutoReloadField()}
+        </View>
 
         <Dialog
           visible={this.state.showPaymentMethodsDialog}
@@ -140,12 +156,52 @@ class PaymentManager extends React.Component {
     );
   }
 
+  getAmountField = () => {
+    return (
+      <ListItem>
+        <Left>
+          <Text>Amount</Text>
+        </Left>
+        <Right>
+          <Icon active name="arrow-down" />
+        </Right>
+      </ListItem>
+    )
+  }
+
+  getPayingWithField = () => {
+    return (
+      <ListItem onPress={() => this.setState({showPaymentMethodsDialog: true})}>
+        <Left>
+          <Text>Paying with</Text>
+        </Left>
+        <Right>
+          <Text>getdefaultpayment</Text>
+          <Icon active name="arrow-down" />
+        </Right>
+      </ListItem>
+    )
+  }
+
+  getAutoReloadField = () => {
+    return (
+      <ListItem>
+        <Left>
+          <Text>Auto reload</Text>
+        </Left>
+        <Right>
+          <Switch value={false} />
+        </Right>
+      </ListItem>
+    )
+  }
+
   renderDialogContent = () => {
     return (
       <View bg-white flex br20 padding-18 spread br0>
         <Text text50>List of existing Sources</Text>
 
-        <CardForm />
+        <PaymentMethods />
 
         <View right>
           <Button text60 label="Done" link onPress={() => this.setState({showPaymentMethodsDialog: false})} />

@@ -17,6 +17,10 @@ const Styles = StyleSheet.create({
     width: screenWidth,
     height: contentHeight
   },
+
+  listItemWrapper: {
+    width: screenWidth-30
+  },
   
   cardWrapper: {
     width: screenWidth-10
@@ -36,16 +40,22 @@ const Styles = StyleSheet.create({
   },
 
   closeIconWrapper: {
-    height: 45
+    height: 45,
   },
 
   title: {
-    margin: 15
+    margin: 10,
+    fontSize: 44,
+    textAlign: 'center',
+    color: Colors.Brand
+
   },
 
   subtitle: {
-    margin: 15,
-    textAlign: 'center'
+    marginBottom: 25,
+    textAlign: 'center',
+    fontSize: 24,
+    color: 'grey'
   },
   // button: {
   //   backgroundColor: "lightblue",

@@ -1,114 +1,87 @@
 import React from 'react';
-import { 
-  Text,
-  Button,
-  H1,
-  H3,
-  Fab,
-} from 'native-base';
-import { View, ScrollView } from 'react-native';
-import { Query, Mutation } from 'react-apollo';
-import { Left, Right } from 'native-base';
-import gql from 'graphql-tag';
-import { graphql } from 'react-apollo';
-import Modal from 'react-native-modal';
+import { ActivityIndicator, Platform } from 'react-native';
+import { PaymentsStripe as Stripe } from 'expo-payments-stripe';
+import { ListItem, Left, Right, Icon, Text, Body, Button, List } from 'native-base';
 import PaymentMethodsStyles from 'app/styles/PaymentMethodsStyles';
-import Colors from 'app/styles/Colors';
-import { Ionicons } from '@expo/vector-icons';
-import GET_CURRENT_USER from 'app/graphql/query/getCurrentUser';
-import { Picker } from 'react-native-ui-lib';
 
-const existingSources = [
-  {label: 'Fake Card', value: 'js'},
-  {label: 'Fake Apple Pay', value: 'java'},
-];
+function testID(id) {
+  return Platform.OS === 'android' ? { accessible: true, accessibilityLabel: id } : { testID: id };
+}
 
-class PaymentMethods extends React.Component {
-  constructor(props) {
-    super(props);
-    
-    this.state = {
-      open: null,
+export default class PaymentMethods extends React.Component {
+  state = {
+    token: '',
+    loading: false,
+  };
+
+  componentWillMount() {
+    Stripe.setOptionsAsync({
+      publishableKey: 'pk_test_M315xbWEvSQjt7B8ZJYzuipC',
+    });
+  }
+
+  handleCardPayPress = async () => {
+    try {
+      this.setState({ loading: true, token: null });
+      const token = await Stripe.paymentRequestWithCardFormAsync({
+        // Only iOS support this options
+        smsAutofillDisabled: true,
+        requiredBillingAddressFields: 'full',
+        // prefilledInformation: {
+        //   billingAddress: {
+        //     name: 'Gunilla Haugeh',
+        //     line1: 'Canary Place',
+        //     line2: '3',
+        //     city: 'Macon',
+        //     state: 'Georgia',
+        //     country: 'US',
+        //     postalCode: '31217',
+        //     email: 'ghaugeh0@printfriendly.com',
+        //   },
+        // },
+      });
+
+      this.setState({ loading: false, token });
+      this.props.handleCardPayPress(token);
+    } catch (error) {
+      this.setState({ loading: false });
     }
+  };
+
+  getCustomerSources = () => {
+    let sources = ['XXXX-XXXX-XXXX-4242']
+    return sources.map(source => {
+      return (
+        <ListItem>
+          <Left>
+            <Text>{source}</Text>
+          </Left>
+          <Right>
+            <Icon active name="arrow-down" />
+          </Right>
+        </ListItem>
+      )
+    });
   }
 
   render() {
-    const { open } = this.state;
-    const { externalOpen } = this.props;
-    let isVisible = open === null && externalOpen ? externalOpen : open;
+    const { loading, token } = this.state;
 
     return (
-      <View>
-        <Picker
-          value={this.state.language}
-          placeholder="Add payment method"
-          enableModalBlur={false}
-          onChange={item => {
-            console.log('onChange picker: ', item)
-            this.setState({language: item})
-          }}
-          topBarProps={{title: 'Languages'}}
-          style={{color: Colors.red20}}
-          hideUnderline
-          renderItem={this.getCustomPickerItem}
-          showSearch={false}
-          searchPlaceholder={'Search a language'}
-          searchStyle={{color: Colors.blue30, placeholderTextColor: Colors.dark50}}
-          // onSearchChange={value => console.warn('value', value)}
-        >
-          {existingSources.map(option => <Picker.Item key={option.value} value={option} disabled={option.disabled} />)}
-          {/* <Picker.Item key={'addCard'} value={this.getAddCardNode()} /> */}
-        </Picker>
-      </View>
+      <List style={PaymentMethodsStyles.list}>
+        {this.getCustomerSources()}
+        <ListItem icon onPress={this.handleCardPayPress} {...testID('cardFormButton')}>
+          <Left>
+            <Button style={{ backgroundColor: "#FF9501" }}>
+              <Icon active name="md-add" />
+            </Button>
+            {loading 
+              ? <ActivityIndicator size="small" color="#00ff00" />
+              : <Text>Add a payment method</Text>
+            }
+          </Left>
+        </ListItem>
+      </List>
     );
-
   }
-
-  getCustomPickerItem = (item) => {
-    console.log('getCustomPickerItem item:', item)
-    return (
-      <View>
-        <Ionicons name="md-add" size={10} color="lightgrey" />
-        <Text>Add a payment method</Text>
-      </View>
-    )
-  }
-
 }
-
-
-// const REMOVE_ORDER_ITEM = gql`
-//   mutation removeOrderItem($id: String!) {
-//     removeOrderItem(id: $id) {
-//       _id
-//     }
-//   }
-// `
-
-// const CONFIRM_ORDER = gql`
-//   mutation confirmOrder {
-//     confirmOrder {
-//       _id
-//     }
-//   }
-// `
-
-// const CREATE_USUAL = gql`
-//   mutation createUsualByOrderId($id: String!) {
-//     createUsualByOrderId(id: $id) {
-//       _id
-//     }
-//   }
-// `
-
-export default graphql(
-  gql`
-    query User {
-      currentUser {
-        _id
-        email
-        order
-      }
-    }
-  `
-)(PaymentMethods);
