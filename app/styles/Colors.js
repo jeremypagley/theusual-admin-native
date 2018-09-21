@@ -3,6 +3,7 @@ export default {
   Red: '#DC3545',
   Green: '#4EEB77',
   Grey: '#F9F9F9',
+  LightGrey: 'lightgrey',
   White: '#FFFFFF',
   Black: '#212529',
 }

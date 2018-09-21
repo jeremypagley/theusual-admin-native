@@ -18,6 +18,16 @@ const Styles = StyleSheet.create({
     height: contentHeight
   },
 
+  dropdownContainer: { 
+    flexDirection: 'row',
+    margin: 5,
+    height: 40
+  },
+
+  dropdownWrapper: { 
+    flex: 1
+  },
+
   listItemWrapper: {
     width: screenWidth-30
   },
@@ -34,6 +44,11 @@ const Styles = StyleSheet.create({
   actionBtn: {
     height: 40
   },
+
+  actionBtnWrapperIcon: {
+    alignSelf: 'flex-end',
+    margin: 15
+  },
   
   noItemsWrapper: {
     marginTop: 10
@@ -41,6 +56,11 @@ const Styles = StyleSheet.create({
 
   closeIconWrapper: {
     height: 45,
+  },
+
+  closeIconX: {
+    color: 'lightgrey',
+    fontSize: 36
   },
 
   title: {
@@ -57,44 +77,20 @@ const Styles = StyleSheet.create({
     fontSize: 24,
     color: 'grey'
   },
-  // button: {
-  //   backgroundColor: "lightblue",
-  //   padding: 12,
-  //   margin: 16,
-  //   justifyContent: "center",
-  //   alignItems: "center",
-  //   borderRadius: 4,
-  //   borderColor: "rgba(0, 0, 0, 0.1)"
-  // },
+
   modalContent: {
     backgroundColor: "white",
     height: contentHeight,
     marginTop: marginTopOffset,
     width: screenWidth,
-    // justifyContent: "center",
     alignItems: "center",
-    borderRadius: 16,
     borderColor: "rgba(0, 0, 0, 0.1)"
   },
+  
   bottomModal: {
     justifyContent: "flex-end",
     margin: 0
   },
-  // scrollableModal: {
-  //   height: 300
-  // },
-  // scrollableModalContent1: {
-  //   height: 200,
-  //   backgroundColor: "orange",
-  //   alignItems: "center",
-  //   justifyContent: "center"
-  // },
-  // scrollableModalContent2: {
-  //   height: 200,
-  //   backgroundColor: "lightgreen",
-  //   alignItems: "center",
-  //   justifyContent: "center"
-  // }
 });
 
 export default Styles;

@@ -22,6 +22,16 @@ import { Ionicons } from '@expo/vector-icons';
 import GET_CURRENT_USER from 'app/graphql/query/getCurrentUser';
 import { Dialog, View } from 'react-native-ui-lib';
 import PaymentMethods from 'app/containers/PaymentMethods';
+import DropdownStyles from 'app/styles/DropdownStyles';
+import Dropdown from 'react-native-modal-dropdown';
+
+const amountFieldData = [
+  {value: 20},
+  {value: 30},
+  {value: 40},
+  {value: 50},
+  {value: 100},
+]
 
 class PaymentManager extends React.Component {
   constructor(props) {
@@ -30,7 +40,20 @@ class PaymentManager extends React.Component {
     this.state = {
       open: false,
       selectedPaymentMethod: null,
-      showPaymentMethodsDialog: false
+      showPaymentMethodsDialog: false,
+      payingWithValue: {value: 'sourceId1', key: 'id1', highlighted: false},
+      amountValue: {value: '$20', key: 'id2', highlighted: false},
+      autoReloadValue: false,
+      amountOptions: [
+        {value: '$20', key: '20', highlighted: false},
+        {value: '$30', key: '30', highlighted: false},
+        {value: '$40', key: '40', highlighted: false},
+        {value: '$50', key: '50', highlighted: false},
+      ],
+      payingWithOptions: [
+        {value: 'sourceId1', key: 'id1', highlighted: false},
+        {value: 'sourceID2', key: 'id2', highlighted: false},
+      ]
     }
   }
 
@@ -69,11 +92,15 @@ class PaymentManager extends React.Component {
 
     return (
       <View style={PaymentManagerStyles.modalContent}>
-        <View style={PaymentManagerStyles.closeIconWrapper}>
-          <Ionicons name="ios-arrow-down" size={50} color="lightgrey" />
+        <View style={PaymentManagerStyles.actionBtnWrapperIcon}>
+          <Icon 
+            onPress={() => this.setState({open: false})} 
+            name="md-close" 
+            style={PaymentManagerStyles.closeIconX}
+          />
         </View>
         
-        <Text style={PaymentManagerStyles.title}>22</Text>
+        <Text style={PaymentManagerStyles.title}>$30</Text>
         <Text style={PaymentManagerStyles.subtitle}>My balance</Text>
 
         <View style={PaymentManagerStyles.listItemWrapper}>
@@ -81,133 +108,109 @@ class PaymentManager extends React.Component {
           {this.getPayingWithField()}
           {this.getAutoReloadField()}
         </View>
-
-        <Dialog
-          visible={this.state.showPaymentMethodsDialog}
-          width="100%"
-          height="40%"
-          bottom
-          centerH
-          onDismiss={() => this.setState({showPaymentMethodsDialog: false})}
-          animationConfig={{duration: 250}}
-        >
-          {this.renderDialogContent()}
-        </Dialog>
-
-        <ScrollView>
-          {/* {this.getOrderProducts(items, noOrderItems)}
-
-          {!noOrderItems ?
-          <View style={PaymentManagerStyles.actionBtnWrapper}>
-            <Mutation 
-              mutation={CONFIRM_ORDER}
-              refetchQueries={() => {
-                return [{
-                   query: GET_ORDER,
-                }];
-              }}
-            >
-              {confirmOrder => (
-                <Button 
-                  transparent 
-                  block 
-                  primary
-                  large
-                  style={PaymentManagerStyles.actionBtn}
-                  onPress={() => {
-                    confirmOrder();
-                    this.setState({ open: false });
-                  }}
-                >
-                  <Text>Confirm order</Text>
-                </Button>
-              )}
-            </Mutation>
-          </View>
-          : null}
-          
-          {!noOrderItems ?
-          <View style={PaymentManagerStyles.actionBtnWrapper}>
-            <Mutation 
-              mutation={CREATE_USUAL}
-              refetchQueries={() => {
-                return [{
-                   query: GET_CURRENT_USER,
-                }];
-              }}
-            >
-              {createUsualByOrderId => (
-                <Button 
-                  transparent 
-                  block 
-                  primary
-                  large
-                  style={PaymentManagerStyles.actionBtn}
-                  onPress={() => createUsualByOrderId({variables: {id: currentUser.order}})}
-                >
-                  <Text>Add order to usuals</Text>
-                </Button>
-              )}
-            </Mutation>
-          </View>
-          : null} */}
-        </ScrollView>
       </View>
     );
   }
 
+  getDropdownLabel = (type) => {
+    let label = 'Amount';
+
+    if (type === 'autoReload') label = 'Auto reload';
+    if (type === 'payingWith') label = 'Paying with';
+
+    return (
+      <Text>{label}</Text>
+    )
+  }
+
+  onDropdownFieldChange = (type, index, option) => {
+    this.setState({[type]: option});
+  }
+
   getAmountField = () => {
     return (
-      <ListItem>
-        <Left>
-          <Text>Amount</Text>
-        </Left>
-        <Right>
-          <Icon active name="arrow-down" />
-        </Right>
-      </ListItem>
+      <View style={PaymentManagerStyles.dropdownContainer}>
+        <View style={PaymentManagerStyles.dropdownWrapper}>
+          <Dropdown 
+            options={this.state.amountOptions}
+            renderRow={(option, key, isSelected) => <Text key={key} bold={isSelected} style={DropdownStyles.dropdownRow}>{option.value}</Text>}
+            renderButtonText={(option) => this.getDropdownDefaultNode('Amount', 'amountValue', option)}
+            renderSeparator={() => <View style={DropdownStyles.dropdownSeparator}></View>}
+            onSelect={(index, option) => this.onDropdownFieldChange('amountValue', index, option)}
+            defaultValue={this.getDropdownDefaultNode('Amount', 'amountValue')}
+            style={DropdownStyles.dropdownContainer}
+            dropdownStyle={DropdownStyles.dropdownInner}
+          />
+        </View>
+      </View>
     )
   }
 
   getPayingWithField = () => {
     return (
-      <ListItem onPress={() => this.setState({showPaymentMethodsDialog: true})}>
-        <Left>
-          <Text>Paying with</Text>
-        </Left>
-        <Right>
-          <Text>getdefaultpayment</Text>
-          <Icon active name="arrow-down" />
-        </Right>
-      </ListItem>
+      <View style={PaymentManagerStyles.dropdownContainer}>
+        <View style={PaymentManagerStyles.dropdownWrapper}>
+          <Dropdown 
+            options={this.state.payingWithOptions}
+            renderRow={(option, key, isSelected) => <Text key={key} bold={isSelected} style={DropdownStyles.dropdownRow}>{option.value}</Text>}
+            renderButtonText={(option) => this.getDropdownDefaultNode('Paying with', 'payingWithValue', option)}
+            renderSeparator={() => <View style={DropdownStyles.dropdownSeparator}></View>}
+            onSelect={(index, option) => this.onDropdownFieldChange('payingWithValue', index, option)}
+            defaultValue={this.getDropdownDefaultNode('Paying with', 'payingWithValue')}
+            style={DropdownStyles.dropdownContainer}
+            dropdownStyle={DropdownStyles.dropdownInner}
+          />
+        </View>
+      </View>
+    )
+  }
+
+  getDropdownDefaultNode = (manualTitle, type, option) => {
+    const opt = option ? option : this.state[type];
+
+    return (
+      <View style={DropdownStyles.display}>
+        <View style={DropdownStyles.displayColLeft}><Text>{manualTitle}</Text></View>
+
+        <View style={DropdownStyles.displayColRight}>
+          <Text>{opt && opt.value}</Text>
+        </View>
+        <View style={DropdownStyles.displayColRight}>
+          <Icon 
+            // onPress={() => this.setState({open: false})} 
+            name="ios-arrow-down" 
+            // style={PaymentManagerStyles.closeIconX}
+          />
+        </View>
+      </View>
+    )
+  }
+
+  getDropdownDipslayNode = (label, type, option) => {
+    return (
+      <View>
+        <Text>{label} {option && option.value}</Text>
+        <Icon 
+          // onPress={() => this.setState({open: false})} 
+          name="ios-arrow-down" 
+          // style={PaymentManagerStyles.closeIconX}
+        />
+      </View>
     )
   }
 
   getAutoReloadField = () => {
+    const { autoReloadValue } = this.state;
     return (
-      <ListItem>
+      <ListItem noIndent>
         <Left>
           <Text>Auto reload</Text>
         </Left>
         <Right>
-          <Switch value={false} />
+          <Switch onValueChange={() => this.onDropdownFieldChange('autoReloadValue', !autoReloadValue)} value={autoReloadValue} />
         </Right>
       </ListItem>
     )
-  }
-
-  renderDialogContent = () => {
-    return (
-      <View bg-white flex br20 padding-18 spread br0>
-        <Text text50>List of existing Sources</Text>
-
-        <PaymentMethods />
-
-        <View right>
-          <Button text60 label="Done" link onPress={() => this.setState({showPaymentMethodsDialog: false})} />
-        </View>
-      </View>
-    );
   }
 
 }

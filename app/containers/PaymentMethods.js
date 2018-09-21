@@ -27,18 +27,18 @@ export default class PaymentMethods extends React.Component {
         // Only iOS support this options
         smsAutofillDisabled: true,
         requiredBillingAddressFields: 'full',
-        // prefilledInformation: {
-        //   billingAddress: {
-        //     name: 'Gunilla Haugeh',
-        //     line1: 'Canary Place',
-        //     line2: '3',
-        //     city: 'Macon',
-        //     state: 'Georgia',
-        //     country: 'US',
-        //     postalCode: '31217',
-        //     email: 'ghaugeh0@printfriendly.com',
-        //   },
-        // },
+        prefilledInformation: {
+          billingAddress: {
+            name: 'JEREMY K PAGLEY',
+            line1: '777 N Orange Ave',
+            line2: '412',
+            city: 'Orlando',
+            state: 'Florida',
+            country: 'US',
+            postalCode: '32801',
+            email: 'jeremyjkp@gmail.com',
+          },
+        },
       });
 
       this.setState({ loading: false, token });
@@ -72,14 +72,14 @@ export default class PaymentMethods extends React.Component {
         {this.getCustomerSources()}
         <ListItem icon onPress={this.handleCardPayPress} {...testID('cardFormButton')}>
           <Left>
-            <Button style={{ backgroundColor: "#FF9501" }}>
-              <Icon active name="md-add" />
-            </Button>
+            <Icon active name="md-add" />
+          </Left>
+          <Body>
             {loading 
               ? <ActivityIndicator size="small" color="#00ff00" />
               : <Text>Add a payment method</Text>
             }
-          </Left>
+          </Body>
         </ListItem>
       </List>
     );
