@@ -85,6 +85,7 @@ class OrderStatus extends React.Component {
           <Ionicons name="ios-arrow-down" size={60} color="lightgrey" />
         </View>
         <H1 style={OrderStatusStyles.title}>Review Order</H1>
+        <H3 style={OrderStatusStyles.title}>Current balance: TODO</H3>
 
         <ScrollView>
           {this.getOrderProducts(items, noOrderItems)}

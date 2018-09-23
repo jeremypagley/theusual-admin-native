@@ -48,40 +48,17 @@ export default class CardFormScreen extends React.Component {
     }
   };
 
-  getCustomerSources = () => {
-    let sources = ['XXXX-XXXX-XXXX-4242']
-    return sources.map(source => {
-      return (
-        <ListItem>
-          <Left>
-            <Text>{source}</Text>
-          </Left>
-          <Right>
-            <Icon active name="arrow-down" />
-          </Right>
-        </ListItem>
-      )
-    });
-  }
-
   render() {
     const { loading, token } = this.state;
 
     return (
-      <List style={CardFormStyles.list}>
-        {this.getCustomerSources()}
-        <ListItem icon onPress={this.handleCardPayPress} {...testID('cardFormButton')}>
-          <Left>
-            <Button style={{ backgroundColor: "#FF9501" }}>
-              <Icon active name="md-add" />
-            </Button>
-            {loading 
-              ? <ActivityIndicator size="small" color="#00ff00" />
-              : <Text>Add a payment method</Text>
-            }
-          </Left>
-        </ListItem>
-      </List>
+      <Button full transparent iconLeft onPress={this.handleCardPayPress} {...testID('cardFormButton')}>
+        <Icon active name="md-add" />
+        {loading 
+          ? <ActivityIndicator size="small" color="#00ff00" />
+          : <Text>Add a payment method</Text>
+        }
+      </Button>
     );
   }
 }

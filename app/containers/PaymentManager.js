@@ -11,7 +11,7 @@ import {
   Text,
   Button
 } from 'native-base';
-import { ScrollView } from 'react-native';
+import { View } from 'react-native';
 import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
@@ -20,8 +20,7 @@ import PaymentManagerStyles from 'app/styles/PaymentManagerStyles';
 import Colors from 'app/styles/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import GET_CURRENT_USER from 'app/graphql/query/getCurrentUser';
-import { Dialog, View } from 'react-native-ui-lib';
-import PaymentMethods from 'app/containers/PaymentMethods';
+import CardForm from 'app/components/stripe/CardForm';
 import DropdownStyles from 'app/styles/DropdownStyles';
 import Dropdown from 'react-native-modal-dropdown';
 
@@ -39,16 +38,17 @@ class PaymentManager extends React.Component {
     
     this.state = {
       open: false,
+      token: '',
       selectedPaymentMethod: null,
       showPaymentMethodsDialog: false,
       payingWithValue: {value: 'sourceId1', key: 'id1', highlighted: false},
       amountValue: {value: '$20', key: 'id2', highlighted: false},
       autoReloadValue: false,
       amountOptions: [
-        {value: '$20', key: '20', highlighted: false},
-        {value: '$30', key: '30', highlighted: false},
-        {value: '$40', key: '40', highlighted: false},
-        {value: '$50', key: '50', highlighted: false},
+        {value: '$20', key: '20', rawValue: 20, highlighted: false},
+        {value: '$30', key: '30', rawValue: 30, highlighted: false},
+        {value: '$40', key: '40', rawValue: 40, highlighted: false},
+        {value: '$50', key: '50', rawValue: 50, highlighted: false},
       ],
       payingWithOptions: [
         {value: 'sourceId1', key: 'id1', highlighted: false},
@@ -106,10 +106,47 @@ class PaymentManager extends React.Component {
         <View style={PaymentManagerStyles.listItemWrapper}>
           {this.getAmountField()}
           {this.getPayingWithField()}
-          {this.getAutoReloadField()}
+          {/* {this.getAutoReloadField()} */}
         </View>
+
+        {this.getReloadAction()}
       </View>
     );
+  }
+
+  getReloadAction = () => {
+    const { amountValue, payingWithValue, autoReloadValue } = this.state;
+    
+    return (
+      <Mutation 
+        mutation={CONFIRM_ORDER}
+        refetchQueries={() => {
+          return [{
+            query: GET_CURRENT_USER,
+          }];
+        }}
+      >
+        {reloadFunds => (
+          <Button 
+            transparent 
+            block 
+            primary
+            large
+            style={PaymentManagerStyles.actionBtn}
+            onPress={() => reloadFunds({
+              variables: {
+                customerId: currentUser.customerId,
+                amount: amountValue.rawValue,
+                // TODO: this should be the customers id
+                payingWithSourceId: payingWithValue.value,
+              }
+            })}
+          >
+            <Text>Confirm Reload</Text>
+          </Button>
+        )}
+      </Mutation>
+    )
   }
 
   getDropdownLabel = (type) => {
@@ -124,6 +161,9 @@ class PaymentManager extends React.Component {
   }
 
   onDropdownFieldChange = (type, index, option) => {
+    // if (type === 'payingWithValue' && option.key === 'addpayment') {
+
+    // }
     this.setState({[type]: option});
   }
 
@@ -147,11 +187,14 @@ class PaymentManager extends React.Component {
   }
 
   getPayingWithField = () => {
+    let options = this.state.payingWithOptions;
+    options.push({key: 'addpayment', value: this.getAddPaymentRowValue(), highlighted: false});
+
     return (
       <View style={PaymentManagerStyles.dropdownContainer}>
         <View style={PaymentManagerStyles.dropdownWrapper}>
           <Dropdown 
-            options={this.state.payingWithOptions}
+            options={options}
             renderRow={(option, key, isSelected) => <Text key={key} bold={isSelected} style={DropdownStyles.dropdownRow}>{option.value}</Text>}
             renderButtonText={(option) => this.getDropdownDefaultNode('Paying with', 'payingWithValue', option)}
             renderSeparator={() => <View style={DropdownStyles.dropdownSeparator}></View>}
@@ -162,6 +205,12 @@ class PaymentManager extends React.Component {
           />
         </View>
       </View>
+    )
+  }
+
+  getAddPaymentRowValue = () => {
+    return (
+      <CardForm handleCardPayPress={token => this.setState({token: token})} />
     )
   }
 
@@ -224,13 +273,13 @@ class PaymentManager extends React.Component {
 //   }
 // `
 
-// const CONFIRM_ORDER = gql`
-//   mutation confirmOrder {
-//     confirmOrder {
-//       _id
-//     }
-//   }
-// `
+const CONFIRM_ORDER = gql`
+  mutation confirmOrder {
+    confirmOrder {
+      _id
+    }
+  }
+`
 
 // const CREATE_USUAL = gql`
 //   mutation createUsualByOrderId($id: String!) {
