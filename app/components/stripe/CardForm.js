@@ -16,7 +16,7 @@ export default class CardFormScreen extends React.Component {
 
   componentWillMount() {
     Stripe.setOptionsAsync({
-      publishableKey: 'pk_test_M315xbWEvSQjt7B8ZJYzuipC',
+      publishableKey: 'pk_test_CsV5D9WegDZKiJINmWBDj39Z',
     });
   }
 

@@ -19,6 +19,10 @@ const Styles = StyleSheet.create({
   cardItemTitle: {
     paddingBottom: 6
   },
+
+  cardItemIconTitle: {
+    paddingLeft: 8    
+  }
 });
 
 export default Styles;

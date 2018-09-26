@@ -1,16 +1,28 @@
 import React from 'react';
 import { 
+  Container,
+  Text,
+  List,
+  ListItem,
+  Content,
+  Header,
+  Body,
+  Button,
+  Input,
+  Item,
+  Label,
+  Icon,
   H1,
   H3,
-  ListItem,
-  Icon,
-  Right,
+  Card, 
+  CardItem,
   Left,
-  Body,
+  Right,
   Switch,
-  Text,
-  Button
+  Picker,
+  Form,
 } from 'native-base';
+import { Col, Row, Grid } from 'react-native-easy-grid';
 import { View } from 'react-native';
 import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
@@ -20,17 +32,14 @@ import PaymentManagerStyles from 'app/styles/PaymentManagerStyles';
 import Colors from 'app/styles/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import GET_CURRENT_USER from 'app/graphql/query/getCurrentUser';
-import CardForm from 'app/components/stripe/CardForm';
-import DropdownStyles from 'app/styles/DropdownStyles';
-import Dropdown from 'react-native-modal-dropdown';
+import { ActivityIndicator, Platform } from 'react-native';
+import { PaymentsStripe as Stripe } from 'expo-payments-stripe';
+import CardListStyles from 'app/styles/generic/CardListStyles';
+import ContainerStyles from 'app/styles/generic/ContainerStyles';
 
-const amountFieldData = [
-  {value: 20},
-  {value: 30},
-  {value: 40},
-  {value: 50},
-  {value: 100},
-]
+function testID(id) {
+  return Platform.OS === 'android' ? { accessible: true, accessibilityLabel: id } : { testID: id };
+}
 
 class PaymentManager extends React.Component {
   constructor(props) {
@@ -40,25 +49,50 @@ class PaymentManager extends React.Component {
       open: false,
       token: '',
       selectedPaymentMethod: null,
-      showPaymentMethodsDialog: false,
-      payingWithValue: {value: 'sourceId1', key: 'id1', highlighted: false},
-      amountValue: {value: '$20', key: 'id2', highlighted: false},
+      amountValue: 20,
       autoReloadValue: false,
-      amountOptions: [
-        {value: '$20', key: '20', rawValue: 20, highlighted: false},
-        {value: '$30', key: '30', rawValue: 30, highlighted: false},
-        {value: '$40', key: '40', rawValue: 40, highlighted: false},
-        {value: '$50', key: '50', rawValue: 50, highlighted: false},
-      ],
-      payingWithOptions: [
-        {value: 'sourceId1', key: 'id1', highlighted: false},
-        {value: 'sourceID2', key: 'id2', highlighted: false},
-      ]
+      token: '',
+      creditCardLoading: false,
     }
   }
 
+  componentWillMount() {
+    Stripe.setOptionsAsync({
+      publishableKey: 'pk_test_CsV5D9WegDZKiJINmWBDj39Z',
+    });
+  }
+
+  handleCardPayPress = async () => {
+    try {
+      this.setState({ loading: true, token: null });
+      const token = await Stripe.paymentRequestWithCardFormAsync({
+        // Only iOS support this options
+        smsAutofillDisabled: true,
+        requiredBillingAddressFields: 'full',
+        // prefilledInformation: {
+        //   billingAddress: {
+        //     name: 'Gunilla Haugeh',
+        //     line1: 'Canary Place',
+        //     line2: '3',
+        //     city: 'Macon',
+        //     state: 'Georgia',
+        //     country: 'US',
+        //     postalCode: '31217',
+        //     email: 'ghaugeh0@printfriendly.com',
+        //   },
+        // },
+      });
+
+      this.setState({ loading: false, token });
+      this.props.handleCardPayPress(token);
+    } catch (error) {
+      this.setState({ loading: false });
+    }
+  };
+
   render() {
     let open = this.state.open;
+    const { currentUser } = this.props.data;
 
     return (
       <View>
@@ -68,14 +102,15 @@ class PaymentManager extends React.Component {
           primary
           large
           style={PaymentManagerStyles.actionBtn}
-          onPress={() => this.setState({ open: true })}
+          onPress={() => this.toggleModal()}
         >
           <Text>Reload</Text>
         </Button>
 
+
         <Modal
           isVisible={open}
-          onSwipe={() => this.setState({ open: false })}
+          onSwipe={() => this.toggleModal()}
           swipeDirection="down"
           style={PaymentManagerStyles.container}
         >
@@ -86,59 +121,187 @@ class PaymentManager extends React.Component {
 
   }
 
+  toggleModal = () => {
+    const { open } = this.state;
+    this.setState({ open: !open })
+  }
+
   renderModalContent = () => {
     const { currentUser } = this.props.data;
+    const { creditCardLoading, applePayLoading } = this.state;
     if (!currentUser) return;
 
     return (
-      <View style={PaymentManagerStyles.modalContent}>
+      <Container style={ContainerStyles.container}>
+        <Header style={ContainerStyles.header}>
+          <Body>
+            <H1>Payment methods</H1>
+          </Body>
+        </Header>
+        
         <View style={PaymentManagerStyles.actionBtnWrapperIcon}>
           <Icon 
-            onPress={() => this.setState({open: false})} 
+            onPress={() => this.toggleModal()} 
             name="md-close" 
             style={PaymentManagerStyles.closeIconX}
           />
         </View>
         
-        <Text style={PaymentManagerStyles.title}>$30</Text>
-        <Text style={PaymentManagerStyles.subtitle}>My balance</Text>
+        <Grid>
+          <Row size={4}>
+            <Content>
+              <List>
+                <ListItem itemHeader first style={CardListStyles.listItem}>
+                  <Text>ACTIVE PAYMENT METHODS</Text>
+                </ListItem>
+                <Card style={CardListStyles.card}>
+                  {this.getActivePaymentItems()}
 
-        <View style={PaymentManagerStyles.listItemWrapper}>
-          {this.getAmountField()}
-          {this.getPayingWithField()}
-          {/* {this.getAutoReloadField()} */}
-        </View>
+                  <CardItem 
+                    button 
+                    onPress={() => this.onAddActivePaymentItemPress('creditCard')} 
+                    key={'creditcard'} 
+                    style={CardListStyles.cardItem}
+                    {...testID('cardFormButton')}
+                  >
+                    <Left>
+                      <Icon name="md-add" />
+                      {creditCardLoading 
+                        ? <ActivityIndicator size="small" color="#00ff00" />
+                        : <Text style={CardListStyles.cardItemIconTitle}>
+                            Add a credit card
+                          </Text>
+                      }
+                    </Left>
+                  </CardItem>
 
-        {this.getReloadAction()}
-      </View>
+                  <CardItem 
+                    button 
+                    onPress={() => this.onAddActivePaymentItemPress('applePay')} 
+                    key={'applepay'} 
+                    style={CardListStyles.cardItem} 
+                    {...testID('cardFormButton')}
+                  >
+                    <Left>
+                      <Icon name="md-add" />
+                      {creditCardLoading 
+                        ? <ActivityIndicator size="small" color="#00ff00" />
+                        : <Text style={CardListStyles.cardItemIconTitle}>
+                            Add Apple Pay
+                          </Text>
+                      }
+                    </Left>
+                  </CardItem>
+                </Card>
+              </List>
+            </Content>
+          </Row>
+
+          <Row size={5}>
+            <Content>
+              <ListItem itemHeader first style={CardListStyles.listItem}>
+                <Text>MANAGE BALANCE</Text>
+              </ListItem>
+              <Card style={CardListStyles.card}>
+                <CardItem style={CardListStyles.cardItem}>
+                  <Body>
+                    <H1 style={CardListStyles.cardItemTitle}>{/*currentUser.payment.balance*/}$20.00</H1>
+                    <H3 style={CardListStyles.cardItemTitle}>My balance</H3>
+                  </Body>
+                </CardItem>
+
+                <CardItem style={CardListStyles.cardItem}>
+                  <Body>
+                    {this.getAmountField()}
+                  </Body>
+                </CardItem>
+
+                <CardItem style={CardListStyles.cardItem}>
+                  <Body>
+                    {this.getAutoReloadField()}
+                  </Body>
+                </CardItem>
+              </Card>
+            </Content>
+          </Row>
+        </Grid>
+      </Container>
     );
+  }
+
+  getActivePaymentItems = () => {
+    const { search } = this.state;
+    let data = {}
+    // will be currentUser.billing.sources
+    data.sources = [{_id: 'fake payment', title: 'fake payment'}]
+
+    return data.sources.map((source) => {
+      return (
+        <Mutation 
+          mutation={RELOAD_FUNDS}
+          refetchQueries={() => {
+            return [{
+              query: GET_CURRENT_USER,
+            }];
+          }}
+        >
+          {updateDefaultPaymentMethod => (
+            <CardItem 
+              button 
+              onPress={() => this.onActivePaymentItemPress(source, updateDefaultPaymentMethod)} 
+              key={source._id} 
+              style={CardListStyles.cardItem}
+            >
+              <Body>
+                <Label style={CardListStyles.cardItemTitle}>{source.title}</Label>
+              </Body>
+            </CardItem>
+          )}
+        </Mutation>
+      );
+    });
+  }
+
+  onAddActivePaymentItemPress = (type) => {
+    if (type === 'creditCard') {
+      return this.handleCardPayPress();
+    } else if (type === 'applePay') {
+      console.log('TODO....')
+    }
+  }
+
+  onActivePaymentItemPress = (source, updateDefaultPaymentMethod) => {
+
+
+    // TODO: add updateDefaultPaymentMethod with mutation
+    console.log('TODO: Swap default source to selected source')
   }
 
   getReloadAction = () => {
     const { amountValue, payingWithValue, autoReloadValue } = this.state;
-    
+
     return (
       <Mutation 
-        mutation={CONFIRM_ORDER}
+        mutation={RELOAD_FUNDS}
         refetchQueries={() => {
           return [{
             query: GET_CURRENT_USER,
           }];
         }}
       >
-        {reloadFunds => (
+        {reloadBalance => (
           <Button 
             transparent 
             block 
             primary
             large
             style={PaymentManagerStyles.actionBtn}
-            onPress={() => reloadFunds({
+            onPress={() => reloadBalance({
               variables: {
-                customerId: currentUser.customerId,
+                customerId: currentUser.stripeCustomerId,
                 amount: amountValue.rawValue,
                 // TODO: this should be the customers id
-                payingWithSourceId: payingWithValue.value,
+                sourceToken: this.state.token,
               }
             })}
           >
@@ -149,145 +312,50 @@ class PaymentManager extends React.Component {
     )
   }
 
-  getDropdownLabel = (type) => {
-    let label = 'Amount';
-
-    if (type === 'autoReload') label = 'Auto reload';
-    if (type === 'payingWith') label = 'Paying with';
-
-    return (
-      <Text>{label}</Text>
-    )
-  }
-
-  onDropdownFieldChange = (type, index, option) => {
-    // if (type === 'payingWithValue' && option.key === 'addpayment') {
-
-    // }
-    this.setState({[type]: option});
-  }
-
   getAmountField = () => {
     return (
-      <View style={PaymentManagerStyles.dropdownContainer}>
-        <View style={PaymentManagerStyles.dropdownWrapper}>
-          <Dropdown 
-            options={this.state.amountOptions}
-            renderRow={(option, key, isSelected) => <Text key={key} bold={isSelected} style={DropdownStyles.dropdownRow}>{option.value}</Text>}
-            renderButtonText={(option) => this.getDropdownDefaultNode('Amount', 'amountValue', option)}
-            renderSeparator={() => <View style={DropdownStyles.dropdownSeparator}></View>}
-            onSelect={(index, option) => this.onDropdownFieldChange('amountValue', index, option)}
-            defaultValue={this.getDropdownDefaultNode('Amount', 'amountValue')}
-            style={DropdownStyles.dropdownContainer}
-            dropdownStyle={DropdownStyles.dropdownInner}
-          />
-        </View>
-      </View>
-    )
-  }
-
-  getPayingWithField = () => {
-    let options = this.state.payingWithOptions;
-    options.push({key: 'addpayment', value: this.getAddPaymentRowValue(), highlighted: false});
-
-    return (
-      <View style={PaymentManagerStyles.dropdownContainer}>
-        <View style={PaymentManagerStyles.dropdownWrapper}>
-          <Dropdown 
-            options={options}
-            renderRow={(option, key, isSelected) => <Text key={key} bold={isSelected} style={DropdownStyles.dropdownRow}>{option.value}</Text>}
-            renderButtonText={(option) => this.getDropdownDefaultNode('Paying with', 'payingWithValue', option)}
-            renderSeparator={() => <View style={DropdownStyles.dropdownSeparator}></View>}
-            onSelect={(index, option) => this.onDropdownFieldChange('payingWithValue', index, option)}
-            defaultValue={this.getDropdownDefaultNode('Paying with', 'payingWithValue')}
-            style={DropdownStyles.dropdownContainer}
-            dropdownStyle={DropdownStyles.dropdownInner}
-          />
-        </View>
-      </View>
-    )
-  }
-
-  getAddPaymentRowValue = () => {
-    return (
-      <CardForm handleCardPayPress={token => this.setState({token: token})} />
-    )
-  }
-
-  getDropdownDefaultNode = (manualTitle, type, option) => {
-    const opt = option ? option : this.state[type];
-
-    return (
-      <View style={DropdownStyles.display}>
-        <View style={DropdownStyles.displayColLeft}><Text>{manualTitle}</Text></View>
-
-        <View style={DropdownStyles.displayColRight}>
-          <Text>{opt && opt.value}</Text>
-        </View>
-        <View style={DropdownStyles.displayColRight}>
-          <Icon 
-            // onPress={() => this.setState({open: false})} 
-            name="ios-arrow-down" 
-            // style={PaymentManagerStyles.closeIconX}
-          />
-        </View>
-      </View>
-    )
-  }
-
-  getDropdownDipslayNode = (label, type, option) => {
-    return (
-      <View>
-        <Text>{label} {option && option.value}</Text>
-        <Icon 
-          // onPress={() => this.setState({open: false})} 
-          name="ios-arrow-down" 
-          // style={PaymentManagerStyles.closeIconX}
-        />
-      </View>
+      <Form>
+        <Picker
+          mode="dropdown"
+          style={{ width: 120 }}
+          selectedValue={this.state.amountValue}
+          iosIcon={<Icon name="ios-arrow-down-outline" />}
+          onValueChange={(value) => this.setState({amountValue: value})}
+        >
+          <Picker.Item label="$20" value={20} />
+          <Picker.Item label="$30" value={30} />
+          <Picker.Item label="$40" value={40} />
+        </Picker>
+      </Form>
     )
   }
 
   getAutoReloadField = () => {
     const { autoReloadValue } = this.state;
     return (
-      <ListItem noIndent>
+      <ListItem>
         <Left>
           <Text>Auto reload</Text>
         </Left>
         <Right>
-          <Switch onValueChange={() => this.onDropdownFieldChange('autoReloadValue', !autoReloadValue)} value={autoReloadValue} />
+          <Switch 
+            onValueChange={(val) => this.setState({autoReloadValue: !autoReloadValue})} 
+            value={autoReloadValue}
+          />
         </Right>
       </ListItem>
     )
   }
-
 }
 
-
-// const REMOVE_ORDER_ITEM = gql`
-//   mutation removeOrderItem($id: String!) {
-//     removeOrderItem(id: $id) {
-//       _id
-//     }
-//   }
-// `
-
-const CONFIRM_ORDER = gql`
-  mutation confirmOrder {
-    confirmOrder {
-      _id
+const RELOAD_FUNDS = gql`
+  mutation reloadBalance($customerId: String!, $amount: Number, $payingWithSourceId: String!) {
+    reloadBalance(customerId: $customerId, amount: $amount, payingWithSourceId: $payingWithSourceId) {
+      _id,
+      payment
     }
   }
 `
-
-// const CREATE_USUAL = gql`
-//   mutation createUsualByOrderId($id: String!) {
-//     createUsualByOrderId(id: $id) {
-//       _id
-//     }
-//   }
-// `
 
 export default graphql(
   gql`

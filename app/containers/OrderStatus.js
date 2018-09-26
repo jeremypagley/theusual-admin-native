@@ -19,13 +19,15 @@ import ExpandableCard from 'app/components/ExpandableCard';
 import GET_ORDER from 'app/graphql/query/getOrder';
 import GET_CURRENT_USER from 'app/graphql/query/getCurrentUser';
 import PaymentManager from 'app/containers/PaymentManager';
+import CardForm from 'app/components/stripe/CardForm';
 
 class OrderStatus extends React.Component {
   constructor(props) {
     super(props);
     
     this.state = {
-      open: false
+      open: false,
+      token: ''
     }
   }
 
@@ -112,7 +114,7 @@ class OrderStatus extends React.Component {
                     this.setState({ open: false });
                   }}
                 >
-                  <Text>Confirm order</Text>
+                  {currentUser.stripeCustomerId ? <Text>Confirm order</Text> : this.getAddPayment()}
                 </Button>
               )}
             </Mutation>
@@ -151,6 +153,12 @@ class OrderStatus extends React.Component {
         </ScrollView>
       </View>
     );
+  }
+
+  getAddPayment = () => {
+    return (
+      <CardForm handleCardPayPress={token => this.setState({token: token})} />
+    )
   }
 
   getOrderProducts = (items, noOrderItems) => {
