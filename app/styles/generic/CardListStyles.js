@@ -25,6 +25,10 @@ const Styles = StyleSheet.create({
     color: Colors.Green,
   },
 
+  cardItemIconSelected: {
+    color: Colors.Green,
+  },
+
   cardItemTitle: {
     paddingBottom: 6
   },

@@ -80,7 +80,6 @@ class OrderStatus extends React.Component {
     if (!currentUser) return;
 
     const hasBilling = currentUser.billing;
-
     const noOrderItems = items.length < 1;
     
     return (

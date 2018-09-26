@@ -69,22 +69,22 @@ class PaymentManager extends React.Component {
         // Only iOS support this options
         smsAutofillDisabled: false,
         requiredBillingAddressFields: 'full',
-        // prefilledInformation: {
-        //   billingAddress: {
-        //     name: 'Jeremy K Pagley',
-        //     line1: '777 North Orange Ave',
-        //     line2: '412',
-        //     city: 'Orlando',
-        //     state: 'FL',
-        //     country: 'United States',
-        //     postalCode: '32801',
-        //     email: 'jeremyjkp@gmail.com',
-        //   },
-        // },
+        prefilledInformation: {
+          billingAddress: {
+            name: 'Jeremy K Pagley',
+            line1: '777 North Orange Ave',
+            line2: '412',
+            city: 'Orlando',
+            state: 'FL',
+            country: 'United States',
+            postalCode: '32801',
+            email: 'jeremyjkp@gmail.com',
+          },
+        },
       });
 
       this.setState({ loading: false, token });
-      cardHandler({variables: { token: token.tokenId }});
+      return cardHandler({variables: { token: token.tokenId }});
       
     } catch (error) {
       this.setState({ loading: false });
@@ -92,9 +92,11 @@ class PaymentManager extends React.Component {
   };
 
   render() {
-    let open = this.state.open;
+    const open = this.state.open;
     const { currentUser } = this.props.data;
+
     if (!currentUser) return null;
+
 
     const hasBilling = currentUser.billing;
 
@@ -138,7 +140,7 @@ class PaymentManager extends React.Component {
   renderModalContent = () => {
     const { currentUser } = this.props.data;
     const { creditCardLoading, applePayLoading } = this.state;
-    if (!currentUser) return;
+    if (!currentUser) return null;
 
     const hasBilling = currentUser.billing; 
 
@@ -171,16 +173,14 @@ class PaymentManager extends React.Component {
                   <Mutation
                     mutation={CREATE_PAYMENT_METHOD}
                     refetchQueries={() => {
-                      return [{
-                        query: GET_CURRENT_USER,
-                      }];
+                      return [{query: GET_CURRENT_USER}, {query: GET_PAYMENT_METHODS}];
                     }}
                   >
                     {createPaymentMethod => (
                       <View>
                         <CardItem 
                           button 
-                          onPress={() => this.onAddActivePaymentItemPress('creditCard', createPaymentMethod)} 
+                          onPress={() => this.handleCardPayPress(createPaymentMethod)} 
                           key={'creditcard'} 
                           style={CardListStyles.cardItem}
                           {...testID('cardFormButton')}
@@ -198,7 +198,7 @@ class PaymentManager extends React.Component {
 
                         <CardItem 
                           button 
-                          onPress={() => this.onAddActivePaymentItemPress('applePay')} 
+                          onPress={() => console.log('applePay')} 
                           key={'applepay'} 
                           style={CardListStyles.cardItem} 
                           {...testID('cardFormButton')}
@@ -258,43 +258,44 @@ class PaymentManager extends React.Component {
   }
 
   getActivePaymentItems = () => {
+    const { currentUser } = this.props.data;
+    const { billing: { stripeCustomer } } = currentUser;
+
     return (
       <Query query={GET_PAYMENT_METHODS}>
         {({ loading, error, data }) => {
-          console.log('GET_PAYMENT_METHODS error: ', error)
-          console.log('GET_PAYMENT_METHODS data: ', data)
+
           if (loading) return <Text key="loading">Loading...</Text>;
           if (error) return <Text key="error">Error :(</Text>;
 
           return data.paymentMethods.map(source => {
-            const isSelected = this.state.selectedPaymentMethod === source.id;
-            console.log('source: ', source)
+            const { selectedPaymentMethod } = this.state;
+            const isSelected = stripeCustomer.default_source === source.id;
 
             return (
               <Mutation
                 key={source.id}
-                mutation={RELOAD_BALANCE}
+                mutation={UPDATE_DEFAULT_PAYMENT_METHOD}
                 refetchQueries={() => {
-                  return [{
-                    query: GET_CURRENT_USER,
-                  }];
+                  return [{query: GET_CURRENT_USER}, {query: GET_PAYMENT_METHODS}];
                 }}
               >
                 {updateDefaultPaymentMethod => (
                   <CardItem
                     key={source.id}
                     button 
-                    onPress={() => this.onActivePaymentItemPress(source, updateDefaultPaymentMethod)} 
+                    onPress={() => this.setActivePaymentMethod(source.id, updateDefaultPaymentMethod)} 
                     key={source._id} 
                     style={[CardListStyles.cardItem, isSelected ? CardListStyles.cardItemSelected : {}]}
                   >
-                    <Body>
+                    <Left>
+                      {isSelected ? <Icon fontSize={24} style={CardListStyles.cardItemIconSelected} name="md-checkmark" /> : null}
                       <Text 
                         style={[CardListStyles.cardItemTitle, isSelected ? CardListStyles.cardItemTitleSelected : {}]}
                       >
                         XXXX XXXX XXXX {source.last4}
                       </Text>
-                    </Body>
+                    </Left>
                   </CardItem>
                 )}
               </Mutation>
@@ -305,57 +306,46 @@ class PaymentManager extends React.Component {
     )
   }
 
-
-
-  onAddActivePaymentItemPress = (type, cardHandler) => {
-    if (type === 'creditCard') {
-      return this.handleCardPayPress(cardHandler);
-    } else if (type === 'applePay') {
-      console.log('TODO....')
-    }
+  setActivePaymentMethod = (sourceId, updateDefaultPaymentMethod) => {
+    if (!sourceId) return console.log('no source id: ', sourceId)
+    updateDefaultPaymentMethod({variables: { source: sourceId }});
   }
 
-  onActivePaymentItemPress = (source, updateDefaultPaymentMethod) => {
+  // getReloadAction = () => {
+  //   const { amountValue, payingWithValue, autoReloadValue } = this.state;
+  //   const { currentUser } = this.props.data;
 
-    this.setState({ selectedPaymentMethod: source.id });
-    // TODO: add updateDefaultPaymentMethod with mutation
-    console.log('TODO: Swap default source to selected source')
-  }
-
-  getReloadAction = () => {
-    const { amountValue, payingWithValue, autoReloadValue } = this.state;
-
-    return (
-      <Mutation 
-        mutation={RELOAD_BALANCE}
-        refetchQueries={() => {
-          return [{
-            query: GET_CURRENT_USER,
-          }];
-        }}
-      >
-        {reloadBalance => (
-          <Button 
-            transparent 
-            block 
-            primary
-            large
-            style={PaymentManagerStyles.actionBtn}
-            onPress={() => reloadBalance({
-              variables: {
-                customerId: currentUser.stripeCustomerId,
-                amount: amountValue.rawValue,
-                // TODO: this should be the customers id
-                sourceToken: this.state.token,
-              }
-            })}
-          >
-            <Text>Confirm Reload</Text>
-          </Button>
-        )}
-      </Mutation>
-    )
-  }
+  //   return (
+  //     <Mutation 
+  //       mutation={RELOAD_BALANCE}
+  //       refetchQueries={() => {
+  //         return [{
+  //           query: GET_CURRENT_USER,
+  //         }];
+  //       }}
+  //     >
+  //       {reloadBalance => (
+  //         <Button 
+  //           transparent 
+  //           block 
+  //           primary
+  //           large
+  //           style={PaymentManagerStyles.actionBtn}
+  //           onPress={() => reloadBalance({
+  //             variables: {
+  //               customerId: currentUser.billing.stripeCustomer.id,
+  //               amount: amountValue.rawValue,
+  //               // TODO: this should be the customers id
+  //               sourceToken: this.state.token,
+  //             }
+  //           })}
+  //         >
+  //           <Text>Confirm Reload</Text>
+  //         </Button>
+  //       )}
+  //     </Mutation>
+  //   )
+  // }
 
   getAmountField = () => {
     return (
@@ -402,6 +392,22 @@ const RELOAD_BALANCE = gql`
   }
 `
 
+const UPDATE_DEFAULT_PAYMENT_METHOD = gql`
+  mutation updateDefaultPaymentMethod($source: String!) {
+    updateDefaultPaymentMethod(source: $source) {
+      _id,
+      email,
+      billing {
+        balance,
+        stripeCustomer {
+          id
+          default_source
+        }
+      }
+    }
+  }
+`
+
 const CREATE_PAYMENT_METHOD = gql`
   mutation createPaymentMethod($token: String!) {
     createPaymentMethod(token: $token) {
@@ -409,7 +415,10 @@ const CREATE_PAYMENT_METHOD = gql`
       email,
       billing {
         balance,
-        stripeCustomerId
+        stripeCustomer {
+          id
+          default_source
+        }
       }
     }
   }
@@ -433,7 +442,10 @@ export default graphql(
         order
         billing {
           balance
-          stripeCustomerId
+          stripeCustomer {
+            id
+            default_source
+          }
         }
       }
     }
