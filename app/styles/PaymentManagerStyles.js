@@ -18,6 +18,10 @@ const Styles = StyleSheet.create({
     height: contentHeight
   },
 
+  autoReload: {
+    marginBottom: 10
+  },
+
   dropdownContainer: { 
     flexDirection: 'row',
     margin: 5,

@@ -13,7 +13,7 @@ import {
   Label,
   Icon,
   H1,
-  H3,
+  H4,
   Card, 
   CardItem,
   Left,
@@ -23,7 +23,7 @@ import {
   Form,
 } from 'native-base';
 import { Col, Row, Grid } from 'react-native-easy-grid';
-import { View } from 'react-native';
+import { View, Dimensions } from 'react-native';
 import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
@@ -36,6 +36,7 @@ import { ActivityIndicator, Platform } from 'react-native';
 import { PaymentsStripe as Stripe } from 'expo-payments-stripe';
 import CardListStyles from 'app/styles/generic/CardListStyles';
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
+const screenWidth = Dimensions.get('window').width;
 
 function testID(id) {
   return Platform.OS === 'android' ? { accessible: true, accessibilityLabel: id } : { testID: id };
@@ -229,23 +230,25 @@ class PaymentManager extends React.Component {
                   </ListItem>
                   <Card style={CardListStyles.card}>
                     <CardItem style={CardListStyles.cardItem}>
-                      <Body>
-                        <H1 style={CardListStyles.cardItemTitle}>{/*currentUser.payment.balance*/}$20.00</H1>
-                        <H3 style={CardListStyles.cardItemTitle}>My balance</H3>
+                      <Body style={CardListStyles.itemBody}>
+                        <Text style={CardListStyles.cardItemTitleColor}>${currentUser.billing.balance}</Text>
+                        <Text style={CardListStyles.cardItemSubTitle}>My balance</Text>
                       </Body>
                     </CardItem>
 
                     <CardItem style={CardListStyles.cardItem}>
-                      <Body>
+                      <Body style={CardListStyles.itemBody}>
                         {this.getAmountField()}
                       </Body>
                     </CardItem>
 
                     <CardItem style={CardListStyles.cardItem}>
-                      <Body>
-                        {this.getAutoReloadField()}
+                      <Body style={CardListStyles.itemBody}>
+                        {this.getReloadAction()}
                       </Body>
                     </CardItem>
+
+                    {/* {this.getAutoReloadField()} */}
                   </Card>
                 </Content>
               </Row>
@@ -311,67 +314,66 @@ class PaymentManager extends React.Component {
     updateDefaultPaymentMethod({variables: { source: sourceId }});
   }
 
-  // getReloadAction = () => {
-  //   const { amountValue, payingWithValue, autoReloadValue } = this.state;
-  //   const { currentUser } = this.props.data;
+  getReloadAction = () => {
+    const { amountValue } = this.state;
+    const { currentUser } = this.props.data;
 
-  //   return (
-  //     <Mutation 
-  //       mutation={RELOAD_BALANCE}
-  //       refetchQueries={() => {
-  //         return [{
-  //           query: GET_CURRENT_USER,
-  //         }];
-  //       }}
-  //     >
-  //       {reloadBalance => (
-  //         <Button 
-  //           transparent 
-  //           block 
-  //           primary
-  //           large
-  //           style={PaymentManagerStyles.actionBtn}
-  //           onPress={() => reloadBalance({
-  //             variables: {
-  //               customerId: currentUser.billing.stripeCustomer.id,
-  //               amount: amountValue.rawValue,
-  //               // TODO: this should be the customers id
-  //               sourceToken: this.state.token,
-  //             }
-  //           })}
-  //         >
-  //           <Text>Confirm Reload</Text>
-  //         </Button>
-  //       )}
-  //     </Mutation>
-  //   )
-  // }
+    return (
+      <Mutation 
+        mutation={RELOAD_BALANCE}
+        refetchQueries={() => {
+          return [{query: GET_CURRENT_USER}];
+        }}
+      >
+        {reloadBalance => (
+          <Button 
+            transparent 
+            block 
+            primary
+            large
+            style={PaymentManagerStyles.actionBtn}
+            onPress={() => reloadBalance({
+              variables: {
+                amount: amountValue,
+              }
+            })}
+          >
+            <Text>Confirm Reload</Text>
+          </Button>
+        )}
+      </Mutation>
+    )
+  }
 
   getAmountField = () => {
     return (
-      <Form>
-        <Picker
-          mode="dropdown"
-          style={{ width: 120 }}
-          selectedValue={this.state.amountValue}
-          iosIcon={<Icon name="ios-arrow-down-outline" />}
-          onValueChange={(value) => this.setState({amountValue: value})}
-        >
-          <Picker.Item label="$20" value={20} />
-          <Picker.Item label="$30" value={30} />
-          <Picker.Item label="$40" value={40} />
-        </Picker>
-      </Form>
+      <Picker
+        mode="dropdown"
+        style={{ width: screenWidth-20 }}
+        selectedValue={this.state.amountValue}
+        iosIcon={<Icon name="ios-arrow-down-outline" />}
+        onValueChange={(value) => this.setState({amountValue: value})}
+      >
+        <Picker.Item label="$20" value={20} />
+        <Picker.Item label="$30" value={30} />
+        <Picker.Item label="$40" value={40} />
+      </Picker>
     )
   }
 
   getAutoReloadField = () => {
     const { autoReloadValue } = this.state;
     return (
-      <ListItem>
+      <ListItem icon style={PaymentManagerStyles.autoReload}>
         <Left>
-          <Text>Auto reload</Text>
+          {/* <Button style={{ backgroundColor: "#FF9501" }}>
+            <Icon active name="plane" />
+          </Button> */}
+          <Text>Auto Reload</Text>
         </Left>
+        <Body>
+          {/* <Text>Airplane Mode</Text> */}
+        </Body>
         <Right>
           <Switch 
             onValueChange={(val) => this.setState({autoReloadValue: !autoReloadValue})} 
@@ -384,10 +386,17 @@ class PaymentManager extends React.Component {
 }
 
 const RELOAD_BALANCE = gql`
-  mutation reloadBalance($customerId: String!, $amount: Number, $payingWithSourceId: String!) {
-    reloadBalance(customerId: $customerId, amount: $amount, payingWithSourceId: $payingWithSourceId) {
+  mutation reloadBalance($amount: Number) {
+    reloadBalance(amount: $amount) {
       _id,
-      payment
+      email,
+      billing {
+        balance,
+        stripeCustomer {
+          id
+          default_source
+        }
+      }
     }
   }
 `

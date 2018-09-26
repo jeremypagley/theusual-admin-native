@@ -13,12 +13,16 @@ const Styles = StyleSheet.create({
 
   cardItem: {
     borderBottomWidth: 1,
-    borderBottomColor: Colors.Grey
+    borderBottomColor: Colors.Grey,
   },
 
   cardItemSelected: {
     borderBottomWidth: 1,
     borderBottomColor: Colors.Green
+  },
+
+  itemBody: {
+    alignItems: 'center',
   },
 
   cardItemTitleSelected: {
@@ -33,9 +37,22 @@ const Styles = StyleSheet.create({
     paddingBottom: 6
   },
 
+  cardItemTitleColor: {
+    paddingBottom: 6,
+    color: Colors.Green,
+    textAlign: 'center',
+    fontSize: 28,
+  },
+
+  cardItemSubTitle: {
+    color: Colors.LightGrey,
+    fontSize: 20,
+    textAlign: 'center'
+  },
+
   cardItemIconTitle: {
-    paddingLeft: 8    
-  }
+    paddingLeft: 8   
+  },
 });
 
 export default Styles;
