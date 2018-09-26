@@ -16,6 +16,15 @@ const Styles = StyleSheet.create({
     borderBottomColor: Colors.Grey
   },
 
+  cardItemSelected: {
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.Green
+  },
+
+  cardItemTitleSelected: {
+    color: Colors.Green,
+  },
+
   cardItemTitle: {
     paddingBottom: 6
   },

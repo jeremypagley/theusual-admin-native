@@ -62,29 +62,30 @@ class PaymentManager extends React.Component {
     });
   }
 
-  handleCardPayPress = async () => {
+  handleCardPayPress = async (cardHandler) => {
     try {
       this.setState({ loading: true, token: null });
       const token = await Stripe.paymentRequestWithCardFormAsync({
         // Only iOS support this options
-        smsAutofillDisabled: true,
+        smsAutofillDisabled: false,
         requiredBillingAddressFields: 'full',
         // prefilledInformation: {
         //   billingAddress: {
-        //     name: 'Gunilla Haugeh',
-        //     line1: 'Canary Place',
-        //     line2: '3',
-        //     city: 'Macon',
-        //     state: 'Georgia',
-        //     country: 'US',
-        //     postalCode: '31217',
-        //     email: 'ghaugeh0@printfriendly.com',
+        //     name: 'Jeremy K Pagley',
+        //     line1: '777 North Orange Ave',
+        //     line2: '412',
+        //     city: 'Orlando',
+        //     state: 'FL',
+        //     country: 'United States',
+        //     postalCode: '32801',
+        //     email: 'jeremyjkp@gmail.com',
         //   },
         // },
       });
 
       this.setState({ loading: false, token });
-      this.props.handleCardPayPress(token);
+      cardHandler({variables: { token: token.tokenId }});
+      
     } catch (error) {
       this.setState({ loading: false });
     }
@@ -93,6 +94,9 @@ class PaymentManager extends React.Component {
   render() {
     let open = this.state.open;
     const { currentUser } = this.props.data;
+    if (!currentUser) return null;
+
+    const hasBilling = currentUser.billing;
 
     return (
       <View>
@@ -104,7 +108,12 @@ class PaymentManager extends React.Component {
           style={PaymentManagerStyles.actionBtn}
           onPress={() => this.toggleModal()}
         >
-          <Text>Reload</Text>
+          <Text>
+            {hasBilling 
+              ? 'Reload' 
+              : 'Add a payment method'
+            }
+          </Text>
         </Button>
 
 
@@ -131,6 +140,8 @@ class PaymentManager extends React.Component {
     const { creditCardLoading, applePayLoading } = this.state;
     if (!currentUser) return;
 
+    const hasBilling = currentUser.billing; 
+
     return (
       <Container style={ContainerStyles.container}>
         <Header style={ContainerStyles.header}>
@@ -155,116 +166,150 @@ class PaymentManager extends React.Component {
                   <Text>ACTIVE PAYMENT METHODS</Text>
                 </ListItem>
                 <Card style={CardListStyles.card}>
-                  {this.getActivePaymentItems()}
+                  {hasBilling ? this.getActivePaymentItems() : null}
 
-                  <CardItem 
-                    button 
-                    onPress={() => this.onAddActivePaymentItemPress('creditCard')} 
-                    key={'creditcard'} 
-                    style={CardListStyles.cardItem}
-                    {...testID('cardFormButton')}
+                  <Mutation
+                    mutation={CREATE_PAYMENT_METHOD}
+                    refetchQueries={() => {
+                      return [{
+                        query: GET_CURRENT_USER,
+                      }];
+                    }}
                   >
-                    <Left>
-                      <Icon name="md-add" />
-                      {creditCardLoading 
-                        ? <ActivityIndicator size="small" color="#00ff00" />
-                        : <Text style={CardListStyles.cardItemIconTitle}>
-                            Add a credit card
-                          </Text>
-                      }
-                    </Left>
-                  </CardItem>
+                    {createPaymentMethod => (
+                      <View>
+                        <CardItem 
+                          button 
+                          onPress={() => this.onAddActivePaymentItemPress('creditCard', createPaymentMethod)} 
+                          key={'creditcard'} 
+                          style={CardListStyles.cardItem}
+                          {...testID('cardFormButton')}
+                        >
+                          <Left>
+                            <Icon name="md-add" />
+                            {creditCardLoading 
+                              ? <ActivityIndicator size="small" color="#00ff00" />
+                              : <Text style={CardListStyles.cardItemIconTitle}>
+                                  Add a credit card
+                                </Text>
+                            }
+                          </Left>
+                        </CardItem>
 
-                  <CardItem 
-                    button 
-                    onPress={() => this.onAddActivePaymentItemPress('applePay')} 
-                    key={'applepay'} 
-                    style={CardListStyles.cardItem} 
-                    {...testID('cardFormButton')}
-                  >
-                    <Left>
-                      <Icon name="md-add" />
-                      {creditCardLoading 
-                        ? <ActivityIndicator size="small" color="#00ff00" />
-                        : <Text style={CardListStyles.cardItemIconTitle}>
-                            Add Apple Pay
-                          </Text>
-                      }
-                    </Left>
-                  </CardItem>
+                        <CardItem 
+                          button 
+                          onPress={() => this.onAddActivePaymentItemPress('applePay')} 
+                          key={'applepay'} 
+                          style={CardListStyles.cardItem} 
+                          {...testID('cardFormButton')}
+                        >
+                          <Left>
+                            <Icon name="md-add" />
+                            {creditCardLoading 
+                              ? <ActivityIndicator size="small" color="#00ff00" />
+                              : <Text style={CardListStyles.cardItemIconTitle}>
+                                  Add Apple Pay
+                                </Text>
+                            }
+                          </Left>
+                        </CardItem>
+                      </View>
+                    )}
+                  </Mutation>
                 </Card>
               </List>
             </Content>
           </Row>
 
-          <Row size={5}>
-            <Content>
-              <ListItem itemHeader first style={CardListStyles.listItem}>
-                <Text>MANAGE BALANCE</Text>
-              </ListItem>
-              <Card style={CardListStyles.card}>
-                <CardItem style={CardListStyles.cardItem}>
-                  <Body>
-                    <H1 style={CardListStyles.cardItemTitle}>{/*currentUser.payment.balance*/}$20.00</H1>
-                    <H3 style={CardListStyles.cardItemTitle}>My balance</H3>
-                  </Body>
-                </CardItem>
+          {hasBilling
+            ? <Row size={5}>
+                <Content>
+                  <ListItem itemHeader first style={CardListStyles.listItem}>
+                    <Text>MANAGE BALANCE</Text>
+                  </ListItem>
+                  <Card style={CardListStyles.card}>
+                    <CardItem style={CardListStyles.cardItem}>
+                      <Body>
+                        <H1 style={CardListStyles.cardItemTitle}>{/*currentUser.payment.balance*/}$20.00</H1>
+                        <H3 style={CardListStyles.cardItemTitle}>My balance</H3>
+                      </Body>
+                    </CardItem>
 
-                <CardItem style={CardListStyles.cardItem}>
-                  <Body>
-                    {this.getAmountField()}
-                  </Body>
-                </CardItem>
+                    <CardItem style={CardListStyles.cardItem}>
+                      <Body>
+                        {this.getAmountField()}
+                      </Body>
+                    </CardItem>
 
-                <CardItem style={CardListStyles.cardItem}>
-                  <Body>
-                    {this.getAutoReloadField()}
-                  </Body>
-                </CardItem>
-              </Card>
-            </Content>
-          </Row>
+                    <CardItem style={CardListStyles.cardItem}>
+                      <Body>
+                        {this.getAutoReloadField()}
+                      </Body>
+                    </CardItem>
+                  </Card>
+                </Content>
+              </Row>
+            : null
+          }
+          
         </Grid>
       </Container>
     );
   }
 
   getActivePaymentItems = () => {
-    const { search } = this.state;
-    let data = {}
-    // will be currentUser.billing.sources
-    data.sources = [{_id: 'fake payment', title: 'fake payment'}]
+    return (
+      <Query query={GET_PAYMENT_METHODS}>
+        {({ loading, error, data }) => {
+          console.log('GET_PAYMENT_METHODS error: ', error)
+          console.log('GET_PAYMENT_METHODS data: ', data)
+          if (loading) return <Text key="loading">Loading...</Text>;
+          if (error) return <Text key="error">Error :(</Text>;
 
-    return data.sources.map((source) => {
-      return (
-        <Mutation 
-          mutation={RELOAD_FUNDS}
-          refetchQueries={() => {
-            return [{
-              query: GET_CURRENT_USER,
-            }];
-          }}
-        >
-          {updateDefaultPaymentMethod => (
-            <CardItem 
-              button 
-              onPress={() => this.onActivePaymentItemPress(source, updateDefaultPaymentMethod)} 
-              key={source._id} 
-              style={CardListStyles.cardItem}
-            >
-              <Body>
-                <Label style={CardListStyles.cardItemTitle}>{source.title}</Label>
-              </Body>
-            </CardItem>
-          )}
-        </Mutation>
-      );
-    });
+          return data.paymentMethods.map(source => {
+            const isSelected = this.state.selectedPaymentMethod === source.id;
+            console.log('source: ', source)
+
+            return (
+              <Mutation
+                key={source.id}
+                mutation={RELOAD_BALANCE}
+                refetchQueries={() => {
+                  return [{
+                    query: GET_CURRENT_USER,
+                  }];
+                }}
+              >
+                {updateDefaultPaymentMethod => (
+                  <CardItem
+                    key={source.id}
+                    button 
+                    onPress={() => this.onActivePaymentItemPress(source, updateDefaultPaymentMethod)} 
+                    key={source._id} 
+                    style={[CardListStyles.cardItem, isSelected ? CardListStyles.cardItemSelected : {}]}
+                  >
+                    <Body>
+                      <Text 
+                        style={[CardListStyles.cardItemTitle, isSelected ? CardListStyles.cardItemTitleSelected : {}]}
+                      >
+                        XXXX XXXX XXXX {source.last4}
+                      </Text>
+                    </Body>
+                  </CardItem>
+                )}
+              </Mutation>
+            )
+          })
+        }}
+      </Query>
+    )
   }
 
-  onAddActivePaymentItemPress = (type) => {
+
+
+  onAddActivePaymentItemPress = (type, cardHandler) => {
     if (type === 'creditCard') {
-      return this.handleCardPayPress();
+      return this.handleCardPayPress(cardHandler);
     } else if (type === 'applePay') {
       console.log('TODO....')
     }
@@ -272,7 +317,7 @@ class PaymentManager extends React.Component {
 
   onActivePaymentItemPress = (source, updateDefaultPaymentMethod) => {
 
-
+    this.setState({ selectedPaymentMethod: source.id });
     // TODO: add updateDefaultPaymentMethod with mutation
     console.log('TODO: Swap default source to selected source')
   }
@@ -282,7 +327,7 @@ class PaymentManager extends React.Component {
 
     return (
       <Mutation 
-        mutation={RELOAD_FUNDS}
+        mutation={RELOAD_BALANCE}
         refetchQueries={() => {
           return [{
             query: GET_CURRENT_USER,
@@ -348,13 +393,35 @@ class PaymentManager extends React.Component {
   }
 }
 
-const RELOAD_FUNDS = gql`
+const RELOAD_BALANCE = gql`
   mutation reloadBalance($customerId: String!, $amount: Number, $payingWithSourceId: String!) {
     reloadBalance(customerId: $customerId, amount: $amount, payingWithSourceId: $payingWithSourceId) {
       _id,
       payment
     }
   }
+`
+
+const CREATE_PAYMENT_METHOD = gql`
+  mutation createPaymentMethod($token: String!) {
+    createPaymentMethod(token: $token) {
+      _id,
+      email,
+      billing {
+        balance,
+        stripeCustomerId
+      }
+    }
+  }
+`
+
+const GET_PAYMENT_METHODS = gql`
+{
+  paymentMethods {
+    id
+    last4
+  }
+}
 `
 
 export default graphql(
@@ -364,6 +431,10 @@ export default graphql(
         _id
         email
         order
+        billing {
+          balance
+          stripeCustomerId
+        }
       }
     }
   `

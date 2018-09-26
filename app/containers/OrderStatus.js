@@ -79,6 +79,8 @@ class OrderStatus extends React.Component {
     const { currentUser } = this.props.data;
     if (!currentUser) return;
 
+    const hasBilling = currentUser.billing;
+
     const noOrderItems = items.length < 1;
     
     return (
@@ -92,7 +94,7 @@ class OrderStatus extends React.Component {
         <ScrollView>
           {this.getOrderProducts(items, noOrderItems)}
 
-          {!noOrderItems ?
+          {!noOrderItems && hasBilling ?
           <View style={OrderStatusStyles.actionBtnWrapper}>
             <Mutation 
               mutation={CONFIRM_ORDER}
@@ -114,7 +116,7 @@ class OrderStatus extends React.Component {
                     this.setState({ open: false });
                   }}
                 >
-                  {currentUser.stripeCustomerId ? <Text>Confirm order</Text> : this.getAddPayment()}
+                  <Text>Confirm order</Text>
                 </Button>
               )}
             </Mutation>
