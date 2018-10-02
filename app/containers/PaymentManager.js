@@ -36,6 +36,8 @@ import { ActivityIndicator, Platform } from 'react-native';
 import { PaymentsStripe as Stripe } from 'expo-payments-stripe';
 import CardListStyles from 'app/styles/generic/CardListStyles';
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
+import Money from 'app/utils/money';
+
 const screenWidth = Dimensions.get('window').width;
 
 function testID(id) {
@@ -50,7 +52,7 @@ class PaymentManager extends React.Component {
       open: false,
       token: '',
       selectedPaymentMethod: null,
-      amountValue: 20,
+      amountValue: 20.0,
       autoReloadValue: false,
       token: '',
       creditCardLoading: false,
@@ -98,7 +100,6 @@ class PaymentManager extends React.Component {
 
     if (!currentUser) return null;
 
-
     const hasBilling = currentUser.billing;
 
     return (
@@ -143,7 +144,11 @@ class PaymentManager extends React.Component {
     const { creditCardLoading, applePayLoading } = this.state;
     if (!currentUser) return null;
 
-    const hasBilling = currentUser.billing; 
+    console.log('currentUser: ', currentUser.billing)
+
+    const hasBilling = currentUser.billing;
+
+    const balance = hasBilling ? Money.centsToUSD(currentUser.billing.balance) : null;
 
     return (
       <Container style={ContainerStyles.container}>
@@ -231,7 +236,7 @@ class PaymentManager extends React.Component {
                   <Card style={CardListStyles.card}>
                     <CardItem style={CardListStyles.cardItem}>
                       <Body style={CardListStyles.itemBody}>
-                        <Text style={CardListStyles.cardItemTitleColor}>${currentUser.billing.balance}</Text>
+                        <Text style={CardListStyles.cardItemTitleColor}>{balance}</Text>
                         <Text style={CardListStyles.cardItemSubTitle}>My balance</Text>
                       </Body>
                     </CardItem>
@@ -316,7 +321,6 @@ class PaymentManager extends React.Component {
 
   getReloadAction = () => {
     const { amountValue } = this.state;
-    const { currentUser } = this.props.data;
 
     return (
       <Mutation 
@@ -325,22 +329,24 @@ class PaymentManager extends React.Component {
           return [{query: GET_CURRENT_USER}];
         }}
       >
-        {reloadBalance => (
-          <Button 
-            transparent 
-            block 
-            primary
-            large
-            style={PaymentManagerStyles.actionBtn}
-            onPress={() => reloadBalance({
-              variables: {
-                amount: amountValue,
-              }
-            })}
-          >
-            <Text>Confirm Reload</Text>
-          </Button>
-        )}
+        {(reloadBalance, { data, loading, error }) => {
+          return (
+            <Button 
+              transparent 
+              block 
+              primary
+              large
+              style={PaymentManagerStyles.actionBtn}
+              onPress={() => reloadBalance({
+                variables: {
+                  amount: amountValue,
+                }
+              })}
+            >
+              <Text>Confirm Reload</Text>
+            </Button>
+          )
+        }}
       </Mutation>
     )
   }
@@ -354,9 +360,9 @@ class PaymentManager extends React.Component {
         iosIcon={<Icon name="ios-arrow-down-outline" />}
         onValueChange={(value) => this.setState({amountValue: value})}
       >
-        <Picker.Item label="$20" value={20} />
-        <Picker.Item label="$30" value={30} />
-        <Picker.Item label="$40" value={40} />
+        <Picker.Item label="$20" value={20.0} />
+        <Picker.Item label="$30" value={30.0} />
+        <Picker.Item label="$40" value={40.0} />
       </Picker>
     )
   }
@@ -386,7 +392,7 @@ class PaymentManager extends React.Component {
 }
 
 const RELOAD_BALANCE = gql`
-  mutation reloadBalance($amount: Number) {
+  mutation reloadBalance($amount: Float!) {
     reloadBalance(amount: $amount) {
       _id,
       email,

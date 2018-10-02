@@ -20,6 +20,7 @@ import GET_ORDER from 'app/graphql/query/getOrder';
 import GET_CURRENT_USER from 'app/graphql/query/getCurrentUser';
 import PaymentManager from 'app/containers/PaymentManager';
 import CardForm from 'app/components/stripe/CardForm';
+import Money from 'app/utils/money';
 
 class OrderStatus extends React.Component {
   constructor(props) {
@@ -81,6 +82,8 @@ class OrderStatus extends React.Component {
 
     const hasBilling = currentUser.billing;
     const noOrderItems = items.length < 1;
+
+    const balance = Money.centsToUSD(currentUser.billing.balance);
     
     return (
       <View style={OrderStatusStyles.modalContent}>
@@ -88,7 +91,7 @@ class OrderStatus extends React.Component {
           <Ionicons name="ios-arrow-down" size={60} color="lightgrey" />
         </View>
         <H1 style={OrderStatusStyles.title}>Review Order</H1>
-        <H3 style={OrderStatusStyles.title}>Current balance: TODO</H3>
+        {hasBilling ? <H3 style={OrderStatusStyles.title}>balance: {balance}</H3> : null}
 
         <ScrollView>
           {this.getOrderProducts(items, noOrderItems)}
@@ -245,6 +248,9 @@ export default graphql(
         _id
         email
         order
+        billing {
+          balance
+        }
       }
     }
   `

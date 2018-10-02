@@ -6,6 +6,13 @@ const GET_CURRENT_USER = gql`
       _id,
       email,
       order,
+      billing {
+        balance,
+        stripeCustomer {
+          id
+          default_source
+        }
+      }
       usuals {
         _id,
         deleted,
