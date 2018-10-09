@@ -28,7 +28,8 @@ class OrderStatus extends React.Component {
     
     this.state = {
       open: false,
-      token: ''
+      token: '',
+      errorInsufficientFunds: false
     }
   }
 
@@ -84,7 +85,8 @@ class OrderStatus extends React.Component {
     const noOrderItems = items.length < 1;
 
     const balance = Money.centsToUSD(currentUser.billing.balance);
-    
+    const insufficientFunds = this.getCombinedPricesInCents(items) > currentUser.billing.balance;
+
     return (
       <View style={OrderStatusStyles.modalContent}>
         <View style={OrderStatusStyles.closeIconWrapper}>
@@ -96,7 +98,7 @@ class OrderStatus extends React.Component {
         <ScrollView>
           {this.getOrderProducts(items, noOrderItems)}
 
-          {!noOrderItems && hasBilling ?
+          {!noOrderItems && hasBilling && !insufficientFunds ?
           <View style={OrderStatusStyles.actionBtnWrapper}>
             <Mutation 
               mutation={CONFIRM_ORDER}
@@ -124,6 +126,7 @@ class OrderStatus extends React.Component {
             </Mutation>
           </View>
           : null}
+          {insufficientFunds ? this.getInsufficientFunds() : null}
           
           {!noOrderItems ?
           <View style={OrderStatusStyles.actionBtnWrapper}>
@@ -159,10 +162,18 @@ class OrderStatus extends React.Component {
     );
   }
 
+  getInsufficientFunds = () => {
+    return (
+      <View style={OrderStatusStyles.noItemsWrapper}>
+        <Text style={OrderStatusStyles.title}>Not enough funds 😕 Reload to finish your order.</Text>
+      </View>
+    );
+  }
+
   getAddPayment = () => {
     return (
       <CardForm handleCardPayPress={token => this.setState({token: token})} />
-    )
+    );
   }
 
   getOrderProducts = (items, noOrderItems) => {
@@ -204,6 +215,19 @@ class OrderStatus extends React.Component {
         </View>
       )
     });
+  }
+
+  getCombinedPricesInCents = (items) => {
+    if (!items) return;
+
+    let totalPrice = 0;
+    items.forEach(item => {
+      totalPrice += this.getCombinedPrices(item);
+    });
+
+    let adjustedTotal = totalPrice * 100;
+
+    return adjustedTotal;
   }
 
   getCombinedPrices = (item) => {
