@@ -1,3 +1,4 @@
+import React from 'react';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
 import Cart from 'app/scenes/Profile';
@@ -8,22 +9,31 @@ import Products from 'app/scenes/Products';
 import Product from 'app/scenes/Product';
 import Usuals from 'app/scenes/Usuals';
 import { Icon } from 'native-base';
-
 import Colors from 'app/styles/Colors';
 
-import React from 'react';
-import { Text } from 'native-base';
+const reusableNavOptions = {
+  navigationOptions: ({ navigation }) => ({
+    headerStyle: {
+      backgroundColor: Colors.BrandRed,
+      borderBottomWidth: 0,
+    },
+    headerTintColor: Colors.White,
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    },
+  })
+}
 
 const UsualsStack = createStackNavigator({
   Usuals: { screen: Usuals },
-});
+}, reusableNavOptions);
 
 const StoresStack = createStackNavigator({
   Order: { screen: Order },
   Store: { screen: Store },
   Products: { screen: Products },
   Product: { screen: Product },
-});
+}, reusableNavOptions);
 
 const AppStack = createBottomTabNavigator({
   Usuals: UsualsStack,
@@ -34,10 +44,17 @@ const AppStack = createBottomTabNavigator({
 {
   headerMode: 'float',
   navigationOptions: ({ navigation }) => ({
+    headerStyle: {
+      backgroundColor: Colors.BrandRed,
+    },
+    headerTintColor: Colors.White,
+    headerTitleStyle: {
+      fontWeight: 'bold',
+    },
     tabBarOptions: {
       activeTintColor: Colors.BrandRed,
       inactiveTintColor: Colors.BrandBlueGrey,
-      showLabel: false
+      // showLabel: false
     },
     tabBarIcon: ({ focused, tintColor }) => {
       const { routeName } = navigation.state;

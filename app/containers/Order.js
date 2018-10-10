@@ -1,28 +1,20 @@
 import React from 'react';
 import { 
   Container,
-  Text,
-  List,
-  ListItem,
   Content,
   Header,
-  Body,
-  Form,
-  Input,
+  Icon,
   Item,
-  Label,
-  H1,
-  H3,
-  Card, 
-  CardItem,
+  Input,
+  Text,
 } from 'native-base';
-import { Col, Row, Grid } from 'react-native-easy-grid';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
+import CardList from 'app/components/CardList';
 
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
-import CardListStyles from 'app/styles/generic/CardListStyles';
-import CardInputStyles from 'app/styles/generic/CardInputStyles';
+import InputStyles from 'app/styles/generic/InputStyles';
+import Colors from 'app/styles/Colors';
 
 class Order extends React.Component {
   constructor(props) {
@@ -52,14 +44,7 @@ class Order extends React.Component {
 
     return (
       <Container style={ContainerStyles.container}>
-        <Header style={ContainerStyles.header}>
-          <Body>
-            <H1>Order from:</H1>
-          </Body>
-        </Header>
-
-        <Grid>
-          <Row size={1}>
+          {/* <Row size={1}>
             <Col>
               <Card style={CardInputStyles.card}>
                 <CardItem style={CardInputStyles.cardItem}>
@@ -79,36 +64,44 @@ class Order extends React.Component {
                 </CardItem>
               </Card>
             </Col>
-          </Row>
-          <Row size={6}>
-            <Content>
-              <Query query={StoresQuery}>
-                {({ loading, error, data }) => {
-                  if (loading) return <Text key="loading">Loading...</Text>;
-                  if (error) return <Text key="error">Error :(</Text>;
+          </Row> */}
+        <Header searchBar rounded style={ContainerStyles.header}>
+          <Item style={InputStyles.searchInput}>
+            <Icon name="md-search" style={{color: Colors.BrandBlack}} />
+            <Input
+              clearButtonMode="always"
+              value={search}
+              placeholder="Search"
+              onChangeText={(text) => this.setState({ search: text })}
+              placeholderTextColor={Colors.BrandDarkGrey}
+            />
+            <Icon name="md-pin" style={{color: Colors.BrandBlack}} />
+          </Item>
+        </Header>
+        <Content padder>
+          <Query query={StoresQuery}>
+            {({ loading, error, data }) => {
+              if (loading) return <Text key="loading">Loading...</Text>;
+              if (error) return <Text key="error">Error :(</Text>;
 
-                  return (
-                    <List>
-                      <ListItem itemHeader first style={CardListStyles.listItem}>
-                        <Text>LOCATIONS</Text>
-                      </ListItem>
-                      <Card style={CardListStyles.card}>
-                        {this.getListItems(data)}
-                      </Card>
-                    </List>
-                  )
-                }}
-              </Query>
-            </Content>
-          </Row>
-        </Grid>
+              return (
+                <CardList
+                  data={this.getListData(data)}
+                  handleItemPress={(item) => this.onItemPress(item, data.stores)}
+                  title="Found"
+                  loading={loading}
+                />
+              )
+            }}
+          </Query>
+        </Content>
 
        
       </Container>
     );
   }
 
-  getListItems = (data) => {
+  getListData = (data) => {
     const { search } = this.state;
 
     if (search !== '') {
@@ -120,21 +113,18 @@ class Order extends React.Component {
     return data.stores.map((store) => {
       // Temp fix for when navigating to another stack calls this query but server doesnt return all values?
       if (!store.location) return null;
-      return (
-        <CardItem button onPress={() => this.onItemPress(store)} key={store._id} style={CardListStyles.cardItem}>
-          <Body>
-            <H3 style={CardListStyles.cardItemTitle}>{store.title}</H3>
-            <Text note>{store.location.address}</Text>
-          </Body>
-        </CardItem>
-      )
+      return {
+        _id: store._id,
+        title: store.title,
+        subtitle: store.location.address
+      }
     })
   }
 
-  onItemPress = (data) => {
-    console.log(data)
+  onItemPress = (item, stores) => {
+    const store = stores.find(s => s._id === item._id);
     const { navigation } = this.props;
-    navigation.navigate('Store', {store: data});
+    navigation.navigate('Store', { store });
   }
 
 }

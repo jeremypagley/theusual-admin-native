@@ -1,18 +1,9 @@
 import React from 'react';
 import { 
-  Text,
-  Button,
-  Card,
-  CardItem,
-  Body,
-  Right,
   Container,
-  Header,
-  H1,
-  H3
+  Content,
 } from 'native-base';
-import { Col, Row, Grid } from 'react-native-easy-grid';
-import { View, ScrollView, Dimensions } from 'react-native';
+import { ScrollView } from 'react-native';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
@@ -22,8 +13,6 @@ import GET_CURRENT_USER from 'app/graphql/query/getCurrentUser';
 import ExpandableCard from 'app/components/ExpandableCard';
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
 
-const screenWidth = Dimensions.get('window').width;
-
 class UsualsContainer extends React.Component {
 
   render() {
@@ -32,36 +21,25 @@ class UsualsContainer extends React.Component {
 
     return (
       <Container style={ContainerStyles.container}>
-        <Header style={ContainerStyles.header}>
-          {/* 
-          Use this to let align the title, still need a back arrow
-          <View style={{width: screenWidth, alignSelf: 'flex-start', marginLeft: 30}}>
-            <H1 style={{textAlign: 'left'}}>Usuals</H1>
-          </View> */}
-          <Body>
-            <H1>Usuals</H1>
-          </Body>
-        </Header>
-
-        <ScrollView style={ContainerStyles.innerContainer}>
+        <Content padder>
           <Mutation 
             mutation={ADD_ORDER_BY_ID}
             refetchQueries={() => {
               return [{
-                 query: GET_ORDER,
+                query: GET_ORDER,
               }];
             }}
           >
             {(createOrderByUsualId, { data }) => (
               <Mutation 
-               mutation={REMOVE_USUAL_BY_ID}
-               refetchQueries={() => {
-                 return [{
+              mutation={REMOVE_USUAL_BY_ID}
+              refetchQueries={() => {
+                return [{
                     query: GET_CURRENT_USER,
-                 }];
-               }}
+                }];
+              }}
               >
-               {(removeUsualById, { data }) => {
+              {(removeUsualById, { data }) => {
                   return currentUser.usuals.map(usual => {
                     if (usual.deleted) return null;
                     return this.getUsualCard(usual, createOrderByUsualId, removeUsualById);
@@ -70,7 +48,7 @@ class UsualsContainer extends React.Component {
               </Mutation>
             )}
           </Mutation>
-        </ScrollView>
+        </Content>
       </Container>
     );
   }
@@ -84,16 +62,15 @@ class UsualsContainer extends React.Component {
     });
 
     return (
-      <View key={usual._id}>
-        <ExpandableCard 
-          title={usual.store.location.address}
-          actionTitle="Add order"
-          items={items}
-          removable
-          removableOnPress={() => removeUsualById({variables: {id: usual._id}})}
-          onActionPress={() => createOrderByUsualId({variables: {id: usual._id}})}
-        />
-      </View>
+      <ExpandableCard 
+        key={usual._id}
+        title={usual.store.location.address}
+        actionTitle="Add order"
+        items={items}
+        removable
+        removableOnPress={() => removeUsualById({variables: {id: usual._id}})}
+        onActionPress={() => createOrderByUsualId({variables: {id: usual._id}})}
+      />
     )
   }
 
