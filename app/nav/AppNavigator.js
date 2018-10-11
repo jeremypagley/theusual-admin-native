@@ -1,7 +1,7 @@
 import React from 'react';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
-import Cart from 'app/scenes/Profile';
+import Cart from 'app/scenes/Cart';
 import Settings from 'app/scenes/Profile';
 import Order from 'app/scenes/Order';
 import Store from 'app/scenes/Store';

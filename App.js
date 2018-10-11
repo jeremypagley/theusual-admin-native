@@ -143,7 +143,7 @@ export default class App extends Component {
           ? (
               <View style={{flex: 1}}>
                 <AppNavigator screenProps={{ changeLoginState: this.handleChangeLoginState }} />
-                <OrderStatus />
+                {/* <OrderStatus /> */}
               </View>
             )
           : (
