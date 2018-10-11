@@ -17,7 +17,6 @@ import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 import OrderStatusStyles from 'app/styles/OrderStatusStyles';
-import Colors from 'app/styles/Colors';
 import ExpandableCard from 'app/components/ExpandableCard';
 import GET_ORDER from 'app/graphql/query/getOrder';
 import GET_CURRENT_USER from 'app/graphql/query/getCurrentUser';
@@ -81,7 +80,7 @@ class OrderStatus extends React.Component {
             </Card>
           </View>
           
-          <Text style={TypographyStyles.noteBold}>Added products</Text>
+          <Text style={[TypographyStyles.noteBold, {marginLeft: 15}]}>Added products</Text>
           <Query query={GET_ORDER}>
             {({ loading, error, data }) => {
               if (error) return <View><Text>Error</Text></View>;

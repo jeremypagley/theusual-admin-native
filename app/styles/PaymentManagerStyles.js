@@ -4,7 +4,7 @@ import Colors from 'app/styles/Colors';
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
-const marginTopOffset = 400;
+const marginTopOffset = 300;
 const contentHeight = screenHeight-marginTopOffset;
 
 const Styles = StyleSheet.create({

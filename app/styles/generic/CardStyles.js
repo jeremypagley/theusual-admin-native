@@ -20,10 +20,12 @@ const Styles = StyleSheet.create({
     marginTop: 12
   },
   itemFooter: {
-    paddingBottom: 15
+    paddingTop: 0,
+    paddingBottom: 10
   },
   itemHeader: {
-    paddingBottom: 5
+    paddingTop: 10,
+    paddingBottom: 0
   },
   itemButtonTitle: {
     color: Colors.BrandRed,
@@ -38,7 +40,13 @@ const Styles = StyleSheet.create({
     borderWidth: 0,
     borderBottomWidth: 1, 
     borderBottomColor: Colors.BrandGrey
-  }
+  },
+
+
+  cardListItemSelected: {
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.BrandRed
+  },
 });
 
 export default Styles;

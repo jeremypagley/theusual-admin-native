@@ -45,9 +45,8 @@ class ExpandableCard extends React.Component {
         <Card transparent>
           {title && removable ? 
           <CardItem header style={CardStyles.itemHeader}>
-            <Left>
-              <Text style={TypographyStyles.noteTitle}>{title}</Text>
-            </Left>
+            <Text style={TypographyStyles.noteTitle}>{title}</Text>
+            <Left />
             {removable ?
             <Right>
               <Icon name="md-close" style={{fontSize: 30, color: Colors.BrandGrey}} onPress={removableOnPress} />
@@ -59,16 +58,14 @@ class ExpandableCard extends React.Component {
           {items.map((item, index) => {
             return (
               <CardItem key={item.title}>
-                <Left>
-                  <Body>
-                    <Row>
-                      <H2 style={TypographyStyles.semiBoldH2}>{item.title}</H2>
-                    </Row>
-                    <Row>
-                      {this.getItemOptions(item.options)}
-                    </Row>
-                  </Body>
-                </Left>
+                <Body>
+                  <Row>
+                    <H2 style={TypographyStyles.semiBoldH2}>{item.title}</H2>
+                  </Row>
+                  <Row>
+                    {this.getItemOptions(item.options)}
+                  </Row>
+                </Body>
                 <Right>
                   {removable && !title && index === 0 ? 
                     <Icon name="md-close" style={{fontSize: 30, color: Colors.BrandGrey}} onPress={removableOnPress} />

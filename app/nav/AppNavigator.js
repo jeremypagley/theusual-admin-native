@@ -20,6 +20,7 @@ const reusableNavOptions = {
     headerTintColor: Colors.White,
     headerTitleStyle: {
       fontWeight: 'bold',
+      fontFamily: 'montserrat-bold'
     },
   })
 }

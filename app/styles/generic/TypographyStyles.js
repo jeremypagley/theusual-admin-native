@@ -38,7 +38,7 @@ const Styles = StyleSheet.create({
     fontFamily: 'montserrat-bold'
   },
   noteTitle: {
-    fontSize: 12,
+    fontSize: 14,
     color: Colors.BrandDarkGrey,
     fontFamily: 'montserrat-bold'
   },
@@ -69,6 +69,11 @@ const Styles = StyleSheet.create({
     color: Colors.BrandBlack,
     fontFamily: 'montserrat-regular',
   },
+  listSubItemTitleSelected: {
+    fontSize: 16,
+    color: Colors.BrandRed,
+    fontFamily: 'montserrat-bold',
+  },
   listItemTitleTextAction: {
     color: Colors.BrandDarkGrey,
     fontSize: 16,
@@ -80,7 +85,14 @@ const Styles = StyleSheet.create({
     color: Colors.White,
     fontSize: 16,
     fontFamily: 'montserrat-medium',
-  }
+  },
+
+
+  headerTitle: {
+    fontSize: 17,
+    color: Colors.White,
+    fontFamily: 'montserrat-bold',
+  },
 });
 
 export default Styles;

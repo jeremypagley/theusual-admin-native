@@ -1,5 +1,10 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 import Colors from 'app/styles/Colors';
+const screenWidth = Dimensions.get('window').width;
+const screenHeight = Dimensions.get('window').height;
+
+const marginTopOffset = 60;
+const contentHeight = screenHeight-marginTopOffset;
 
 const Styles = StyleSheet.create({
   container: {
@@ -9,10 +14,6 @@ const Styles = StyleSheet.create({
   header: {
     backgroundColor: Colors.BrandRed,
     paddingTop: 0,
-    // borderWidth: 0,
-    // borderTopWidth: 0,
-    // borderBottomWidth: 0,
-    // shadowOpacity: 0,
   },
 
   content: {
@@ -47,6 +48,37 @@ const Styles = StyleSheet.create({
     marginBottom: 10,
     marginLeft: 10,
   },
+
+
+  modalContainer: {
+    flex: 1,
+    position: 'relative',
+    bottom: 0,
+    alignSelf: "center",
+    width: screenWidth,
+    height: contentHeight
+  },
+
+  modalHeader: {
+    backgroundColor: Colors.BrandRed,
+    paddingTop: 0,
+    borderTopRightRadius: 20, 
+    borderTopLeftRadius: 20
+  },
+
+
+  modalContent: {
+    backgroundColor: Colors.White,
+    height: contentHeight,
+    marginTop: marginTopOffset,
+    borderRadius: 20,
+    borderColor: "rgba(0, 0, 0, 0.1)"
+  },
+
+  modalCloseIcon: {
+    fontSize: 34,
+    color: Colors.White
+  }
 });
 
 export default Styles;

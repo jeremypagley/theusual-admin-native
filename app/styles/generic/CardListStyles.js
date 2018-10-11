@@ -18,7 +18,7 @@ const Styles = StyleSheet.create({
 
   cardItemSelected: {
     borderBottomWidth: 1,
-    borderBottomColor: Colors.Green
+    borderBottomColor: Colors.BrandGreen
   },
 
   itemBody: {
@@ -26,11 +26,11 @@ const Styles = StyleSheet.create({
   },
 
   cardItemTitleSelected: {
-    color: Colors.Green,
+    color: Colors.BrandGreen,
   },
 
   cardItemIconSelected: {
-    color: Colors.Green,
+    color: Colors.BrandGreen,
   },
 
   cardItemTitle: {
@@ -39,7 +39,7 @@ const Styles = StyleSheet.create({
 
   cardItemTitleColor: {
     paddingBottom: 6,
-    color: Colors.Green,
+    color: Colors.BrandGreen,
     textAlign: 'center',
     fontSize: 28,
   },
