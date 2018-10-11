@@ -36,6 +36,7 @@ import { ActivityIndicator, Platform } from 'react-native';
 import { PaymentsStripe as Stripe } from 'expo-payments-stripe';
 import CardListStyles from 'app/styles/generic/CardListStyles';
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
+import CardStyles from 'app/styles/generic/CardStyles';
 import Money from 'app/utils/money';
 
 const screenWidth = Dimensions.get('window').width;
@@ -104,21 +105,22 @@ class PaymentManager extends React.Component {
 
     return (
       <View>
-        <Button 
-          transparent 
-          block 
-          primary
-          large
-          style={PaymentManagerStyles.actionBtn}
-          onPress={() => this.toggleModal()}
+        <CardItem 
+          footer 
+          button 
+          onPress={() => this.toggleModal()} 
+          style={[CardStyles.itemFooter, {backgroundColor: 'transparent', marginTop: -42}]}
         >
-          <Text>
-            {hasBilling 
-              ? 'Reload' 
-              : 'Add a payment method'
-            }
-          </Text>
-        </Button>
+          <Left />
+          <Right>
+            <Text style={CardStyles.itemButtonTitle}>
+              {hasBilling 
+                ? 'Reload' 
+                : 'Add a payment method'
+              }
+            </Text>
+          </Right>
+        </CardItem>
 
 
         <Modal

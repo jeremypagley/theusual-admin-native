@@ -5,159 +5,161 @@ import {
   H1,
   H3,
   Fab,
+  Header,
+  Container,
+  Body,
+  Content,
+  Card,
+  CardItem,
 } from 'native-base';
-import { Col, Row, Grid } from 'react-native-easy-grid';
-import { View, ScrollView } from 'react-native';
+import { View } from 'react-native';
 import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
-import Modal from 'react-native-modal';
 import OrderStatusStyles from 'app/styles/OrderStatusStyles';
 import Colors from 'app/styles/Colors';
-import { Ionicons } from '@expo/vector-icons';
 import ExpandableCard from 'app/components/ExpandableCard';
 import GET_ORDER from 'app/graphql/query/getOrder';
 import GET_CURRENT_USER from 'app/graphql/query/getCurrentUser';
 import PaymentManager from 'app/containers/PaymentManager';
 import CardForm from 'app/components/stripe/CardForm';
 import Money from 'app/utils/money';
+import GradientButton from 'app/components/GradientButton';
+
+import ContainerStyles from 'app/styles/generic/ContainerStyles';
+import CardStyles from 'app/styles/generic/CardStyles';
+import TypographyStyles from 'app/styles/generic/TypographyStyles';
+import ButtonStyles from 'app/styles/generic/ButtonStyles';
 
 class OrderStatus extends React.Component {
   constructor(props) {
     super(props);
     
     this.state = {
-      open: false,
       token: '',
       errorInsufficientFunds: false
     }
   }
 
   render() {
-    let open = this.state.open;
+    const { currentUser } = this.props.data;
+    if (!currentUser) return null;
+
+    const balance = Money.centsToUSD(currentUser.billing.balance);
 
     return (
-      <Query query={GET_ORDER}>
-        {({ loading, error, data }) => {
-          if (error) return <View><Text>Error</Text></View>;
-          let items = [];
+      <Container style={ContainerStyles.container}>
+        <Header style={ContainerStyles.header}></Header>
 
-          if (data.order && data.order.length > 0) {
-            items = data.order[0].items;
-          } else {
-            items = [];
-          }
+        <Content padder style={ContainerStyles.content}>
+          <View style={CardStyles.card}>
+            <Card transparent>
+              <CardItem header style={CardStyles.itemHeader}>
+                <Text style={TypographyStyles.listTitle}>Ordering from {currentUser.order.store.title}</Text>
+              </CardItem>
+              <CardItem>
+                <Body>
+                  <Text style={TypographyStyles.note}>{currentUser.order.store.location.address}</Text>
+                </Body>
+              </CardItem>
+            </Card>
+          </View>
 
-          return (
-            <View style={{position: "absolute", bottom: 80, right: -5}}>
-              <Modal
-                isVisible={open}
-                onSwipe={() => this.setState({ open: false })}
-                swipeDirection="down"
-                style={OrderStatusStyles.container}
-              >
-                <View>{this.renderModalContent(items)}</View>
-              </Modal>
+          <View style={[CardStyles.card, {marginBottom: 40}]}>
+            <Card transparent>
+              <CardItem header style={CardStyles.itemHeader}>
+                <Text style={TypographyStyles.listTitle}>Your balance</Text>
+              </CardItem>
+              <CardItem>
+                <Body>
+                  <Text style={TypographyStyles.noteEmphasize}>{balance}</Text>
+                </Body>
+              </CardItem>
 
-              <Fab
-                containerStyle={{ }}
-                active={false}
-                style={{ backgroundColor: Colors.Brand }}
-                position="bottomRight"
-                onPress={() => this.setState({ open: !this.state.open })}
-              >
-                <Text>{items.length}</Text>
-                <Text>Items</Text>
-              </Fab>
-            </View>
-          )
-        }}
-      </Query>
+              {/*This is a CardItem of type footer */}
+              <PaymentManager />
+            </Card>
+          </View>
+          
+          <Text style={TypographyStyles.noteBold}>Added products</Text>
+          <Query query={GET_ORDER}>
+            {({ loading, error, data }) => {
+              if (error) return <View><Text>Error</Text></View>;
+              let items = [];
+
+              if (data.order && data.order.length > 0) {
+                items = data.order[0].items;
+              } else {
+                items = [];
+              }
+
+              return (<View>{this.renderContent(items)}</View>);
+            }}
+          </Query>
+        </Content>
+      </Container>
     );
 
   }
 
-  renderModalContent = (items) => {
+  renderContent = (items) => {
     const { currentUser } = this.props.data;
     if (!currentUser) return;
 
     const hasBilling = currentUser.billing;
     const noOrderItems = items.length < 1;
 
-    const balance = Money.centsToUSD(currentUser.billing.balance);
     const insufficientFunds = this.getCombinedPricesInCents(items) > currentUser.billing.balance;
 
     return (
-      <View style={OrderStatusStyles.modalContent}>
-        <View style={OrderStatusStyles.closeIconWrapper}>
-          <Ionicons name="ios-arrow-down" size={60} color="lightgrey" />
+      <View>
+        {this.getOrderProducts(items, noOrderItems)}
+
+        {!noOrderItems && hasBilling && !insufficientFunds ?
+        <View>
+          <Mutation 
+            mutation={CONFIRM_ORDER}
+            refetchQueries={() => {
+              return [{
+                  query: GET_ORDER,
+              }];
+            }}
+          >
+            {confirmOrder => (
+              <GradientButton 
+                title="Confirm order"
+                buttonProps={{
+                  onPress: () => confirmOrder()
+                }}
+              />
+            )}
+          </Mutation>
         </View>
-        <H1 style={OrderStatusStyles.title}>Review Order</H1>
-        {hasBilling ? <H3 style={OrderStatusStyles.title}>balance: {balance}</H3> : null}
-
-        <ScrollView>
-          {this.getOrderProducts(items, noOrderItems)}
-
-          {!noOrderItems && hasBilling && !insufficientFunds ?
-          <View style={OrderStatusStyles.actionBtnWrapper}>
-            <Mutation 
-              mutation={CONFIRM_ORDER}
-              refetchQueries={() => {
-                return [{
-                   query: GET_ORDER,
-                }];
-              }}
-            >
-              {confirmOrder => (
-                <Button 
-                  transparent 
-                  block 
-                  primary
-                  large
-                  style={OrderStatusStyles.actionBtn}
-                  onPress={() => {
-                    confirmOrder();
-                    this.setState({ open: false });
-                  }}
-                >
-                  <Text>Confirm order</Text>
-                </Button>
-              )}
-            </Mutation>
-          </View>
-          : null}
-          {insufficientFunds ? this.getInsufficientFunds() : null}
-          
-          {!noOrderItems ?
-          <View style={OrderStatusStyles.actionBtnWrapper}>
-            <Mutation 
-              mutation={CREATE_USUAL}
-              refetchQueries={() => {
-                return [{
-                   query: GET_CURRENT_USER,
-                }];
-              }}
-            >
-              {createUsualByOrderId => (
-                <Button 
-                  transparent 
-                  block 
-                  primary
-                  large
-                  style={OrderStatusStyles.actionBtn}
-                  onPress={() => createUsualByOrderId({variables: {id: currentUser.order}})}
-                >
-                  <Text>Add order to usuals</Text>
-                </Button>
-              )}
-            </Mutation>
-          </View>
-          : null}
-
-          <View style={OrderStatusStyles.actionBtnWrapper}>
-            <PaymentManager />
-          </View>
-        </ScrollView>
+        : null}
+        {insufficientFunds ? this.getInsufficientFunds() : null}
+        
+        {!noOrderItems ?
+        <View>
+          <Mutation 
+            mutation={CREATE_USUAL}
+            refetchQueries={() => {
+              return [{
+                  query: GET_CURRENT_USER,
+              }];
+            }}
+          >
+            {createUsualByOrderId => (
+              <Button 
+                block 
+                style={ButtonStyles.secondaryButton}
+                onPress={() => createUsualByOrderId({variables: {id: currentUser.order}})}
+              >
+                <Text style={ButtonStyles.secondaryButtonText}>Add order to usuals</Text>
+              </Button>
+            )}
+          </Mutation>
+        </View>
+        : null}
       </View>
     );
   }
@@ -195,7 +197,7 @@ class OrderStatus extends React.Component {
       options.push(`$${combinedPrice}`);
 
       return (
-        <View key={item._id} style={OrderStatusStyles.cardWrapper}>
+        <View key={item._id}>
           <Mutation 
             mutation={REMOVE_ORDER_ITEM}
             refetchQueries={() => {
@@ -271,7 +273,16 @@ export default graphql(
       currentUser {
         _id
         email
-        order
+        order {
+          _id
+          store {
+            _id
+            title
+            location {
+              address
+            }
+          }
+        }
         billing {
           balance
         }

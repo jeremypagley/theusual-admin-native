@@ -5,7 +5,9 @@ const GET_CURRENT_USER = gql`
     currentUser {
       _id,
       email,
-      order,
+      order {
+        _id
+      },
       billing {
         balance,
         stripeCustomer {

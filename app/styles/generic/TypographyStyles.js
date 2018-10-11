@@ -32,6 +32,11 @@ const Styles = StyleSheet.create({
     color: Colors.BrandDarkGrey,
     fontFamily: 'montserrat-regular'
   },
+  noteBold: {
+    fontSize: 16,
+    color: Colors.BrandDarkGrey,
+    fontFamily: 'montserrat-bold'
+  },
   noteTitle: {
     fontSize: 12,
     color: Colors.BrandDarkGrey,
@@ -40,6 +45,11 @@ const Styles = StyleSheet.create({
   noteListItem: {
     fontSize: 14,
     color: Colors.BrandDarkGrey,
+    fontFamily: 'montserrat-regular'
+  },
+  noteEmphasize: {
+    fontSize: 28,
+    color: Colors.BrandRed,
     fontFamily: 'montserrat-regular'
   },
 

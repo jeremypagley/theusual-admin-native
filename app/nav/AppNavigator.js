@@ -28,6 +28,10 @@ const UsualsStack = createStackNavigator({
   Usuals: { screen: Usuals },
 }, reusableNavOptions);
 
+const CartStack = createStackNavigator({
+  Cart: { screen: Cart },
+}, reusableNavOptions);
+
 const StoresStack = createStackNavigator({
   Order: { screen: Order },
   Store: { screen: Store },
@@ -38,7 +42,7 @@ const StoresStack = createStackNavigator({
 const AppStack = createBottomTabNavigator({
   Usuals: UsualsStack,
   Stores: StoresStack,
-  Cart: Cart,
+  Cart: CartStack,
   Settings: Settings,
 },
 {
