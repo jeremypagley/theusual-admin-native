@@ -20,5 +20,7 @@ export default {
   BrandDarkBlue: '#323643',
   BrandBlueGrey: '#B9CEE0',
   BrandBorderGrey: '#EBEEF1',
-  BrandShadow: '#222425'
+  BrandShadow: '#222425',
+  BrandGradientStart: '#FE726B',
+  BrandGradientEnd: '#FD5479',
 }

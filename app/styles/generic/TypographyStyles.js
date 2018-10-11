@@ -54,6 +54,23 @@ const Styles = StyleSheet.create({
     fontFamily: 'montserrat-medium',
     paddingBottom: 5
   },
+  listSubItemTitle: {
+    fontSize: 16,
+    color: Colors.BrandBlack,
+    fontFamily: 'montserrat-regular',
+  },
+  listItemTitleTextAction: {
+    color: Colors.BrandDarkGrey,
+    fontSize: 16,
+    fontFamily: 'montserrat-medium',
+    paddingRight: 20,
+  },
+
+  buttonText: {
+    color: Colors.White,
+    fontSize: 16,
+    fontFamily: 'montserrat-medium',
+  }
 });
 
 export default Styles;

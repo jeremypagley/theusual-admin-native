@@ -2,7 +2,8 @@ import React from 'react';
 import { 
   Container,
   Text,
-  Content
+  Content,
+  Header
 } from 'native-base';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
@@ -17,7 +18,9 @@ class Products extends React.Component {
 
     return (
       <Container style={ContainerStyles.container}>
-        <Content padder>
+        <Header style={ContainerStyles.header}></Header>
+        
+        <Content padder style={ContainerStyles.content}>
           <Query query={ProductsQuery} variables={{ productCategoryId }}>
             {({ loading, error, data }) => {
               if (loading) return <Text key="loading">Loading...</Text>;

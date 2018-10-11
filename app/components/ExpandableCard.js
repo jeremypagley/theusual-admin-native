@@ -8,7 +8,6 @@ import {
   View,
   Card, 
   CardItem,
-  Button,
   Icon
 } from 'native-base';
 import { Row } from 'react-native-easy-grid';

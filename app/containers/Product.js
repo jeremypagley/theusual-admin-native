@@ -1,10 +1,6 @@
 import React from 'react';
 import { 
   Container,
-  Title,
-  H1,
-  Header,
-  Content,
   Body,
   ListItem,
   Button,
@@ -12,15 +8,23 @@ import {
   Right,
   Left,
   View,
-  Text
+  Text,
+  Content,
+  Header,
+  Card,
+  CardItem,
+  Icon
 } from 'native-base';
-import { Ionicons } from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native';
 
-import { Col, Row, Grid } from 'react-native-easy-grid';
 import { Query, Mutation, graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import GET_ORDER from 'app/graphql/query/getOrder';
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
+import CardStyles from 'app/styles/generic/CardStyles';
+import TypographyStyles from 'app/styles/generic/TypographyStyles';
+import Colors from 'app/styles/Colors';
+import GradientButton from 'app/components/GradientButton';
 
 class Product extends React.Component {
   constructor(props) {
@@ -37,31 +41,34 @@ class Product extends React.Component {
 
     return (
       <Container style={ContainerStyles.container}>
-        <Header style={ContainerStyles.header}>
-          <Body>
-            <H1>{product.title}</H1>
-          </Body>
-        </Header>
+        <Header style={ContainerStyles.header}></Header>
 
-        <Grid>
-          <Row size={10}>
-            <Text note>{product.description}</Text>
-          </Row>
-          <Row size={80}>
-            <Col>
+        <Content padder style={ContainerStyles.content}>
+          <View style={CardStyles.card}>
+            <Card transparent>
+              <CardItem header style={CardStyles.itemHeader}>
+                <Text style={TypographyStyles.listTitle}>About</Text>
+              </CardItem>
+              <CardItem>
+                <Body>
+                  <Text style={TypographyStyles.note}>{product.description}</Text>
+                </Body>
+              </CardItem>
+            </Card>
+          </View>
+          <View style={CardStyles.card}>
+            <Card transparent>
               <Accordion
+                style={{borderWidth: 0}}
                 dataArray={modifiersArray}
                 renderHeader={this._renderHeader}
                 renderContent={this._renderContent}
               />
-            </Col>
-          </Row>
-          <Row size={10}>
-            <Col>
-              {this.getAddItemButton(product)}
-            </Col>
-          </Row>
-        </Grid>
+            </Card>
+          </View>
+
+          {this.getAddItemButton(product)}
+        </Content>
       </Container>
     );
   }
@@ -81,33 +88,43 @@ class Product extends React.Component {
         }}
       >
          {createOrderItem => (
-            <Button 
-              transparent 
-              block 
-              primary 
-              onPress={() => createOrderItem({variables: {productId, productModifiersOptions, storeId}})}
-            >
-            <Text>Add item</Text>
-          </Button>
+          <GradientButton 
+            title="Add to order"
+            buttonProps={{
+              onPress: () => createOrderItem({variables: {productId, productModifiersOptions, storeId}})
+            }}
+          />
         )}
       </Mutation>
     );
   }
 
   _renderHeader = (item, expanded) => {
+    const hasModifierOptions = this.state.addedModifiers[item.modifier._id];
+
     return (
-      <View style={{ flexDirection: "row", padding: 10, backgroundColor: "#F6F6F6", borderBottomWidth: 2, borderBottomColor: 'lightgrey' }}>
+      <View style={CardStyles.accordionCardInner}>
         <Left>
-          <Text style={{ fontWeight: "600" }}>
+          <Text style={TypographyStyles.listItemTitle}>
             {" "}{item.title}
           </Text>
       
           {this.getAddedModifiersOptions(item.modifier)}
         </Left>
 
+        {hasModifierOptions
+          ? <Right>
+              <TouchableOpacity style={{marginTop: -15}} onPress={() => this.removeAddedModifierOptions(item.modifier)}>
+                <Text style={[TypographyStyles.listItemTitleTextAction]}>
+                  Clear
+                </Text>
+              </TouchableOpacity>
+            </Right>
+          : null}
+
         {expanded
-          ? <Ionicons name="ios-arrow-up" size={28} color="black" />
-          : <Ionicons name="ios-arrow-down" size={28} color="black" />}
+          ? <Icon name="arrow-up" style={{color: Colors.BrandRed}} />
+          : <Icon name="arrow-down" style={{color: Colors.BrandRed}} />}
       </View>
     );
   }
@@ -122,10 +139,10 @@ class Product extends React.Component {
           return (
             <ListItem key={option.title} icon onPress={() => this.onModifierOptionPress(option, modifier)}>
               <Body>
-                <Text>{option.title}</Text>
+                <Text style={TypographyStyles.listSubItemTitle}>{option.title}</Text>
               </Body>
               <Right>
-                <Ionicons name="ios-add" size={28} color="black" />
+                <Icon name="md-add" style={{fontSize: 28, color: Colors.BrandGreen}} />
               </Right>
             </ListItem>
           )
@@ -145,7 +162,20 @@ class Product extends React.Component {
   }
 
   getAddedModifierOptions = (options, id) => {
-    return options.map((option, index) => <Text key={`${index}${id}`} style={{paddingTop: 5}}>+ {option.title}</Text>);
+    return options.map((option, index) => (
+      <Text
+        key={`${index}${id}`} 
+        style={TypographyStyles.noteListItem}
+      >
+        + {option.title}
+      </Text>
+    ));
+  }
+
+  removeAddedModifierOptions = (modifier) => {
+    let { addedModifiers } = this.state;
+    delete addedModifiers[modifier._id];
+    this.setState({ addedModifiers });
   }
 
   onModifierOptionPress = (option, modifier) => {
@@ -174,7 +204,7 @@ class Product extends React.Component {
   getModifiersDataArray = (modifiers) => {
     return modifiers.map(modifier => {
       return {title: modifier.title, modifier: modifier}
-    })
+    });
   }
 
 }

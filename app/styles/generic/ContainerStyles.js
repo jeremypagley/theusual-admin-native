@@ -15,6 +15,10 @@ const Styles = StyleSheet.create({
     // shadowOpacity: 0,
   },
 
+  content: {
+    marginTop: -70
+  },
+
   tab: {
     backgroundColor: Colors.BrandRed,
   },

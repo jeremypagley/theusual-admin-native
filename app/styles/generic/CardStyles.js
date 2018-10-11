@@ -30,6 +30,15 @@ const Styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'montserrat-bold'
   },
+
+  accordionCardInner: {
+    flexDirection: "row", 
+    padding: 15, 
+    backgroundColor: Colors.White,
+    borderWidth: 0,
+    borderBottomWidth: 1, 
+    borderBottomColor: Colors.BrandGrey
+  }
 });
 
 export default Styles;

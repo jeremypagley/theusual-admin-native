@@ -23,17 +23,6 @@ class Store extends React.Component {
     return (
       <Container style={ContainerStyles.container}>
         <Tabs tabBarUnderlineStyle={ContainerStyles.tabBarUnderline}>
-          <Tab 
-            tabStyle={ContainerStyles.tab} 
-            activeTabStyle={ContainerStyles.activeTab}
-            textStyle={ContainerStyles.tabText}
-            activeTextStyle={ContainerStyles.activeTabText}
-            heading="About"
-          >
-            <Content padder>
-              {this.getAboutCard(store)}
-            </Content>
-          </Tab>
           <Tab
             tabStyle={ContainerStyles.tab} 
             activeTabStyle={ContainerStyles.activeTab}
@@ -53,6 +42,17 @@ class Store extends React.Component {
             heading="Locations"
           >
             <Text>TODO: Figure out way to get related stores on a store for the locations...</Text>
+          </Tab>
+          <Tab 
+            tabStyle={ContainerStyles.tab} 
+            activeTabStyle={ContainerStyles.activeTab}
+            textStyle={ContainerStyles.tabText}
+            activeTextStyle={ContainerStyles.activeTabText}
+            heading="About"
+          >
+            <Content padder>
+              {this.getAboutCard(store)}
+            </Content>
           </Tab>
         </Tabs>
       </Container>

@@ -2,8 +2,8 @@ import React from 'react';
 import { 
   Container,
   Content,
+  Header
 } from 'native-base';
-import { ScrollView } from 'react-native';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
@@ -21,7 +21,9 @@ class UsualsContainer extends React.Component {
 
     return (
       <Container style={ContainerStyles.container}>
-        <Content padder>
+        <Header style={ContainerStyles.header}></Header>
+
+        <Content padder style={ContainerStyles.content}>
           <Mutation 
             mutation={ADD_ORDER_BY_ID}
             refetchQueries={() => {
