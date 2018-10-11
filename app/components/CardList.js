@@ -31,29 +31,21 @@ class CardList extends React.PureComponent {
     ),
     listTitle: PropTypes.string,
     handleItemPress: PropTypes.func,
+    rightActionItem: PropTypes.element
   }
 
   _keyExtractor = (item, index) => item._id;
 
-  // _onPressItem = (id: string) => {
-  //   // updater functions are preferred for transactional updates
-  //   this.setState((state) => {
-  //     // copy the map rather than modifying state.
-  //     const selected = new Map(state.selected);
-  //     selected.set(id, !selected.get(id)); // toggle
-  //     return {selected};
-  //   });
-  // };
-
   _renderItem = ({item}) => {
+    const { rightActionItem } = this.props;
     return (
       <ListItem onPress={() => this.props.handleItemPress(item)}>
         <Body>
           <Text style={TypographyStyles.listItemTitle}>{item.title}</Text>
-          <Text style={TypographyStyles.noteListItem}>{item.subtitle}</Text>
+          {item.subtitle ? <Text style={TypographyStyles.noteListItem}>{item.subtitle}</Text> : null}
         </Body>
         <Right>
-          <Icon name="arrow-forward" style={{fontSize: 30, color: Colors.BrandRed}} />
+          {rightActionItem ? rightActionItem : <Icon name="arrow-forward" style={{fontSize: 30, color: Colors.BrandRed}} />}
         </Right>
       </ListItem>
     );
@@ -62,16 +54,16 @@ class CardList extends React.PureComponent {
   render() {
     const { title } = this.props;
 
-    console.log(this.props.data)
-
     return (
       <View style={CardStyles.card}>
         <Card transparent>
-          <CardItem header style={CardStyles.itemHeader}>
-            <Left>
-              <Text style={TypographyStyles.listTitle}>{title}</Text>
-            </Left>
-          </CardItem>
+          {title
+            ? <CardItem header style={CardStyles.itemHeader}>
+                <Left>
+                  <Text style={TypographyStyles.listTitle}>{title}</Text>
+                </Left>
+              </CardItem>
+            : null}
 
           <FlatList
             data={this.props.data}

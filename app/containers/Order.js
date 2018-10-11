@@ -22,49 +22,14 @@ class Order extends React.Component {
     
     this.state = {
       search: '',
-      region: {
-        latitude: 37.78825,
-        longitude: -122.4324,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      }
     }
   }
-  
-  onRegionChange(region) {
-    this.setState({ region });
-  }
-  
-  handleLogout = () => {
-    return this.props.screenProps.changeLoginState(false);
-  };
 
   render() {
     const { search } = this.state;
 
     return (
       <Container style={ContainerStyles.container}>
-          {/* <Row size={1}>
-            <Col>
-              <Card style={CardInputStyles.card}>
-                <CardItem style={CardInputStyles.cardItem}>
-                  <Body>
-                    <Form style={CardInputStyles.form}>
-                      <Item underline={false} style={CardInputStyles.formItem} floatingLabel>
-                        <Label style={CardInputStyles.formItemLabel}>Search location by title</Label>
-                        <Input
-                          clearButtonMode="always"
-                          value={search}
-                          style={CardInputStyles.formInput}
-                          onChangeText={(text) => this.setState({ search: text })}
-                        />
-                      </Item>
-                    </Form>
-                    </Body>
-                </CardItem>
-              </Card>
-            </Col>
-          </Row> */}
         <Header searchBar rounded style={ContainerStyles.header}>
           <Item style={InputStyles.searchInput}>
             <Icon name="md-search" style={{color: Colors.BrandBlack}} />
@@ -95,8 +60,6 @@ class Order extends React.Component {
             }}
           </Query>
         </Content>
-
-       
       </Container>
     );
   }

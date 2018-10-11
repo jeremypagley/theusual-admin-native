@@ -15,6 +15,28 @@ const Styles = StyleSheet.create({
     // shadowOpacity: 0,
   },
 
+  tab: {
+    backgroundColor: Colors.BrandRed,
+  },
+
+  activeTab: {
+    backgroundColor: Colors.BrandRed,
+  },
+
+  tabText: {
+    color: Colors.White,
+    fontFamily: 'montserrat-medium'
+  },
+
+  activeTabText: {
+    color: Colors.White,
+    fontFamily: 'montserrat-bold'
+  },
+
+  tabBarUnderline: {
+    backgroundColor: Colors.White
+  },
+
   innerContainer: {
     marginTop: 10,
     marginRight: 10,
