@@ -29,7 +29,8 @@ const Styles = StyleSheet.create({
   },
   
   noItemsWrapper: {
-    marginTop: 10
+    marginTop: 15,
+    marginLeft: 15
   },
 
   closeIconWrapper: {

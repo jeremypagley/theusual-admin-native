@@ -1,28 +1,18 @@
 import React from 'react';
 import { 
-  Container,
   Text,
-  List,
   ListItem,
   Content,
   Header,
   Body,
-  Button,
-  Input,
-  Item,
-  Label,
   Icon,
-  H1,
-  H4,
   Card, 
   CardItem,
   Left,
   Right,
   Switch,
-  Picker,
-  Form,
 } from 'native-base';
-import { Col, Row, Grid } from 'react-native-easy-grid';
+import Expo from 'expo';
 import { View, Dimensions } from 'react-native';
 import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
@@ -30,17 +20,14 @@ import { graphql } from 'react-apollo';
 import Modal from 'react-native-modal';
 import PaymentManagerStyles from 'app/styles/PaymentManagerStyles';
 import Colors from 'app/styles/Colors';
-import { Ionicons } from '@expo/vector-icons';
 import GET_CURRENT_USER from 'app/graphql/query/getCurrentUser';
 import { ActivityIndicator, Platform } from 'react-native';
 import { PaymentsStripe as Stripe } from 'expo-payments-stripe';
-import CardListStyles from 'app/styles/generic/CardListStyles';
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
 import TypographyStyles from 'app/styles/generic/TypographyStyles';
 import CardStyles from 'app/styles/generic/CardStyles';
 import Money from 'app/utils/money';
-
-const screenWidth = Dimensions.get('window').width;
+import Config from '../../config.json';
 
 function testID(id) {
   return Platform.OS === 'android' ? { accessible: true, accessibilityLabel: id } : { testID: id };
@@ -63,7 +50,7 @@ class PaymentManager extends React.Component {
 
   componentWillMount() {
     Stripe.setOptionsAsync({
-      publishableKey: 'pk_test_CsV5D9WegDZKiJINmWBDj39Z',
+      publishableKey: Config.STRIPE_PUBLISHABLE_TEST_KEY,
     });
   }
 

@@ -10,6 +10,7 @@ import {
   CardItem,
   Content
 } from 'native-base';
+import Time from 'app/utils/time';
 import moment from 'moment';
 import CardList from 'app/components/CardList';
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
@@ -79,14 +80,12 @@ class Store extends React.Component {
   }
 
   getAboutCard = (store) => {
-    const currentTime = moment().valueOf();
     const storeHours = store.hours;
 
     const startTime = moment(storeHours.start).format('h:mm a');
     const endTime = moment(storeHours.end).format('h:mm a');
-
-    const storeOpened = moment(currentTime).isBetween(storeHours.start, storeHours.end, 'hours');
-    const openedTitle = storeOpened ? '' : '(Closed)';
+    const storeOpened = Time.getStoreOpened(storeHours);
+    const openedTitle = storeOpened ? '(Open!)' : '(Closed)';
 
     return (
       <View style={CardStyles.card}>

@@ -23,8 +23,8 @@ import GET_CURRENT_USER from 'app/graphql/query/getCurrentUser';
 import PaymentManager from 'app/containers/PaymentManager';
 import CardForm from 'app/components/stripe/CardForm';
 import Money from 'app/utils/money';
+import Time from 'app/utils/time';
 import GradientButton from 'app/components/GradientButton';
-import moment from 'moment';
 
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
 import CardStyles from 'app/styles/generic/CardStyles';
@@ -111,13 +111,10 @@ class OrderStatus extends React.Component {
 
     const insufficientFunds = this.getCombinedPricesInCents(items) > currentUser.billing.balance;
 
-    const currentTime = moment().valueOf();
     const storeHours = currentUser.order.store.hours;
-
-    const storeOpened = moment(currentTime).isBetween(storeHours.start, storeHours.end, 'hours');
+    const storeOpened = Time.getStoreOpened(storeHours);
     const disabled = storeOpened ? false : true;
     const title = storeOpened ? 'Confirm Order' : 'Store Closed';
-
 
     return (
       <View>
@@ -193,7 +190,7 @@ class OrderStatus extends React.Component {
 
     if (noOrderItems) return (
       <View style={OrderStatusStyles.noItemsWrapper}>
-        <H3>No order items have been added 😕</H3>
+        <Text style={TypographyStyles.note}>No order items have been added 😕</Text>
       </View>
     )
 
