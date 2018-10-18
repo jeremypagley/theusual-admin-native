@@ -24,6 +24,7 @@ import PaymentManager from 'app/containers/PaymentManager';
 import CardForm from 'app/components/stripe/CardForm';
 import Money from 'app/utils/money';
 import GradientButton from 'app/components/GradientButton';
+import moment from 'moment';
 
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
 import CardStyles from 'app/styles/generic/CardStyles';
@@ -110,6 +111,14 @@ class OrderStatus extends React.Component {
 
     const insufficientFunds = this.getCombinedPricesInCents(items) > currentUser.billing.balance;
 
+    const currentTime = moment().valueOf();
+    const storeHours = currentUser.order.store.hours;
+
+    const storeOpened = moment(currentTime).isBetween(storeHours.start, storeHours.end, 'hours');
+    const disabled = storeOpened ? false : true;
+    const title = storeOpened ? 'Confirm Order' : 'Store Closed';
+
+
     return (
       <View>
         {this.getOrderProducts(items, noOrderItems)}
@@ -126,9 +135,12 @@ class OrderStatus extends React.Component {
           >
             {confirmOrder => (
               <GradientButton 
-                title="Confirm order"
+                title={title}
+                disabled={disabled}
                 buttonProps={{
-                  onPress: () => confirmOrder()
+                  onPress: () => {
+                    if (!disabled) confirmOrder();
+                  }
                 }}
               />
             )}
@@ -277,6 +289,10 @@ export default graphql(
           store {
             _id
             title
+            hours {
+              start
+              end
+            }
             location {
               address
             }

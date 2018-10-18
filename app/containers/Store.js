@@ -10,6 +10,7 @@ import {
   CardItem,
   Content
 } from 'native-base';
+import moment from 'moment';
 import CardList from 'app/components/CardList';
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
 import CardStyles from 'app/styles/generic/CardStyles';
@@ -34,7 +35,7 @@ class Store extends React.Component {
               {this.getMenuCard(store)}
             </Content>
           </Tab>
-          <Tab
+          {/* <Tab
             tabStyle={ContainerStyles.tab} 
             activeTabStyle={ContainerStyles.activeTab}
             textStyle={ContainerStyles.tabText}
@@ -42,7 +43,7 @@ class Store extends React.Component {
             heading="Locations"
           >
             <Text>TODO: Figure out way to get related stores on a store for the locations...</Text>
-          </Tab>
+          </Tab> */}
           <Tab 
             tabStyle={ContainerStyles.tab} 
             activeTabStyle={ContainerStyles.activeTab}
@@ -78,6 +79,15 @@ class Store extends React.Component {
   }
 
   getAboutCard = (store) => {
+    const currentTime = moment().valueOf();
+    const storeHours = store.hours;
+
+    const startTime = moment(storeHours.start).format('h:mm a');
+    const endTime = moment(storeHours.end).format('h:mm a');
+
+    const storeOpened = moment(currentTime).isBetween(storeHours.start, storeHours.end, 'hours');
+    const openedTitle = storeOpened ? '' : '(Closed)';
+
     return (
       <View style={CardStyles.card}>
         <Card transparent>
@@ -93,7 +103,7 @@ class Store extends React.Component {
 
           <CardItem footer style={CardStyles.itemFooter}>
             <Body>
-              <Text style={TypographyStyles.note}>Hours: {store.hours}</Text>
+              <Text style={TypographyStyles.note}>Hours: {startTime} - {endTime} {openedTitle}</Text>
               <Text style={TypographyStyles.note}>Phone: {store.phone}</Text>
               <Text style={TypographyStyles.note}>Website: {store.website}</Text>
             </Body>

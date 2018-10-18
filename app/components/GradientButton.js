@@ -10,11 +10,12 @@ import TypographyStyles from 'app/styles/generic/TypographyStyles';
 
 export default class GradientButton extends PureComponent {
   render() {
-    const { buttonProps, title } = this.props;
+    const { buttonProps, title, disabled } = this.props;
+    const colors = disabled ? [Colors.BrandGrey, Colors.BrandGrey] : [Colors.BrandGradientStart, Colors.BrandGradientEnd]
 
     return (
       <LinearGradient
-        colors={[Colors.BrandGradientStart, Colors.BrandGradientEnd]}
+        colors={colors}
         start={[0, 1]} 
         end={[1, 0]}
         style={{ padding: 8, alignItems: 'center', borderRadius: 8, marginTop: 12 }}
@@ -22,6 +23,7 @@ export default class GradientButton extends PureComponent {
         <Button 
           transparent
           block
+          disabled={disabled}
           {...buttonProps}
         >
           <Text

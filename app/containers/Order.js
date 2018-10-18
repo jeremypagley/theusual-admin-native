@@ -98,7 +98,10 @@ const StoresQuery = gql`
     _id,
     title,
     description,
-    hours,
+    hours {
+      start
+      end
+    },
     phone,
     website,
     location {
