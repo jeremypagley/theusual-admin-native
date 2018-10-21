@@ -8,7 +8,6 @@ import { ApolloProvider } from 'react-apollo';
 import { ApolloClient, HttpLink, InMemoryCache, ApolloLink } from 'apollo-client-preset';
 import { setContext } from 'apollo-link-context';
 import { withClientState } from 'apollo-link-state';
-import { onError } from 'apollo-link-error';
 import { Font, Icon, AppLoading } from 'expo';
 import { Content, Spinner, Container, H2, View } from 'native-base';
 import Colors from './app/styles/Colors';

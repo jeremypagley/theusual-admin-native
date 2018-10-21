@@ -25,6 +25,7 @@ import CardForm from 'app/components/stripe/CardForm';
 import Money from 'app/utils/money';
 import Time from 'app/utils/time';
 import GradientButton from 'app/components/GradientButton';
+import LoadingIndicator from 'app/components/LoadingIndicator';
 import GenericError from 'app/components/GenericError';
 
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
@@ -43,8 +44,9 @@ class OrderStatus extends React.Component {
   }
 
   render() {
-    const { currentUser } = this.props.data;
-    if (!currentUser) return null;
+    const { currentUser, loading, error } = this.props.data;
+    if (loading) return <LoadingIndicator title="Loading stores" />;
+    if (error) return <GenericError message={error.message} />;
 
     const balance = Money.centsToUSD(currentUser.billing.balance);
 
@@ -85,7 +87,9 @@ class OrderStatus extends React.Component {
           <Text style={[TypographyStyles.noteBold, {marginLeft: 15}]}>Added products</Text>
           <Query query={GET_ORDER}>
             {({ loading, error, data }) => {
-              if (error) return <View><Text>Error</Text></View>;
+              if (loading) return <LoadingIndicator title="Loading your order" />;
+              if (error) return <GenericError message={error.message} />;
+
               let items = [];
 
               if (data.order && data.order.length > 0) {

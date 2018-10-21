@@ -15,6 +15,8 @@ import CardList from 'app/components/CardList';
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
 import InputStyles from 'app/styles/generic/InputStyles';
 import Colors from 'app/styles/Colors';
+import LoadingIndicator from 'app/components/LoadingIndicator';
+import GenericError from 'app/components/GenericError';
 
 class Order extends React.Component {
   constructor(props) {
@@ -46,8 +48,8 @@ class Order extends React.Component {
         <Content padder>
           <Query query={StoresQuery}>
             {({ loading, error, data }) => {
-              if (loading) return <Text key="loading">Loading...</Text>;
-              if (error) return <Text key="error">Error :(</Text>;
+              if (loading) return <LoadingIndicator title="Loading stores" />;
+              if (error) return <GenericError message={error.message} />;
 
               return (
                 <CardList

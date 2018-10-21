@@ -13,11 +13,12 @@ import GET_CURRENT_USER from 'app/graphql/query/getCurrentUser';
 import ExpandableCard from 'app/components/ExpandableCard';
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
 
+import LoadingIndicator from 'app/components/LoadingIndicator';
+
 class UsualsContainer extends React.Component {
 
   render() {
-    const { currentUser } = this.props.data;
-    if (!currentUser) return null;
+    const { currentUser, loading } = this.props.data;
 
     return (
       <Container style={ContainerStyles.container}>
@@ -34,14 +35,18 @@ class UsualsContainer extends React.Component {
           >
             {(createOrderByUsualId, { data }) => (
               <Mutation 
-              mutation={REMOVE_USUAL_BY_ID}
-              refetchQueries={() => {
-                return [{
-                    query: GET_CURRENT_USER,
-                }];
-              }}
+                mutation={REMOVE_USUAL_BY_ID}
+                refetchQueries={() => {
+                  return [{
+                      query: GET_CURRENT_USER,
+                  }];
+                }}
               >
               {(removeUsualById, { data }) => {
+                  if (loading) {
+                    return <LoadingIndicator title="Loading your usuals" />;
+                  }
+
                   return currentUser.usuals.map(usual => {
                     if (usual.deleted) return null;
                     return this.getUsualCard(usual, createOrderByUsualId, removeUsualById);
