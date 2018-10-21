@@ -10,10 +10,6 @@ import { setContext } from 'apollo-link-context';
 import { withClientState } from 'apollo-link-state';
 import { onError } from 'apollo-link-error';
 import { Font, Icon, AppLoading } from 'expo';
-import OrderStatus from 'app/containers/OrderStatus';
-
-import resolvers from 'app/graphql/resolvers';
-import typeDefs from 'app/graphql/typeDefs';
 import { Content, Spinner, Container, H2, View } from 'native-base';
 import Colors from './app/styles/Colors';
 import TypographyStyles from './app/styles/generic/TypographyStyles';
@@ -60,26 +56,6 @@ const stateLink = withClientState({
   // resolvers,
   // typeDefs: [typeDefs],
   // defaults: defaultLocalState
-});
-
-/**
- * TODO: Test app and add proper error handling here
- * Return the normal error but with an added message for the UI as you encounter errors
- * For now just get payment errors figured out
- */
-const errorLink = onError(({ graphQLErrors, networkError, response }) => {
-  if (graphQLErrors)
-    graphQLErrors.map(({ message, locations, path }) =>
-      console.log(
-        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
-      )
-    );
-  if (networkError) {
-    console.log(`[Network error .result.errors]: ${networkError}`);
-    return networkError;
-  }
-
-  return response;
 });
 
 const link = authLink.concat(httpLink);
@@ -164,7 +140,6 @@ export default class App extends Component {
           ? (
               <View style={{flex: 1}}>
                 <AppNavigator screenProps={{ changeLoginState: this.handleChangeLoginState }} />
-                {/* <OrderStatus /> */}
               </View>
             )
           : (

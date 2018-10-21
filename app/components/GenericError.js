@@ -15,6 +15,7 @@ export default class GenericError extends PureComponent {
 
   static defaultProps = {
     message: 'Looks like something went wrong...',
+    style: {}
   };
 
   // handleRetryPress = event => {
@@ -30,11 +31,11 @@ export default class GenericError extends PureComponent {
   // };
 
   render() {
-    let { message } = this.props;
+    let { message, style } = this.props;
     const regex = /GraphQL error: /gi;
 
     return (
-      <Text style={[TypographyStyles.error, {marginTop: 10, marginBottom: 10}]}>{message.replace(regex, '')}</Text>
+      <Text style={[TypographyStyles.error, {marginTop: 10, marginBottom: 10}, style]}>{message.replace(regex, '')}</Text>
     );
   }
 }
