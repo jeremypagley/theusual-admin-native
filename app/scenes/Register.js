@@ -1,9 +1,24 @@
 import React from 'react';
-import { Container, Button, Content, Form, Item, Input, Text } from 'native-base';
+import { ActivityIndicator } from 'react-native';
+import { Container, Header, Label, Content, Form, Item, Input, Text, Card, View, Button } from 'native-base';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import ContainerStyles from 'app/styles/generic/ContainerStyles';
+import CardStyles from 'app/styles/generic/CardStyles';
+import TypographyStyles from 'app/styles/generic/TypographyStyles';
+import ButtonStyles from 'app/styles/generic/ButtonStyles';
+import Colors from 'app/styles/Colors';
+import GradientButton from 'app/components/GradientButton';
+import GenericError from 'app/components/GenericError';
+import validator from 'validator';
 
 class Register extends React.Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: 'Sign Up'
+    };
+  };
+
   constructor(props) {
     super(props);
 
@@ -14,6 +29,7 @@ class Register extends React.Component {
       passwordError: false,
       confirmPassword: '',
       confirmPasswordError: false,
+      signingUp: false
     };
   }
 
@@ -28,39 +44,31 @@ class Register extends React.Component {
   handleSubmit = () => {
     const { email, password, confirmPassword } = this.state;
 
-    if (email.length === 0) {
-      return this.setState({ emailError: true });
-    }
-    this.setState({ emailError: false });
-
-    if (password.length === 0) {
-      return this.setState({ passwordError: true });
-    }
-    this.setState({ passwordError: false });
-
     if (confirmPassword.length === 0) {
       return this.setState({ confirmPasswordError: true });
     }
-    this.setState({ confirmPasswordError: false });
 
     if (password !== confirmPassword) {
-      return this.setState({ passwordError: true, confirmPasswordError: true });
+      return this.setState({ passwordError: true, confirmPasswordError: 'Passwords must match' });
     }
 
-    this.setState({ passwordError: false, confirmPasswordError: false });
+    this.setState({ passwordError: false, confirmPasswordError: false, signingUp: true});
 
     this.props
       .signup(email, password)
       .then(({ data }) => {
+        this.setState({ signingUp: false });
         return this.props.screenProps.changeLoginState(true, data.signup.jwt);
       })
       .catch(e => {
+        this.setState({ signingUp: false });
+
         // If the error message contains email or password we'll assume that's the error.
         if (/email/i.test(e.message)) {
-          this.setState({ emailError: true });
+          this.setState({ emailError: e.message });
         }
         if (/password/i.test(e.message)) {
-          this.setState({ passwordError: true });
+          this.setState({ passwordError: e.message });
         }
       });
 
@@ -68,45 +76,69 @@ class Register extends React.Component {
 
   render() {
     const { navigation } = this.props;
-    const { emailError, passwordError, confirmPasswordError } = this.state;
+    const { emailError, passwordError, password, email, confirmPassword, confirmPasswordError, signingUp } = this.state;
+
+    let disabled = true;
+
+    if (email.length > 0 && password.length >= 6 && validator.isEmail(email) && password === confirmPassword) disabled = false;
 
     return (
-      <Container>
-        <Content>
-          <Form>
-            <Item error={emailError}>
-              <Input
-                placeholder="Email"
-                onChangeText={value => this.handleInputChange('email', value)}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoCorrect={false}
-              />
-            </Item>
-            <Item error={passwordError}>
-              <Input
-                placeholder="Password"
-                onChangeText={value => this.handleInputChange('password', value)}
-                autoCapitalize="none"
-                autoCorrect={false}
-                secureTextEntry
-              />
-            </Item>
-            <Item last error={confirmPasswordError}>
-              <Input
-                placeholder="Confirm Password"
-                onChangeText={value => this.handleInputChange('confirmPassword', value)}
-                autoCapitalize="none"
-                autoCorrect={false}
-                secureTextEntry
-              />
-            </Item>
-          </Form>
-          <Button full onPress={this.handleSubmit}>
-            <Text>Sign Up</Text>
-          </Button>
-          <Button full transparent onPress={() => navigation.navigate('Login')}>
-            <Text>Sign In</Text>
+      <Container style={ContainerStyles.container}>
+        <Header style={[ContainerStyles.header]}></Header>
+
+        <Content padder style={ContainerStyles.content}>
+          <View style={[CardStyles.card, {paddingBottom: 20}]}>
+            {emailError && <GenericError message={emailError} style={{marginLeft: 10}} />}
+            {passwordError && <GenericError message={passwordError} style={{marginLeft: 10}} />}
+            {confirmPasswordError && <GenericError message={confirmPasswordError} style={{marginLeft: 10}} />}
+            <Card transparent>
+              <Form>
+                <Item floatingLabel>
+                  <Label>Email</Label>
+                  <Input
+                    onChangeText={value => this.handleInputChange('email', value)}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                  />
+                </Item>
+                <Item floatingLabel>
+                  <Label>Password (must be more than 6 characters)</Label>
+                  <Input
+                    onChangeText={value => this.handleInputChange('password', value)}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    secureTextEntry
+                  />
+                </Item>
+                <Item floatingLabel>
+                  <Label>Confirm password</Label>
+                  <Input
+                    onChangeText={value => this.handleInputChange('confirmPassword', value)}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    secureTextEntry
+                  />
+                </Item>
+              </Form>
+            </Card>
+          </View>
+          
+          <GradientButton
+            disabled={disabled}
+            title={signingUp ? <Text style={TypographyStyles.buttonText}><ActivityIndicator size="small" color={Colors.White} /> Signing Up</Text> : "Sign Up"}
+            fill
+            buttonProps={{
+              onPress: () => this.handleSubmit()
+            }}
+          />
+
+          <Button 
+            block 
+            style={ButtonStyles.secondaryButton}
+            onPress={() => navigation.navigate('Login')}
+          >
+            <Text style={ButtonStyles.secondaryButtonText}>Login</Text>
           </Button>
         </Content>
       </Container>

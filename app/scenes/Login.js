@@ -12,6 +12,12 @@ import GenericError from 'app/components/GenericError';
 import validator from 'validator';
 
 class Login extends React.Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: 'Login'
+    };
+  };
+
   constructor(props) {
     super(props);
 
@@ -64,7 +70,7 @@ class Login extends React.Component {
 
     return (
       <Container style={ContainerStyles.container}>
-        <Header style={[ContainerStyles.header, {height: 100}]}></Header>
+        <Header style={[ContainerStyles.header]}></Header>
 
         <Content padder style={ContainerStyles.content}>
           <View style={[CardStyles.card, {paddingBottom: 20}]}>
