@@ -8,6 +8,7 @@ import { ApolloProvider } from 'react-apollo';
 import { ApolloClient, HttpLink, InMemoryCache, ApolloLink } from 'apollo-client-preset';
 import { setContext } from 'apollo-link-context';
 import { withClientState } from 'apollo-link-state';
+import { onError } from 'apollo-link-error';
 import { Font, Icon, AppLoading } from 'expo';
 import OrderStatus from 'app/containers/OrderStatus';
 
@@ -59,6 +60,26 @@ const stateLink = withClientState({
   // resolvers,
   // typeDefs: [typeDefs],
   // defaults: defaultLocalState
+});
+
+/**
+ * TODO: Test app and add proper error handling here
+ * Return the normal error but with an added message for the UI as you encounter errors
+ * For now just get payment errors figured out
+ */
+const errorLink = onError(({ graphQLErrors, networkError, response }) => {
+  if (graphQLErrors)
+    graphQLErrors.map(({ message, locations, path }) =>
+      console.log(
+        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+      )
+    );
+  if (networkError) {
+    console.log(`[Network error .result.errors]: ${networkError}`);
+    return networkError;
+  }
+
+  return response;
 });
 
 const link = authLink.concat(httpLink);

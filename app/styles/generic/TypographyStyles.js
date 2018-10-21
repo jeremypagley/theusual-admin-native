@@ -27,6 +27,12 @@ const Styles = StyleSheet.create({
     fontFamily: 'montserrat-semibold'
   },
 
+  error: {
+    fontSize: 16,
+    color: Colors.BrandRed,
+    fontFamily: 'montserrat-semibold'
+  },
+
   note: {
     fontSize: 16,
     color: Colors.BrandDarkGrey,

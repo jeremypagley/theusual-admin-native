@@ -28,6 +28,7 @@ import TypographyStyles from 'app/styles/generic/TypographyStyles';
 import CardStyles from 'app/styles/generic/CardStyles';
 import Money from 'app/utils/money';
 import Config from '../../config.json';
+import GenericError from 'app/components/GenericError';
 
 function testID(id) {
   return Platform.OS === 'android' ? { accessible: true, accessibilityLabel: id } : { testID: id };
@@ -172,25 +173,28 @@ class PaymentManager extends React.Component {
                     return [{query: GET_CURRENT_USER}, {query: GET_PAYMENT_METHODS}];
                   }}
                 >
-                  {createPaymentMethod => (
-                    <ListItem
-                      key={'creditcard'}
-                      onPress={() => this.handleCardPayPress(createPaymentMethod)}
-                      {...testID('cardFormButton')}
-                    >
-                      <Body>
-                        {creditCardLoading 
-                          ? <ActivityIndicator size="small" color="#00ff00" />
-                          : <Text style={TypographyStyles.listSubItemTitle}>
-                              Add a credit card
-                            </Text>
-                        }
-                      </Body>
-                      <Right>
-                        <Icon style={{fontSize: 26, color: Colors.BrandRed}} name="md-add" />
-                      </Right>
-                    </ListItem>
-                  )}
+                  {(createPaymentMethod, { loading, error }) => {
+                    return (
+                      <ListItem
+                        key={'creditcard'}
+                        onPress={() => this.handleCardPayPress(createPaymentMethod)}
+                        {...testID('cardFormButton')}
+                      >
+                        <Body>
+                          {creditCardLoading 
+                            ? <ActivityIndicator size="small" color="#00ff00" />
+                            : <Text style={TypographyStyles.listSubItemTitle}>
+                                Add a credit card
+                              </Text>
+                          }
+                          {error && <GenericError message={error.message} />}
+                        </Body>
+                        <Right>
+                          <Icon style={{fontSize: 26, color: Colors.BrandRed}} name="md-add" />
+                        </Right>
+                      </ListItem>
+                    )
+                  }}
                 </Mutation>
             </Card>
           </View>
@@ -253,7 +257,7 @@ class PaymentManager extends React.Component {
                   return [{query: GET_CURRENT_USER}, {query: GET_PAYMENT_METHODS}];
                 }}
               >
-                {updateDefaultPaymentMethod => (
+                {(updateDefaultPaymentMethod, {loading, error}) => (
                   <ListItem
                     key={source._id} 
                     style={[isSelected ? CardStyles.cardListItemSelected : {}]} 
@@ -263,6 +267,7 @@ class PaymentManager extends React.Component {
                       <Text style={[TypographyStyles.listSubItemTitle, isSelected ? TypographyStyles.listSubItemTitleSelected : {}]}>
                         XXXX XXXX XXXX {source.last4}
                       </Text>
+                      {error && <GenericError message={error.message} />}
                     </Body>
                     <Right>
                       {isSelected ? <Icon style={{fontSize: 26, color: Colors.BrandRed}} name="md-checkmark" /> : null}
@@ -278,7 +283,6 @@ class PaymentManager extends React.Component {
   }
 
   setActivePaymentMethod = (sourceId, updateDefaultPaymentMethod) => {
-    if (!sourceId) return console.log('no source id: ', sourceId)
     updateDefaultPaymentMethod({variables: { source: sourceId }});
   }
 
@@ -308,6 +312,7 @@ class PaymentManager extends React.Component {
               <Right>
                 <Text style={CardStyles.itemButtonTitle}>Confirm reload</Text>
               </Right>
+              {error && <GenericError message={error.message} />}
             </CardItem>
           )
         }}
@@ -317,11 +322,16 @@ class PaymentManager extends React.Component {
 
   getAmountOptions = () => {
     const amounts = [
+      {label: '$10', value: 10.0},
+      {label: '$15', value: 15.0},
       {label: '$20', value: 20.0},
+      {label: '$25', value: 25.0},
       {label: '$30', value: 30.0},
+      {label: '$35', value: 35.0},
       {label: '$40', value: 40.0},
+      {label: '$45', value: 45.0},
       {label: '$50', value: 50.0},
-      {label: '$100', value: 100.0},
+      {label: '$75', value: 75.0},
     ]
 
     return amounts.map(amount => {

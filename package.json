@@ -17,6 +17,7 @@
     "apollo-boost": "^0.1.16",
     "apollo-client-preset": "^1.0.8",
     "apollo-link-context": "^1.0.9",
+    "apollo-link-error": "^1.1.1",
     "apollo-link-state": "^0.4.2",
     "expo": "^30.0.1",
     "expokit": "^1.7.0",

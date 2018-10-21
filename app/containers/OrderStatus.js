@@ -25,6 +25,7 @@ import CardForm from 'app/components/stripe/CardForm';
 import Money from 'app/utils/money';
 import Time from 'app/utils/time';
 import GradientButton from 'app/components/GradientButton';
+import GenericError from 'app/components/GenericError';
 
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
 import CardStyles from 'app/styles/generic/CardStyles';
@@ -130,17 +131,22 @@ class OrderStatus extends React.Component {
               }];
             }}
           >
-            {confirmOrder => (
-              <GradientButton 
-                title={title}
-                disabled={disabled}
-                buttonProps={{
-                  onPress: () => {
-                    if (!disabled) confirmOrder();
-                  }
-                }}
-              />
-            )}
+            {(confirmOrder, { loading, error }) => {
+              return (
+                <View>
+                  <GradientButton 
+                    title={title}
+                    disabled={disabled}
+                    buttonProps={{
+                      onPress: () => {
+                        if (!disabled) confirmOrder();
+                      }
+                    }}
+                  />
+                  {error && <GenericError message={error.message} />}
+                </View>
+              )
+            }}
           </Mutation>
         </View>
         : null}
