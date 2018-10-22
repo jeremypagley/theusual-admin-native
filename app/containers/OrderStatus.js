@@ -2,9 +2,6 @@ import React from 'react';
 import { 
   Text,
   Button,
-  H1,
-  H3,
-  Fab,
   Header,
   Container,
   Body,
@@ -44,50 +41,18 @@ class OrderStatus extends React.Component {
   }
 
   render() {
-    const { currentUser, loading, error } = this.props.data;
-    if (loading) return <LoadingIndicator title="Loading stores" />;
-    if (error) return <GenericError message={error.message} />;
-
-    const balance = Money.centsToUSD(currentUser.billing.balance);
-
     return (
       <Container style={ContainerStyles.container}>
         <Header style={ContainerStyles.header}></Header>
 
         <Content padder style={ContainerStyles.content}>
-          <View style={CardStyles.card}>
-            <Card transparent>
-              <CardItem header style={CardStyles.itemHeader}>
-                <Text style={TypographyStyles.listTitle}>Ordering from {currentUser.order.store.title}</Text>
-              </CardItem>
-              <CardItem>
-                <Body>
-                  <Text style={TypographyStyles.note}>{currentUser.order.store.location.address}</Text>
-                </Body>
-              </CardItem>
-            </Card>
-          </View>
-
-          <View style={[CardStyles.card, {marginBottom: 40}]}>
-            <Card transparent>
-              <CardItem header style={CardStyles.itemHeader}>
-                <Text style={TypographyStyles.listTitle}>Your balance</Text>
-              </CardItem>
-              <CardItem>
-                <Body>
-                  <Text style={TypographyStyles.noteEmphasize}>{balance}</Text>
-                </Body>
-              </CardItem>
-
-              {/*This is a CardItem of type footer */}
-              <PaymentManager />
-            </Card>
-          </View>
+          {this.getOrderingFromStoreInfoCard()}
+          {this.getPaymentManagerCard()}
           
           <Text style={[TypographyStyles.noteBold, {marginLeft: 15}]}>Added products</Text>
           <Query query={GET_ORDER}>
             {({ loading, error, data }) => {
-              if (loading) return <LoadingIndicator title="Loading your order" />;
+              if (loading) return <LoadingIndicator title="Loading your order items" />;
               if (error) return <GenericError message={error.message} />;
 
               let items = [];
@@ -105,6 +70,76 @@ class OrderStatus extends React.Component {
       </Container>
     );
 
+  }
+
+  getOrderingFromStoreInfoCard = () => {
+    const { currentUser, loading, error } = this.props.data;
+    if (loading) return <LoadingIndicator title="Loading ordering store info" />;
+    if (error) return <GenericError message={error.message} />;
+    
+    return (
+      <View style={CardStyles.card}>
+        <Card transparent>
+          <CardItem header style={CardStyles.itemHeader}>
+            <Text style={TypographyStyles.listTitle}>Ordering from {currentUser.order.store.title}</Text>
+          </CardItem>
+          <CardItem>
+            <Body>
+              <Text style={TypographyStyles.note}>{currentUser.order.store.location.address}</Text>
+            </Body>
+          </CardItem>
+        </Card>
+      </View>
+    );
+  }
+  
+  getPaymentManagerCard = () => {
+    const { currentUser, loading, error } = this.props.data;
+    if (loading) return <LoadingIndicator title="Loading your payment info" />;
+    if (error) return <GenericError message={error.message} />;
+
+    const balance = Money.centsToUSD(currentUser.billing.balance);
+
+    return (
+      <View style={[CardStyles.card, {marginBottom: 40}]}>
+        <Card transparent>
+          <CardItem header style={CardStyles.itemHeader}>
+            <Text style={TypographyStyles.listTitle}>Your balance</Text>
+          </CardItem>
+          <CardItem>
+            <Body>
+              <Text style={TypographyStyles.noteEmphasize}>{balance}</Text>
+            </Body>
+          </CardItem>
+
+          {/*This is a CardItem of type footer */}
+          <PaymentManager />
+        </Card>
+      </View>
+    );
+  }
+
+  getOrderingFromStoreInfo = () => {
+    const { currentUser, loading, error } = this.props.data;
+    if (loading) return <LoadingIndicator title="Loading stores" />;
+    if (error) return <GenericError message={error.message} />;
+
+    const balance = Money.centsToUSD(currentUser.billing.balance);
+
+    return (
+      <View style={CardStyles.card}>
+        <Card transparent>
+          <CardItem header style={CardStyles.itemHeader}>
+            <Text style={TypographyStyles.listTitle}>Ordering from {currentUser.order.store.title}</Text>
+          </CardItem>
+          <CardItem>
+            <Body>
+              <Text style={TypographyStyles.note}>{currentUser.order.store.location.address}</Text>
+            </Body>
+          </CardItem>
+        </Card>
+      </View>
+    );
   }
 
   renderContent = (items) => {
