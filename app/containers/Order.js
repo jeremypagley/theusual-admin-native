@@ -75,6 +75,8 @@ class Order extends React.Component {
       });
     }
 
+    console.log('data.stores: ', data.stores)
+
     return data.stores.map((store) => {
       // Temp fix for when navigating to another stack calls this query but server doesnt return all values?
       if (!store.location) return null;
@@ -109,6 +111,9 @@ const StoresQuery = gql`
     location {
       address
     },
+    unavailableProducts {
+      _id
+    }
     productCategories {
       _id,
       title,

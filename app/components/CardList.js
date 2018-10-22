@@ -38,11 +38,21 @@ class CardList extends React.PureComponent {
 
   _renderItem = ({item}) => {
     const { rightActionItem } = this.props;
+    if (!item) return null;
+
+    const disabled = item.disabled;
+    const disabledReasonText = item.disabledReasonText;
+    const disabledStyles = disabled ? {color: Colors.BrandDarkGrey} : {};
+
     return (
-      <ListItem onPress={() => this.props.handleItemPress(item)}>
+      <ListItem onPress={() => {
+          if (!disabled) this.props.handleItemPress(item);
+        }}
+      >
         <Body>
-          <Text style={TypographyStyles.listItemTitle}>{item.title}</Text>
-          {item.subtitle ? <Text style={TypographyStyles.noteListItem}>{item.subtitle}</Text> : null}
+          <Text style={[TypographyStyles.listItemTitle, disabledStyles]}>{item.title}</Text>
+          {item.subtitle ? <Text style={[TypographyStyles.noteListItem, disabledStyles]}>{item.subtitle}</Text> : null}
+          {disabled ? <Text style={[TypographyStyles.noteListItem, disabledStyles]}>{disabledReasonText}</Text> : null}
         </Body>
         <Right>
           {rightActionItem ? rightActionItem : <Icon name="arrow-forward" style={{fontSize: 30, color: Colors.BrandRed}} />}

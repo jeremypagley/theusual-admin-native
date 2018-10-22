@@ -9,12 +9,14 @@ import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import CardList from 'app/components/CardList';
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
+import LoadingIndicator from 'app/components/LoadingIndicator';
+import GenericError from 'app/components/GenericError';
 
 class Products extends React.Component {
 
   render() {
     const productCategory = this.props.navigation.getParam('productCategory', null);
-    const productCategoryId = productCategory._id
+    const productCategoryId = productCategory._id;
 
     return (
       <Container style={ContainerStyles.container}>
@@ -23,8 +25,8 @@ class Products extends React.Component {
         <Content padder style={ContainerStyles.content}>
           <Query query={ProductsQuery} variables={{ productCategoryId }}>
             {({ loading, error, data }) => {
-              if (loading) return <Text key="loading">Loading...</Text>;
-              if (error) return <Text key="error">Error :(</Text>;
+              if (loading) return <LoadingIndicator title="Loading products" />;
+              if (error) return <GenericError message={error.message} />;
 
               return (
                 <CardList
@@ -40,10 +42,16 @@ class Products extends React.Component {
   }
 
   getListData = (products) => {
+    const unavailableProducts = this.props.navigation.getParam('unavailableProducts', null);
+
     return products.map((product) => {
+      const disabled = unavailableProducts.find(p => p._id === product._id)
+
       return {
         _id: product._id,
         title: product.title,
+        disabled: disabled,
+        disabledReasonText: 'This item is unavailable'
       }
     })
   }

@@ -65,7 +65,7 @@ class Store extends React.Component {
     return (
       <CardList
         data={this.getListData(store.productCategories)}
-        handleItemPress={(item) => this.onItemPress(item, store.productCategories)}
+        handleItemPress={(item) => this.onItemPress(item, store.productCategories, store.unavailableProducts)}
       />
     )
   }
@@ -85,7 +85,7 @@ class Store extends React.Component {
     const startTime = moment(storeHours.start).format('h:mm a');
     const endTime = moment(storeHours.end).format('h:mm a');
     const storeOpened = Time.getStoreOpened(storeHours);
-    const openedTitle = storeOpened ? '(Open!)' : '(Closed)';
+    const openedTitle = storeOpened ? '(Open)' : '(Closed)';
 
     return (
       <View style={CardStyles.card}>
@@ -112,32 +112,12 @@ class Store extends React.Component {
     )
   }
 
-  onItemPress = (item, productCategories) => {
+  onItemPress = (item, productCategories, unavailableProducts) => {
     const { navigation } = this.props;
     const productCategory = productCategories.find(p => p._id === item._id);
-    navigation.navigate('Products', { productCategory });
+    navigation.navigate('Products', { productCategory, unavailableProducts });
   }
 
 }
-
-// const StoresQuery = gql`
-// {
-//   stores {
-//     _id,
-//     title,
-//     description,
-//     hours,
-//     phone,
-//     website,
-//     location {
-//       address
-//     },
-//     productCategories {
-//       title,
-//       products
-//     }
-//   }
-// }
-// `
 
 export default Store;
