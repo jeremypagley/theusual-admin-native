@@ -16,7 +16,6 @@ import TypographyStyles from 'app/styles/generic/TypographyStyles';
 import CardStyles from 'app/styles/generic/CardStyles';
 import PropTypes from 'prop-types';
 import Colors from 'app/styles/Colors';
-import CardList from 'app/components/CardList';
 
 class ExpandableCard extends React.Component {
   static propTypes = {
@@ -43,7 +42,7 @@ class ExpandableCard extends React.Component {
     return (
       <View style={CardStyles.card}>
         <Card transparent>
-          {title && removable ? 
+          {title ? 
           <CardItem header style={CardStyles.itemHeader}>
             <Text style={TypographyStyles.noteTitle}>{title}</Text>
             <Left />

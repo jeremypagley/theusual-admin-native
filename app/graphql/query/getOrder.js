@@ -3,17 +3,28 @@ import gql from 'graphql-tag';
 const GET_ORDER = gql`
   {
     order {
-      _id,
+      _id
       items {
-        _id,
+        _id
         productModifiersOptions {
-          title,
+          title
           price
-        },
+        }
         product {
-          _id,
-          title,
+          _id
+          title
           price
+        }
+      }
+      store {
+        _id
+        title
+        hours {
+          start
+          end
+        }
+        location {
+          address
         }
       }
     }

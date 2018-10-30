@@ -24,11 +24,13 @@ import Time from 'app/utils/time';
 import GradientButton from 'app/components/GradientButton';
 import LoadingIndicator from 'app/components/LoadingIndicator';
 import GenericError from 'app/components/GenericError';
+import OrderHistory from 'app/containers/OrderHistory';
 import DeviceEmitters from 'app/utils/deviceEmitters';
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
 import CardStyles from 'app/styles/generic/CardStyles';
 import TypographyStyles from 'app/styles/generic/TypographyStyles';
 import ButtonStyles from 'app/styles/generic/ButtonStyles';
+import GET_ORDER_HISTORY from 'app/graphql/query/getOrderHistory';
 
 class OrderStatus extends React.Component {
   constructor(props) {
@@ -36,7 +38,7 @@ class OrderStatus extends React.Component {
     
     this.state = {
       token: '',
-      errorInsufficientFunds: false
+      errorInsufficientFunds: false,
     }
   }
 
@@ -46,46 +48,54 @@ class OrderStatus extends React.Component {
         <Header style={ContainerStyles.header}></Header>
 
         <Content padder style={ContainerStyles.content}>
-          {this.getOrderingFromStoreInfoCard()}
           {this.getPaymentManagerCard()}
           
-          <Text style={[TypographyStyles.noteBold, {marginLeft: 15}]}>Added products</Text>
           <Query query={GET_ORDER}>
             {({ loading, error, data }) => {
               if (loading) return <LoadingIndicator title="Loading your order items" />;
               if (error) return <GenericError message={error.message} />;
 
-              let items = [];
+              const order = data.order && data.order[0] ? data.order[0] : null;
 
-              if (data.order && data.order.length > 0) {
-                items = data.order[0].items;
-              } else {
-                items = [];
-              }
+              if (!order || order.items.length < 1) return (
+                <View>
+                  <Text style={[TypographyStyles.noteBold, {marginLeft: 15}]}>Added products</Text>
+                  {this._getNoOrderItems()}
+                </View>
+              )
 
-              return (<View>{this.renderContent(items)}</View>);
+              return (
+                <View>
+                  {this.getOrderingFromStoreInfoCard(order)}
+
+                  <Text style={[TypographyStyles.noteBold, {marginLeft: 15}]}>Added products</Text>
+                  {this.renderContent(order)}
+                </View>
+              );
             }}
           </Query>
+
+          <OrderHistory />
+
+          <View style={{height: 30}}></View>
         </Content>
       </Container>
     );
 
   }
 
-  getOrderingFromStoreInfoCard = () => {
-    const { currentUser, loading, error } = this.props.data;
-    if (loading) return <LoadingIndicator title="Loading ordering store info" />;
-    if (error) return <GenericError message={error.message} />;
+  getOrderingFromStoreInfoCard = (order) => {
+    if (!order.store.location) return null
     
     return (
-      <View style={CardStyles.card}>
+      <View style={[CardStyles.card, {marginBottom: 40}]}>
         <Card transparent>
           <CardItem header style={CardStyles.itemHeader}>
-            <Text style={TypographyStyles.listTitle}>Ordering from {currentUser.order.store.title}</Text>
+            <Text style={TypographyStyles.listTitle}>Ordering from {order.store.title}</Text>
           </CardItem>
           <CardItem>
             <Body>
-              <Text style={TypographyStyles.note}>{currentUser.order.store.location.address}</Text>
+              <Text style={TypographyStyles.note}>{order.store.location.address}</Text>
             </Body>
           </CardItem>
         </Card>
@@ -101,7 +111,7 @@ class OrderStatus extends React.Component {
     const balance = Money.centsToUSD(currentUser.billing.balance);
 
     return (
-      <View style={[CardStyles.card, {marginBottom: 40}]}>
+      <View style={[CardStyles.card, {marginBottom: 20}]}>
         <Card transparent>
           <CardItem header style={CardStyles.itemHeader}>
             <Text style={TypographyStyles.listTitle}>Your balance</Text>
@@ -119,55 +129,28 @@ class OrderStatus extends React.Component {
     );
   }
 
-  getOrderingFromStoreInfo = () => {
-    const { currentUser, loading, error } = this.props.data;
-    if (loading) return <LoadingIndicator title="Loading stores" />;
-    if (error) return <GenericError message={error.message} />;
-
-    const balance = Money.centsToUSD(currentUser.billing.balance);
-
-    return (
-      <View style={CardStyles.card}>
-        <Card transparent>
-          <CardItem header style={CardStyles.itemHeader}>
-            <Text style={TypographyStyles.listTitle}>Ordering from {currentUser.order.store.title}</Text>
-          </CardItem>
-          <CardItem>
-            <Body>
-              <Text style={TypographyStyles.note}>{currentUser.order.store.location.address}</Text>
-            </Body>
-          </CardItem>
-        </Card>
-      </View>
-    );
-  }
-
-  renderContent = (items) => {
+  renderContent = (order) => {
     const { currentUser } = this.props.data;
     if (!currentUser) return;
 
     const hasBilling = currentUser.billing;
-    const noOrderItems = items.length < 1;
 
-    const insufficientFunds = this.getCombinedPricesInCents(items) > currentUser.billing.balance;
-
-    const storeHours = currentUser.order.store.hours;
+    const insufficientFunds = this.getCombinedPricesInCents(order.items) > currentUser.billing.balance;
+    const storeHours = order.store.hours;
     const storeOpened = Time.getStoreOpened(storeHours);
     const disabled = storeOpened ? false : true;
     const title = storeOpened ? 'Confirm Order' : 'Store Closed';
 
     return (
       <View>
-        {this.getOrderProducts(items, noOrderItems)}
+        {this.getOrderProducts(order.items)}
 
-        {!noOrderItems && hasBilling && !insufficientFunds ?
+        {hasBilling && !insufficientFunds ?
         <View>
           <Mutation 
             mutation={CONFIRM_ORDER}
             refetchQueries={() => {
-              return [{
-                  query: GET_ORDER,
-              }];
+              return [{query: GET_ORDER}, {query: GET_ORDER_HISTORY}];
             }}
           >
             {(confirmOrder, { loading, error }) => {
@@ -194,13 +177,12 @@ class OrderStatus extends React.Component {
         : null}
         {insufficientFunds ? this.getInsufficientFunds() : null}
         
-        {!noOrderItems ?
         <View>
           <Mutation 
             mutation={CREATE_USUAL}
             refetchQueries={() => {
               return [{
-                  query: GET_CURRENT_USER,
+                query: GET_CURRENT_USER,
               }];
             }}
           >
@@ -208,14 +190,13 @@ class OrderStatus extends React.Component {
               <Button 
                 block 
                 style={ButtonStyles.secondaryButton}
-                onPress={() => createUsualByOrderId({variables: {id: currentUser.order}})}
+                onPress={() => createUsualByOrderId({variables: {id: order._id}})}
               >
                 <Text style={ButtonStyles.secondaryButtonText}>Add order to usuals</Text>
               </Button>
             )}
           </Mutation>
         </View>
-        : null}
       </View>
     );
   }
@@ -234,13 +215,15 @@ class OrderStatus extends React.Component {
     );
   }
 
-  getOrderProducts = (items, noOrderItems) => {
-
-    if (noOrderItems) return (
+  _getNoOrderItems = () => {
+    return (
       <View style={OrderStatusStyles.noItemsWrapper}>
         <Text style={TypographyStyles.note}>No order items have been added 😕</Text>
       </View>
     )
+  }
+
+  getOrderProducts = (items) => {
 
     return items.map(item => {
       const combinedPrice = this.getCombinedPrices(item);
@@ -268,7 +251,9 @@ class OrderStatus extends React.Component {
                 removable
                 removableOnPress={() => {
                   removeOrderItem({variables: {id: item._id}});
-                  if (noOrderItems) DeviceEmitters.activeOrderEventEmit(false);
+                  
+                  // Items has one item on a remove if it's the last item being removed
+                  if (items.length === 1) DeviceEmitters.activeOrderEventEmit(false);
                 }}
               />
             )}
@@ -331,21 +316,6 @@ export default graphql(
     query User {
       currentUser {
         _id
-        email
-        order {
-          _id
-          store {
-            _id
-            title
-            hours {
-              start
-              end
-            }
-            location {
-              address
-            }
-          }
-        }
         billing {
           balance
         }

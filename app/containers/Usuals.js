@@ -2,7 +2,8 @@ import React from 'react';
 import { 
   Container,
   Content,
-  Header
+  Header,
+  View
 } from 'native-base';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
@@ -17,6 +18,23 @@ import LoadingIndicator from 'app/components/LoadingIndicator';
 import DeviceEmitters from 'app/utils/deviceEmitters';
 
 class UsualsContainer extends React.Component {
+  constructor(props) {
+    super(props);
+    
+    this.state = {
+      hasActiveOrder: false
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { currentUser } = nextProps.data;
+
+    // When app loads add order bubble if there is an active order
+    if (currentUser && currentUser.order && currentUser.order._id && currentUser.order.items && currentUser.order.items.length > 0 && !this.state.hasActiveOrder) {
+      DeviceEmitters.activeOrderEventEmit(true);
+      this.setState({ hasActiveOrder: true });
+    }
+  }
 
   render() {
     const { currentUser, loading } = this.props.data;
@@ -56,6 +74,8 @@ class UsualsContainer extends React.Component {
               </Mutation>
             )}
           </Mutation>
+
+          <View style={{height: 30}}></View>
         </Content>
       </Container>
     );
@@ -68,6 +88,8 @@ class UsualsContainer extends React.Component {
       const options = this.getUsualOptions(item);      
       return {title: item.product.title, options: options}
     });
+
+    if (!usual.store.location) return null;
 
     return (
       <ExpandableCard 

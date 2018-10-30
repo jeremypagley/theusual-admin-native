@@ -7,6 +7,9 @@ const GET_CURRENT_USER = gql`
       email,
       order {
         _id
+        items {
+          _id,
+        }
       },
       billing {
         balance,

@@ -116,7 +116,6 @@ export default class App extends Component {
     DeviceEmitters.activeOrderEventListen((activeOrder) => this._handleDeviceEmit(activeOrder));
 
     AsyncStorage.getItem("firstLaunch").then(value => {
-      console.log('value: ', value)
       if (value === null) {
         AsyncStorage.setItem('firstLaunch', 'true');
         this.setState({firstLaunch: true});
@@ -126,6 +125,7 @@ export default class App extends Component {
   }
 
   _handleDeviceEmit = (activeOrder) => {
+    console.log('_handleDeviceEmit active)rder: ', activeOrder)
     this.setState({ activeOrder });
   }
 
@@ -177,6 +177,8 @@ export default class App extends Component {
   }
 
   render() {
+    console.log('this.state.activeOrder: ', this.state.activeOrder)
+
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
       return (
         <View>
