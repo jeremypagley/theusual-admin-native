@@ -24,7 +24,7 @@ import Time from 'app/utils/time';
 import GradientButton from 'app/components/GradientButton';
 import LoadingIndicator from 'app/components/LoadingIndicator';
 import GenericError from 'app/components/GenericError';
-
+import DeviceEmitters from 'app/utils/deviceEmitters';
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
 import CardStyles from 'app/styles/generic/CardStyles';
 import TypographyStyles from 'app/styles/generic/TypographyStyles';
@@ -178,7 +178,10 @@ class OrderStatus extends React.Component {
                     disabled={disabled}
                     buttonProps={{
                       onPress: () => {
-                        if (!disabled) confirmOrder();
+                        if (!disabled) {
+                          confirmOrder();
+                          DeviceEmitters.activeOrderEventEmit(false);
+                        }
                       }
                     }}
                   />
@@ -263,7 +266,10 @@ class OrderStatus extends React.Component {
               <ExpandableCard 
                 items={[{title: item.product.title, options}]}
                 removable
-                removableOnPress={() => removeOrderItem({variables: {id: item._id}})}
+                removableOnPress={() => {
+                  removeOrderItem({variables: {id: item._id}});
+                  if (noOrderItems) DeviceEmitters.activeOrderEventEmit(false);
+                }}
               />
             )}
           </Mutation>

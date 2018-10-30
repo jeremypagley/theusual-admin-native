@@ -14,6 +14,7 @@ import ExpandableCard from 'app/components/ExpandableCard';
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
 
 import LoadingIndicator from 'app/components/LoadingIndicator';
+import DeviceEmitters from 'app/utils/deviceEmitters';
 
 class UsualsContainer extends React.Component {
 
@@ -76,7 +77,10 @@ class UsualsContainer extends React.Component {
         items={items}
         removable
         removableOnPress={() => removeUsualById({variables: {id: usual._id}})}
-        onActionPress={() => createOrderByUsualId({variables: {id: usual._id}})}
+        onActionPress={() => {
+          createOrderByUsualId({variables: {id: usual._id}});
+          DeviceEmitters.activeOrderEventEmit(true);
+        }}
       />
     )
   }

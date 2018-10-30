@@ -1,5 +1,6 @@
 import React from 'react';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
+import { DeviceEventEmitter } from 'react-native';
 
 import Cart from 'app/scenes/Cart';
 import Settings from 'app/scenes/Profile';
@@ -8,7 +9,7 @@ import Store from 'app/scenes/Store';
 import Products from 'app/scenes/Products';
 import Product from 'app/scenes/Product';
 import Usuals from 'app/scenes/Usuals';
-import { Icon } from 'native-base';
+import { Icon, Badge, View } from 'native-base';
 import Colors from 'app/styles/Colors';
 
 const reusableNavOptions = {
@@ -48,7 +49,7 @@ const AppStack = createBottomTabNavigator({
 },
 {
   headerMode: 'float',
-  navigationOptions: ({ navigation }) => ({
+  navigationOptions: ({ screenProps, navigation }) => ({
     headerStyle: {
       backgroundColor: Colors.BrandRed,
     },
@@ -63,6 +64,8 @@ const AppStack = createBottomTabNavigator({
     },
     tabBarIcon: ({ focused, tintColor }) => {
       const { routeName } = navigation.state;
+      const { activeOrder } = screenProps;
+      
       let iconName;
       if (routeName === 'Usuals') {
         iconName = 'md-cafe';
@@ -75,6 +78,27 @@ const AppStack = createBottomTabNavigator({
       }
 
       const color = focused ? Colors.BrandRed : Colors.BrandBlueGrey;
+
+      if (activeOrder && iconName === 'md-cart') {
+        return (
+          <View>
+            <Icon
+              name={iconName}
+              size={22}
+              style={{ marginBottom: -3, color }}
+              active={focused}
+            />
+            <Badge style={{
+                position: 'absolute', 
+                backgroundColor: Colors.BrandRed,
+                height: 13,
+                left: 16,
+              }}
+            >
+            </Badge>
+          </View>
+        );
+      }
 
       return (
         <Icon
@@ -89,4 +113,13 @@ const AppStack = createBottomTabNavigator({
   }),
 });
 
-export default AppStack;
+class AppNav extends React.Component {
+
+  render() {
+    return (
+      <AppStack {...this.props} />
+    );
+  }
+}
+
+export default AppNav;

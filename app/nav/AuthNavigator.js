@@ -6,6 +6,7 @@ import Colors from 'app/styles/Colors';
 
 const reusableNavOptions = {
   navigationOptions: ({ navigation }) => ({
+    headerLeft: null,
     headerStyle: {
       backgroundColor: Colors.BrandRed,
       borderBottomWidth: 0,
@@ -19,8 +20,8 @@ const reusableNavOptions = {
 }
 
 const AuthStack = createStackNavigator({
-  Register: { screen: Register, navigationOptions: { headerTitle: 'Register' } },
   Login: { screen: Login, navigationOptions: { headerTitle: 'Login' } },
+  Register: { screen: Register, navigationOptions: { headerTitle: 'Register' } },
 }, reusableNavOptions);
 
 export default AuthStack;

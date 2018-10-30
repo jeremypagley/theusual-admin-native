@@ -3,7 +3,6 @@ import {
   Container,
   Body,
   ListItem,
-  Button,
   Accordion,
   Right,
   Left,
@@ -17,7 +16,7 @@ import {
 } from 'native-base';
 import { TouchableOpacity } from 'react-native';
 
-import { Query, Mutation, graphql } from 'react-apollo';
+import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import GET_ORDER from 'app/graphql/query/getOrder';
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
@@ -25,6 +24,7 @@ import CardStyles from 'app/styles/generic/CardStyles';
 import TypographyStyles from 'app/styles/generic/TypographyStyles';
 import Colors from 'app/styles/Colors';
 import GradientButton from 'app/components/GradientButton';
+import DeviceEmitters from 'app/utils/deviceEmitters';
 
 class Product extends React.Component {
   constructor(props) {
@@ -91,7 +91,10 @@ class Product extends React.Component {
           <GradientButton 
             title="Add to order"
             buttonProps={{
-              onPress: () => createOrderItem({variables: {productId, productModifiersOptions, storeId}})
+              onPress: () => {
+                createOrderItem({variables: {productId, productModifiersOptions, storeId}});
+                DeviceEmitters.activeOrderEventEmit(true);
+              }
             }}
           />
         )}

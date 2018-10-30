@@ -1,6 +1,6 @@
 import React from 'react';
 import { ActivityIndicator } from 'react-native';
-import { Container, Header, Label, Content, Form, Item, Input, Text, Card, View } from 'native-base';
+import { Container, Header, Label, Content, Form, Item, Input, Text, Card, View, Button } from 'native-base';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
@@ -10,6 +10,7 @@ import Colors from 'app/styles/Colors';
 import GradientButton from 'app/components/GradientButton';
 import GenericError from 'app/components/GenericError';
 import validator from 'validator';
+import ButtonStyles from 'app/styles/generic/ButtonStyles';
 
 class Login extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -63,6 +64,7 @@ class Login extends React.Component {
   };
 
   render() {
+    const { navigation } = this.props;
     const { emailError, passwordError, email, password, loggingIn } = this.state;
     let disabled = true;
 
@@ -108,6 +110,14 @@ class Login extends React.Component {
               onPress: () => this.handleSubmit()
             }}
           />
+          
+          <Button 
+            block 
+            style={ButtonStyles.secondaryButton}
+            onPress={() => navigation.navigate('Register')}
+          >
+            <Text style={ButtonStyles.secondaryButtonText}>Sign Up</Text>
+          </Button>
         </Content>
       </Container>
     );
