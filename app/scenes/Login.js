@@ -90,7 +90,7 @@ class Login extends React.Component {
                   />
                 </Item>
                 <Item floatingLabel>
-                  <Label>Password (must be more than 6 characters)</Label>
+                  <Label>Password</Label>
                   <Input
                     onChangeText={value => this.handleInputChange('password', value)}
                     autoCapitalize="none"

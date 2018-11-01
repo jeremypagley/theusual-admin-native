@@ -3,7 +3,11 @@ import {
   Container,
   Content,
   Header,
-  View
+  View,
+  Card,
+  CardItem,
+  Text,
+  Left
 } from 'native-base';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
@@ -16,6 +20,9 @@ import ContainerStyles from 'app/styles/generic/ContainerStyles';
 
 import LoadingIndicator from 'app/components/LoadingIndicator';
 import DeviceEmitters from 'app/utils/deviceEmitters';
+import CardStyles from 'app/styles/generic/CardStyles';
+import TypographyStyles from 'app/styles/generic/TypographyStyles';
+import GradientButton from 'app/components/GradientButton';
 
 class UsualsContainer extends React.Component {
   constructor(props) {
@@ -38,12 +45,15 @@ class UsualsContainer extends React.Component {
 
   render() {
     const { currentUser, loading } = this.props.data;
+    const noData = currentUser && currentUser.usuals.length < 1;
 
     return (
       <Container style={ContainerStyles.container}>
         <Header style={ContainerStyles.header}></Header>
 
         <Content padder style={ContainerStyles.content}>
+          {this.getNoDataCard(noData)}
+
           <Mutation 
             mutation={ADD_ORDER_BY_ID}
             refetchQueries={() => {
@@ -79,6 +89,34 @@ class UsualsContainer extends React.Component {
         </Content>
       </Container>
     );
+  }
+
+  getNoDataCard = (noData) => {
+    return noData ? (
+      <View>
+        <View style={CardStyles.card}>
+          <Card transparent>
+            <CardItem header style={CardStyles.itemHeader}>
+              <Left>
+                <Text style={TypographyStyles.listTitle}>No Usuals Yet?</Text>
+              </Left>
+            </CardItem>
+            <CardItem>
+              <Left>
+                <Text style={TypographyStyles.noDataSemiBold}>
+                  You haven't added any usuals yet. Order your favorite drink and before finishing your order add the order as a Usual.
+                </Text>
+              </Left>
+            </CardItem>
+          </Card>
+        </View>
+
+        <GradientButton 
+          title="Find A Store To Order From"
+          buttonProps={{onPress: () => this.props.navigation.navigate('Stores')}}
+        />
+      </View>
+    ) : null;
   }
 
   getUsualCard = (usual, createOrderByUsualId, removeUsualById) => {

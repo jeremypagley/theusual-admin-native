@@ -125,7 +125,6 @@ export default class App extends Component {
   }
 
   _handleDeviceEmit = (activeOrder) => {
-    console.log('_handleDeviceEmit active)rder: ', activeOrder)
     this.setState({ activeOrder });
   }
 
@@ -177,8 +176,6 @@ export default class App extends Component {
   }
 
   render() {
-    console.log('this.state.activeOrder: ', this.state.activeOrder)
-
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
       return (
         <View>

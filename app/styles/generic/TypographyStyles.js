@@ -33,6 +33,12 @@ const Styles = StyleSheet.create({
     fontFamily: 'montserrat-semibold'
   },
 
+  noDataSemiBold: {
+    fontSize: 14,
+    color: Colors.BrandDarkGrey,
+    fontFamily: 'montserrat-semibold'
+  },
+
   note: {
     fontSize: 16,
     color: Colors.BrandDarkGrey,

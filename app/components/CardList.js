@@ -45,8 +45,9 @@ class CardList extends React.PureComponent {
     const disabledStyles = disabled ? {color: Colors.BrandDarkGrey} : {};
 
     return (
-      <ListItem onPress={() => {
-          if (!disabled) this.props.handleItemPress(item);
+      <ListItem 
+        onPress={() => {
+          if (!disabled && this.props.handleItemPress) this.props.handleItemPress(item);
         }}
       >
         <Body>

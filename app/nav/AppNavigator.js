@@ -1,9 +1,8 @@
 import React from 'react';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
-import { DeviceEventEmitter } from 'react-native';
 
 import Cart from 'app/scenes/Cart';
-import Settings from 'app/scenes/Profile';
+import Profile from 'app/scenes/Profile';
 import Order from 'app/scenes/Order';
 import Store from 'app/scenes/Store';
 import Products from 'app/scenes/Products';
@@ -34,6 +33,10 @@ const CartStack = createStackNavigator({
   Cart: { screen: Cart },
 }, reusableNavOptions);
 
+const ProfileStack = createStackNavigator({
+  Profile: { screen: Profile },
+}, reusableNavOptions);
+
 const StoresStack = createStackNavigator({
   Order: { screen: Order },
   Store: { screen: Store },
@@ -45,7 +48,7 @@ const AppStack = createBottomTabNavigator({
   Usuals: UsualsStack,
   Stores: StoresStack,
   Cart: CartStack,
-  Settings: Settings,
+  Profile: ProfileStack,
 },
 {
   headerMode: 'float',
@@ -73,7 +76,7 @@ const AppStack = createBottomTabNavigator({
         iconName = 'md-search';
       } else if (routeName === 'Cart') {
         iconName = 'md-cart';
-      } else if (routeName === 'Settings') {
+      } else if (routeName === 'Profile') {
         iconName = 'md-menu';
       }
 
@@ -91,7 +94,7 @@ const AppStack = createBottomTabNavigator({
             <Badge style={{
                 position: 'absolute', 
                 backgroundColor: Colors.BrandRed,
-                height: 13,
+                height: 12,
                 left: 16,
               }}
             >

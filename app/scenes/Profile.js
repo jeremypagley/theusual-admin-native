@@ -1,32 +1,20 @@
 import React from 'react';
-import { View } from 'react-native';
-import { Container, Text, Button, Content, Header } from 'native-base';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import ProfileContainer from 'app/containers/Profile';
 
-class Logout extends React.Component {
+class Profile extends React.Component {
+  static navigationOptions = {
+    title: 'Profile',
+  };
+
   handleLogout = () => {
     return this.props.screenProps.changeLoginState(false);
   };
 
   render() {
-    const { currentUser } = this.props.data;
-
     return (
-      <Container>
-        <Header />
-        <Content>
-          {currentUser &&
-            <View>
-              <Text>{currentUser._id}</Text>
-              <Text>{currentUser.email}</Text>
-            </View>
-          }
-          <Button full onPress={this.handleLogout}>
-            <Text>Log Out</Text>
-          </Button>
-        </Content>
-      </Container>
+      <ProfileContainer onLogout={this.handleLogout} data={this.props.data} />
     );
   }
 }
@@ -37,7 +25,9 @@ export default graphql(
       currentUser {
         _id
         email
+        firstName
+        lastName
       }
     }
   `
-)(Logout);
+)(Profile);

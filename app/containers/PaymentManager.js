@@ -29,6 +29,7 @@ import CardStyles from 'app/styles/generic/CardStyles';
 import Money from 'app/utils/money';
 import Config from '../../config.json';
 import GenericError from 'app/components/GenericError';
+import { compose } from 'react-apollo';
 
 function testID(id) {
   return Platform.OS === 'android' ? { accessible: true, accessibilityLabel: id } : { testID: id };
@@ -39,9 +40,8 @@ class PaymentManager extends React.Component {
     super(props);
     
     this.state = {
-      open: false,
       token: '',
-      selectedPaymentMethod: null,
+      selectedPaymentMethodSource: null,
       amountValue: 20.0,
       autoReloadValue: false,
       token: '',
@@ -57,7 +57,7 @@ class PaymentManager extends React.Component {
 
   handleCardPayPress = async (cardHandler) => {
     try {
-      this.setState({ loading: true, token: null });
+      this.setState({ creditCardLoading: true, token: null });
       const token = await Stripe.paymentRequestWithCardFormAsync({
         // Only iOS support this options
         smsAutofillDisabled: false,
@@ -76,17 +76,17 @@ class PaymentManager extends React.Component {
         },
       });
 
-      this.setState({ loading: false, token });
+      this.setState({ creditCardLoading: false, token });
       return cardHandler({variables: { token: token.tokenId }});
       
     } catch (error) {
-      this.setState({ loading: false });
+      this.setState({ creditCardLoading: false });
     }
   };
 
   render() {
-    const open = this.state.open;
-    const { currentUser } = this.props.data;
+    const { open, onModalToggle } = this.props;
+    const { currentUser } = this.props.currentUser;
 
     if (!currentUser) return null;
 
@@ -97,12 +97,12 @@ class PaymentManager extends React.Component {
         <CardItem 
           footer 
           button 
-          onPress={() => this.toggleModal()} 
+          onPress={() => onModalToggle()} 
           style={[CardStyles.itemFooter, {backgroundColor: 'transparent', marginTop: -42}]}
         >
           <Left />
           <Right>
-            <Text style={CardStyles.itemButtonTitle}>
+            <Text style={[CardStyles.itemButtonTitle, {width: 200}]}>
               {hasBilling 
                 ? 'Reload' 
                 : 'Add a payment method'
@@ -111,10 +111,9 @@ class PaymentManager extends React.Component {
           </Right>
         </CardItem>
 
-
         <Modal
           isVisible={open}
-          onSwipe={() => this.toggleModal()}
+          onSwipe={() => onModalToggle()}
           swipeDirection="down"
           style={ContainerStyles.modalContainer}
         >
@@ -125,19 +124,11 @@ class PaymentManager extends React.Component {
 
   }
 
-  toggleModal = () => {
-    const { open } = this.state;
-    this.setState({ open: !open })
-  }
-
   renderModalContent = () => {
-    const { currentUser } = this.props.data;
+    const { currentUser } = this.props.currentUser;
     const { creditCardLoading, applePayLoading } = this.state;
-    if (!currentUser) return null;
 
-    const hasBilling = currentUser.billing;
-
-    const balance = hasBilling ? Money.centsToUSD(currentUser.billing.balance) : null;
+    const hasBilling = currentUser && currentUser.billing;
 
     return (
       <View style={ContainerStyles.modalContent}>
@@ -148,7 +139,7 @@ class PaymentManager extends React.Component {
           </Body>
           <Right>
             <Icon 
-              onPress={() => this.toggleModal()} 
+              onPress={() => this.props.onModalToggle()} 
               name="md-close" 
               style={ContainerStyles.modalCloseIcon}
             />
@@ -165,15 +156,21 @@ class PaymentManager extends React.Component {
                 </Left>
               </CardItem>
 
-              {hasBilling ? this.getActivePaymentItems() : null}
+              {this.getActivePaymentItems()}
 
-                <Mutation
-                  mutation={CREATE_PAYMENT_METHOD}
-                  refetchQueries={() => {
-                    return [{query: GET_CURRENT_USER}, {query: GET_PAYMENT_METHODS}];
+              <Mutation
+                mutation={CREATE_PAYMENT_METHOD}
+                refetchQueries={(data) => {
+                  let getPaymentMethodsQuery = {
+                    query: GET_PAYMENT_METHODS,
+                    variables: { userId: data.createPaymentMethod && data.createPaymentMethod._id ? data.createPaymentMethod._id : currentUser._id}
+                  }
+                  
+                    return [getPaymentMethodsQuery, {query: CURRENT_USER}];
                   }}
                 >
-                  {(createPaymentMethod, { loading, error }) => {
+                  {(createPaymentMethod, { loading, error, data }) => {
+
                     return (
                       <ListItem
                         key={'creditcard'}
@@ -182,7 +179,7 @@ class PaymentManager extends React.Component {
                       >
                         <Body>
                           {creditCardLoading 
-                            ? <ActivityIndicator size="small" color="#00ff00" />
+                            ? <ActivityIndicator size="small" color="grey" />
                             : <Text style={TypographyStyles.listSubItemTitle}>
                                 Add a credit card
                               </Text>
@@ -200,10 +197,12 @@ class PaymentManager extends React.Component {
           </View>
 
           {hasBilling
-            ? this.getBalanceCard(balance)
+            ? this.getBalanceCard(Money.centsToUSD(currentUser.billing.balance))
             : null
           }
-          </Content>
+
+          <View style={{height: 40}}></View>
+        </Content>
       </View>
     );
   }
@@ -235,55 +234,67 @@ class PaymentManager extends React.Component {
   }
 
   getActivePaymentItems = () => {
-    const { currentUser } = this.props.data;
+    const { currentUser } = this.props.currentUser;
+
+    if (!currentUser.billing) return null;
+
     const { billing: { stripeCustomer } } = currentUser;
 
     return (
-      <Query query={GET_PAYMENT_METHODS}>
+      <Query query={GET_PAYMENT_METHODS} variables={{ userId: currentUser._id }}>
         {({ loading, error, data }) => {
+          if (loading) return (
+            <View style={{margin: 15}}>
+              <ActivityIndicator size="large" color={Colors.BrandRed} /> 
+              <Text key="loading">Loading your payment methods...</Text>
+            </View>
+          )
 
-          if (loading) return <Text key="loading">Loading...</Text>;
-          if (error) return <Text key="error">Error :(</Text>;
+          if (error) return (
+            <Text key="error" style={{color: Colors.BrandRed, padding: 15}}>We could not load your payment methods at this time.</Text>
+          )
 
           return data.paymentMethods.map(source => {
-            const { selectedPaymentMethod } = this.state;
-            const isSelected = stripeCustomer.default_source === source.id;
+            const { selectedPaymentMethodSource } = this.state;
+            let defaultSource = selectedPaymentMethodSource ? selectedPaymentMethodSource : stripeCustomer.default_source;
+            const isSelected = defaultSource === source.id;
 
             return (
               <Mutation
                 key={source.id}
                 mutation={UPDATE_DEFAULT_PAYMENT_METHOD}
                 refetchQueries={() => {
-                  return [{query: GET_CURRENT_USER}, {query: GET_PAYMENT_METHODS}];
+                  return [{query: GET_PAYMENT_METHODS, variables: { userId: currentUser._id }}, {query: GET_CURRENT_USER}];
                 }}
               >
-                {(updateDefaultPaymentMethod, {loading, error}) => (
-                  <ListItem
-                    key={source._id} 
-                    style={[isSelected ? CardStyles.cardListItemSelected : {}]} 
-                    onPress={() => this.setActivePaymentMethod(source.id, updateDefaultPaymentMethod)}
-                  >
-                    <Body>
-                      <Text style={[TypographyStyles.listSubItemTitle, isSelected ? TypographyStyles.listSubItemTitleSelected : {}]}>
-                        XXXX XXXX XXXX {source.last4}
-                      </Text>
-                      {error && <GenericError message={error.message} />}
-                    </Body>
-                    <Right>
-                      {isSelected ? <Icon style={{fontSize: 26, color: Colors.BrandRed}} name="md-checkmark" /> : null}
-                    </Right>
-                  </ListItem>
-                )}
+                {(updateDefaultPaymentMethod, {loading, error, data}) => {
+                  return (
+                    <ListItem
+                      key={source.id} 
+                      style={[isSelected ? CardStyles.cardListItemSelected : {}]} 
+                      onPress={() => {
+                        updateDefaultPaymentMethod({variables: { source: source.id }});
+                        this.setState({ selectedPaymentMethodSource: source.id });
+                      }}
+                    >
+                      <Body>
+                        <Text style={[TypographyStyles.listSubItemTitle, isSelected ? TypographyStyles.listSubItemTitleSelected : {}]}>
+                          XXXX XXXX XXXX {source.last4}
+                        </Text>
+                        {error && <GenericError message={error.message} />}
+                      </Body>
+                      <Right>
+                        {isSelected ? <Icon style={{fontSize: 26, color: Colors.BrandRed}} name="md-checkmark" /> : null}
+                      </Right>
+                    </ListItem>
+                  )
+                }}
               </Mutation>
             )
           })
         }}
       </Query>
     )
-  }
-
-  setActivePaymentMethod = (sourceId, updateDefaultPaymentMethod) => {
-    updateDefaultPaymentMethod({variables: { source: sourceId }});
   }
 
   getReloadCardAction = () => {
@@ -429,29 +440,35 @@ const CREATE_PAYMENT_METHOD = gql`
 `
 
 const GET_PAYMENT_METHODS = gql`
+  query paymentMethods($userId: String) {
+    paymentMethods(userId: $userId) {
+      id
+      last4
+    }
+  }
+`
+
+const CURRENT_USER = gql`
 {
-  paymentMethods {
-    id
-    last4
+  currentUser {
+    _id
+    email
+    billing {
+      balance
+      stripeCustomer {
+        id
+        default_source
+      }
+    }
   }
 }
 `
 
-export default graphql(
-  gql`
-    query User {
-      currentUser {
-        _id
-        email
-        order
-        billing {
-          balance
-          stripeCustomer {
-            id
-            default_source
-          }
-        }
-      }
-    }
-  `
+export default compose(
+  graphql(CURRENT_USER, {
+     name: "currentUser"
+  }),
+  graphql(GET_PAYMENT_METHODS, {
+     name: "paymentMethods"
+  }),
 )(PaymentManager);

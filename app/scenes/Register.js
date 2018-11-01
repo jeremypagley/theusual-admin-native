@@ -25,6 +25,8 @@ class Register extends React.Component {
     this.state = {
       email: '',
       emailError: false,
+      firstName: '',
+      lastName: '',
       password: '',
       passwordError: false,
       confirmPassword: '',
@@ -42,7 +44,7 @@ class Register extends React.Component {
   };
 
   handleSubmit = () => {
-    const { email, password, confirmPassword } = this.state;
+    const { firstName, lastName, email, password, confirmPassword } = this.state;
 
     if (confirmPassword.length === 0) {
       return this.setState({ confirmPasswordError: true });
@@ -55,7 +57,7 @@ class Register extends React.Component {
     this.setState({ passwordError: false, confirmPasswordError: false, signingUp: true});
 
     this.props
-      .signup(email, password)
+      .signup(firstName, lastName, email, password)
       .then(({ data }) => {
         this.setState({ signingUp: false });
         return this.props.screenProps.changeLoginState(true, data.signup.jwt);
@@ -76,11 +78,17 @@ class Register extends React.Component {
 
   render() {
     const { navigation } = this.props;
-    const { emailError, passwordError, password, email, confirmPassword, confirmPasswordError, signingUp } = this.state;
+    const { emailError, passwordError, password, email, firstName, lastName, confirmPassword, confirmPasswordError, signingUp } = this.state;
 
     let disabled = true;
 
-    if (email.length > 0 && password.length >= 6 && validator.isEmail(email) && password === confirmPassword) disabled = false;
+    if (email.length > 0
+      && firstName.length > 0 
+      && lastName.length > 0 
+      && password.length >= 6 && validator.isEmail(email) 
+      && password === confirmPassword) {
+        disabled = false;
+      }
 
     return (
       <Container style={ContainerStyles.container}>
@@ -94,6 +102,20 @@ class Register extends React.Component {
             <Card transparent>
               <Form>
                 <Item floatingLabel>
+                  <Label>First Name</Label>
+                  <Input
+                    onChangeText={value => this.handleInputChange('firstName', value)}
+                    autoCorrect={false}
+                  />
+                </Item>
+                <Item floatingLabel>
+                  <Label>Last Name</Label>
+                  <Input
+                    onChangeText={value => this.handleInputChange('lastName', value)}
+                    autoCorrect={false}
+                  />
+                </Item>
+                <Item floatingLabel>
                   <Label>Email</Label>
                   <Input
                     onChangeText={value => this.handleInputChange('email', value)}
@@ -103,7 +125,7 @@ class Register extends React.Component {
                   />
                 </Item>
                 <Item floatingLabel>
-                  <Label>Password (must be more than 6 characters)</Label>
+                  <Label>Password (minimum 6 characters)</Label>
                   <Input
                     onChangeText={value => this.handleInputChange('password', value)}
                     autoCapitalize="none"
@@ -148,9 +170,11 @@ class Register extends React.Component {
 
 export default graphql(
   gql`
-    mutation SignUp($email: String!, $password: String!) {
-      signup(email: $email, password: $password) {
+    mutation SignUp($firstName: String!, $lastName: String!, $email: String!, $password: String!) {
+      signup(firstName: $firstName, lastName: $lastName, email: $email, password: $password) {
         _id
+        firstName
+        lastName
         email
         jwt
       }
@@ -158,7 +182,7 @@ export default graphql(
   `,
   {
     props: ({ mutate }) => ({
-      signup: (email, password) => mutate({ variables: { email, password } }),
+      signup: (firstName, lastName, email, password) => mutate({ variables: { firstName, lastName, email, password } }),
     }),
   },
 )(Register);

@@ -21,35 +21,38 @@ class OrderHistory extends React.Component {
 
   render() {
     return (
-      <View style={{marginTop: 40}}>
-        <Text style={[TypographyStyles.noteBold, {marginLeft: 15}]}>Previous orders</Text>
-        <Query query={GET_ORDER_HISTORY}>
-          {({ loading, error, data }) => {
-            if (loading) return <LoadingIndicator title="Loading your previous orders" />;
-            if (error) return <GenericError message={error.message} />;
+      <Query query={GET_ORDER_HISTORY}>
+        {({ loading, error, data }) => {
+          if (loading) return <LoadingIndicator title="Loading your previous orders" />;
+          if (error) return <GenericError message={error.message} />;
 
-            const { userOrderHistory } = data;
+          const { userOrderHistory } = data;
 
-            if (!userOrderHistory.orderHistory && userOrderHistory.orderHistory.length < 1) {
-              return this._getNoOrderItems();
-            }
+          if (!userOrderHistory.orderHistory || userOrderHistory.orderHistory.length < 1) {
+            return this._getNoOrderItems();
+          }
 
-            return userOrderHistory.orderHistory.map(order => {
-              return (
-                <View key={order._id} style={{opacity: .5}}>
-                  {this.getOrderProducts(order.items, moment(order.orderedDate).format('MM-DD-YY hh:m a'))}
-                </View>
-              )
-            })
-          }}
-        </Query>
-      </View>
+          return (
+            <View style={{marginTop: 40}}>
+              <Text style={[TypographyStyles.noteBold, {marginLeft: 15}]}>Previous orders</Text>
+              {userOrderHistory.orderHistory.map(order => {
+                return (
+                  <View key={order._id} style={{opacity: .5}}>
+                    {this.getOrderProducts(order.items, moment(order.orderedDate).format('MM-DD-YY hh:m a'))}
+                  </View>
+                )
+              })}
+            </View>
+          );
+        }}
+      </Query>
     );
   }
 
   _getNoOrderItems = () => {
     return (
       <View style={OrderStatusStyles.noItemsWrapper}>
+        <Text style={[TypographyStyles.noteBold, {marginBottom: 15}]}>Previous orders</Text>
         <Text style={TypographyStyles.note}>No previous orders. Tap on Stores and order your first item!</Text>
       </View>
     );

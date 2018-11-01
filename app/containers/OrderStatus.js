@@ -8,6 +8,7 @@ import {
   Content,
   Card,
   CardItem,
+  Left
 } from 'native-base';
 import { View } from 'react-native';
 import { Query, Mutation } from 'react-apollo';
@@ -39,6 +40,7 @@ class OrderStatus extends React.Component {
     this.state = {
       token: '',
       errorInsufficientFunds: false,
+      displayPaymentManagerModal: false
     }
   }
 
@@ -88,7 +90,7 @@ class OrderStatus extends React.Component {
     if (!order.store.location) return null
     
     return (
-      <View style={[CardStyles.card, {marginBottom: 40}]}>
+      <View style={[CardStyles.card, {marginBottom: 25}]}>
         <Card transparent>
           <CardItem header style={CardStyles.itemHeader}>
             <Text style={TypographyStyles.listTitle}>Ordering from {order.store.title}</Text>
@@ -108,13 +110,18 @@ class OrderStatus extends React.Component {
     if (loading) return <LoadingIndicator title="Loading your payment info" />;
     if (error) return <GenericError message={error.message} />;
 
-    const balance = Money.centsToUSD(currentUser.billing.balance);
+    const hasBilling = currentUser.billing;
+
+    const balance = hasBilling ? Money.centsToUSD(currentUser.billing.balance) : null;
+    let title = 'Your balance';
+
+    if (!hasBilling) title = 'Need payment method to order';
 
     return (
-      <View style={[CardStyles.card, {marginBottom: 20}]}>
+      <View style={[CardStyles.card, {marginBottom: 10}]}>
         <Card transparent>
           <CardItem header style={CardStyles.itemHeader}>
-            <Text style={TypographyStyles.listTitle}>Your balance</Text>
+            <Text style={TypographyStyles.listTitle}>{title}</Text>
           </CardItem>
           <CardItem>
             <Body>
@@ -123,10 +130,19 @@ class OrderStatus extends React.Component {
           </CardItem>
 
           {/*This is a CardItem of type footer */}
-          <PaymentManager />
+          <PaymentManager open={this.state.displayPaymentManagerModal} onModalToggle={this.togglePaymentManagerModal} />
         </Card>
       </View>
     );
+  }
+
+  getPaymentManager = () => {
+    return <PaymentManager open={this.state.displayPaymentManagerModal} onModalToggle={this.togglePaymentManagerModal} />
+  }
+
+  togglePaymentManagerModal = () => {
+    const { displayPaymentManagerModal } = this.state;
+    this.setState({ displayPaymentManagerModal: !displayPaymentManagerModal })
   }
 
   renderContent = (order) => {
@@ -135,17 +151,19 @@ class OrderStatus extends React.Component {
 
     const hasBilling = currentUser.billing;
 
-    const insufficientFunds = this.getCombinedPricesInCents(order.items) > currentUser.billing.balance;
+    const insufficientFunds = hasBilling ? this.getCombinedPricesInCents(order.items) > currentUser.billing.balance : null;
     const storeHours = order.store.hours;
     const storeOpened = Time.getStoreOpened(storeHours);
-    const disabled = storeOpened ? false : true;
-    const title = storeOpened ? 'Confirm Order' : 'Store Closed';
+    const disabled = storeOpened && hasBilling ? false : true;
+    let title = storeOpened ? 'Confirm Order' : 'Store Closed';
+
+    if (!hasBilling) title = 'Add payment method above to order'
 
     return (
       <View>
         {this.getOrderProducts(order.items)}
 
-        {hasBilling && !insufficientFunds ?
+        {!insufficientFunds ?
         <View>
           <Mutation 
             mutation={CONFIRM_ORDER}
@@ -155,7 +173,7 @@ class OrderStatus extends React.Component {
           >
             {(confirmOrder, { loading, error }) => {
               return (
-                <View>
+                <View style={{marginTop: 4}}>
                   <GradientButton 
                     title={title}
                     disabled={disabled}
