@@ -3,7 +3,7 @@ import StoreContainer from 'app/containers/Store';
 
 class Store extends React.Component {
   static navigationOptions = ({ navigation }) => {
-    const title = navigation.getParam('store', 'Store').title;
+    const title = `Orders For: ${navigation.getParam('store', 'Store').title}`;
     return {
       title
     };

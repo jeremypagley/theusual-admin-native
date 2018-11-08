@@ -12,7 +12,7 @@ import host.exp.exponent.Constants;
 public class AppConstants {
 
   public static final String VERSION_NAME = "2.8.1";
-  public static String INITIAL_URL = "exp://exp.host/@jeremykpagley/theusual-native";
+  public static String INITIAL_URL = "exp://exp.host/@jeremykpagley/theusual-admin-native";
   public static final boolean IS_DETACHED = true;
   public static final String SHELL_APP_SCHEME = "expe6512e39094c4fa59c3fbbf586be6811";
   public static final String RELEASE_CHANNEL = "default";

@@ -15,7 +15,7 @@ import ButtonStyles from 'app/styles/generic/ButtonStyles';
 class Login extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: 'Login'
+      title: 'Organization Login'
     };
   };
 
@@ -45,10 +45,10 @@ class Login extends React.Component {
     this.setState({loggingIn: true});
 
     this.props
-      .login(email, password)
+      .organizationLogin(email, password)
       .then(({ data }) => {
         this.setState({loggingIn: false});
-        return this.props.screenProps.changeLoginState(true, data.login.jwt);
+        return this.props.screenProps.changeLoginState(true, data.organizationLogin.jwt);
       })
       .catch(e => {
         this.setState({loggingIn: false});
@@ -127,7 +127,7 @@ class Login extends React.Component {
 export default graphql(
   gql`
     mutation LogIn($email: String!, $password: String!) {
-      login(email: $email, password: $password) {
+      organizationLogin(email: $email, password: $password) {
         _id
         email
         jwt
@@ -136,7 +136,7 @@ export default graphql(
   `,
   {
     props: ({ mutate }) => ({
-      login: (email, password) => mutate({ variables: { email, password } }),
+      organizationLogin: (email, password) => mutate({ variables: { email, password } }),
     }),
   },
 )(Login);

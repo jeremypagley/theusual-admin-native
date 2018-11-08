@@ -188,11 +188,11 @@ export default class App extends Component {
       );
     }
 
-    if (this.state.firstLaunch === null){
-      return null; // This is the 'tricky' part: The query to AsyncStorage is not finished, but we have to present something to the user. Null will just render nothing, so you can also put a placeholder of some sort, but effectively the interval between the first mount and AsyncStorage retrieving your data won't be noticeable to the user.
-    } else if(this.state.firstLaunch == true){
-      return <AppIntroSlider slides={slides} onDone={this._onDone}/>;
-    }
+    // if (this.state.firstLaunch === null){
+    //   return null; // This is the 'tricky' part: The query to AsyncStorage is not finished, but we have to present something to the user. Null will just render nothing, so you can also put a placeholder of some sort, but effectively the interval between the first mount and AsyncStorage retrieving your data won't be noticeable to the user.
+    // } else if(this.state.firstLaunch == true){
+    //   return <AppIntroSlider slides={slides} onDone={this._onDone}/>;
+    // }
 
     return (
       <ApolloProvider client={client}>

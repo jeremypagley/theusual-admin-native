@@ -3,7 +3,7 @@
   "expoServerPort": null,
   "packagerPort": null,
   "packagerPid": null,
-  "expoServerNgrokUrl": "https://j2-uix.jeremykpagley.theusual-native.exp.direct",
-  "packagerNgrokUrl": "https://packager.j2-uix.jeremykpagley.theusual-native.exp.direct",
+  "expoServerNgrokUrl": "https://j2-uix.jeremykpagley.theusual-admin-native.exp.direct",
+  "packagerNgrokUrl": "https://packager.j2-uix.jeremykpagley.theusual-admin-native.exp.direct",
   "ngrokPid": 7578
 }

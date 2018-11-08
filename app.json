@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "theusual-native",
+    "name": "theusual-admin-native",
     "description": "A very interesting project.",
-    "slug": "theusual-native",
+    "slug": "theusual-admin-native",
     "privacy": "public",
     "sdkVersion": "30.0.0",
     "platforms": [
@@ -10,7 +10,7 @@
       "android"
     ],
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/images/icon.png",
     "splash": {
       "image": "./assets/images/splash.png",
@@ -25,9 +25,9 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "io.theusual.native",
-      "publishBundlePath": "ios/theusual-native/Supporting/shell-app.bundle",
-      "publishManifestPath": "ios/theusual-native/Supporting/shell-app-manifest.json"
+      "bundleIdentifier": "io.theusual.admin.native",
+      "publishBundlePath": "ios/theusual-admin-native/Supporting/shell-app.bundle",
+      "publishManifestPath": "ios/theusual-admin-native/Supporting/shell-app-manifest.json"
     },
     "isDetached": true,
     "detach": {
@@ -36,7 +36,7 @@
     },
     "scheme": "expe6512e39094c4fa59c3fbbf586be6811",
     "android": {
-      "package": "io.theusual.native",
+      "package": "io.theusual.admin.native",
       "publishBundlePath": "android/app/src/main/assets/shell-app.bundle",
       "publishManifestPath": "android/app/src/main/assets/shell-app-manifest.json"
     }

@@ -46,15 +46,17 @@ class Order extends React.Component {
           </Item>
         </Header>
         <Content padder>
-          <Query query={StoresQuery}>
+          <Query query={OrganizationQuery}>
             {({ loading, error, data }) => {
               if (loading) return <LoadingIndicator title="Loading stores" />;
               if (error) return <GenericError message={error.message} />;
+              
+              const organization = data.organization;
 
               return (
                 <CardList
-                  data={this.getListData(data)}
-                  handleItemPress={(item) => this.onItemPress(item, data.stores)}
+                  data={this.getListData(organization)}
+                  handleItemPress={(item) => this.onItemPress(item, organization.stores)}
                   title="Found"
                   loading={loading}
                 />
@@ -94,24 +96,11 @@ class Order extends React.Component {
 
 }
 
-const StoresQuery = gql`
+const OrganizationQuery = gql`
 {
-  stores {
+  organization {
     _id,
     title,
-    description,
-    hours {
-      start
-      end
-    },
-    phone,
-    website,
-    location {
-      address
-    },
-    unavailableProducts {
-      _id
-    }
     productCategories {
       _id,
       title,
@@ -119,6 +108,80 @@ const StoresQuery = gql`
         _id,
         title,
         description
+      }
+    }
+    productModifiers {
+      title
+      options {
+        title
+        price
+      }
+    }
+    products {
+      _id,
+      title,
+      description
+    }
+    users {
+      _id
+    }
+    stripeCustomerId
+    accountBalance
+    
+    stores {
+      title,
+      description,
+      orderQueue {
+        _id
+        items {
+          _id
+          productModifiersOptions {
+            title
+            price
+          }
+          product {
+            _id
+            title
+            description
+            price
+            productCategory {
+              _id
+              title
+            }
+            productModifiers {
+              _id
+              title
+            }
+          }
+        }
+        orderedDate
+        orderedBy {
+          _id
+          firstName
+          lastName
+        }
+        queueStatus
+      }
+      hours {
+        start
+        end
+      },
+      phone,
+      website,
+      location {
+        address
+      },
+      unavailableProducts {
+        _id
+      }
+      productCategories {
+        _id,
+        title,
+        products {
+          _id,
+          title,
+          description
+        }
       }
     }
   }

@@ -20,8 +20,8 @@ const reusableNavOptions = {
 }
 
 const AuthStack = createStackNavigator({
+  Login: { screen: Login },
   Register: { screen: Register, navigationOptions: { headerTitle: 'Register' } },
-  Login: { screen: Login, navigationOptions: { headerTitle: 'Login' } },
 }, reusableNavOptions);
 
 export default AuthStack;

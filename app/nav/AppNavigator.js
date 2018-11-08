@@ -7,7 +7,7 @@ import Order from 'app/scenes/Order';
 import Store from 'app/scenes/Store';
 import Products from 'app/scenes/Products';
 import Product from 'app/scenes/Product';
-import Usuals from 'app/scenes/Usuals';
+import Activity from 'app/scenes/Activity';
 import { Icon, Badge, View } from 'native-base';
 import Colors from 'app/styles/Colors';
 
@@ -25,8 +25,8 @@ const reusableNavOptions = {
   })
 }
 
-const UsualsStack = createStackNavigator({
-  Usuals: { screen: Usuals },
+const ActivityStack = createStackNavigator({
+  Activity: { screen: Activity },
 }, reusableNavOptions);
 
 const CartStack = createStackNavigator({
@@ -45,10 +45,10 @@ const StoresStack = createStackNavigator({
 }, reusableNavOptions);
 
 const AppStack = createBottomTabNavigator({
-  Usuals: UsualsStack,
   Stores: StoresStack,
-  Cart: CartStack,
-  Profile: ProfileStack,
+  // Activity: ActivityStack,
+  // Cart: CartStack,
+  // Profile: ProfileStack,
 },
 {
   headerMode: 'float',
@@ -70,19 +70,20 @@ const AppStack = createBottomTabNavigator({
       const { activeOrder } = screenProps;
       
       let iconName;
-      if (routeName === 'Usuals') {
-        iconName = 'md-cafe';
+      if (routeName === 'Activity') {
+        iconName = 'md-phone-portrait';
       } else if (routeName === 'Stores') {
-        iconName = 'md-search';
-      } else if (routeName === 'Cart') {
-        iconName = 'md-cart';
-      } else if (routeName === 'Profile') {
-        iconName = 'md-menu';
-      }
+        iconName = 'map-marker';
+      } 
+      // else if (routeName === 'Cart') {
+      //   iconName = 'md-cart';
+      // } else if (routeName === 'Profile') {
+      //   iconName = 'md-menu';
+      // }
 
       const color = focused ? Colors.BrandRed : Colors.BrandBlueGrey;
 
-      if (activeOrder && iconName === 'md-cart') {
+      if (activeOrder && routeName === 'Activity') {
         return (
           <View>
             <Icon
@@ -90,12 +91,13 @@ const AppStack = createBottomTabNavigator({
               size={22}
               style={{ marginBottom: -3, color }}
               active={focused}
+              type="FontAwesome"
             />
             <Badge style={{
                 position: 'absolute', 
                 backgroundColor: Colors.BrandRed,
                 height: 12,
-                left: 16,
+                left: 16, 
               }}
             >
             </Badge>
@@ -109,6 +111,7 @@ const AppStack = createBottomTabNavigator({
           size={22}
           style={{ marginBottom: -3, color }}
           active={focused}
+          type="FontAwesome"
         />
       )
     },

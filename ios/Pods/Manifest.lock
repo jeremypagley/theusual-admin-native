@@ -78,7 +78,7 @@ PODS:
   - EXMediaLibrary (1.0.0):
     - EXCore
     - EXPermissionsInterface
-  - EXPaymentsStripe (1.0.0):
+  - EXPaymentsStripe (1.0.1):
     - EXCore
     - Stripe (~> 13.0.3)
   - EXPermissions (1.1.0):
@@ -448,6 +448,6 @@ SPEC CHECKSUMS:
   Stripe: 76c203e21555089b708e6cbe972a3e3baf1ab4d8
   yoga: a23273df0088bf7f2bb7e5d7b00044ea57a2a54a
 
-PODFILE CHECKSUM: 46e3c766b011fc576ba316f5ab6120ad38e953ec
+PODFILE CHECKSUM: cf9709c93c31e1737d7500a3d31ec8f775b84c50
 
 COCOAPODS: 1.5.3
