@@ -18,93 +18,106 @@ import CardStyles from 'app/styles/generic/CardStyles';
 import Colors from 'app/styles/Colors';
 import TypographyStyles from 'app/styles/generic/TypographyStyles';
 import ExpandableCard from 'app/components/ExpandableCard';
+import QueueStatus from 'app/constants/queueStatus';
+import GET_ORGANIZATION_STORES from 'app/graphql/query/getOrganizationStores';
+import gql from 'graphql-tag';
+import { Mutation, Query } from 'react-apollo';
+import LoadingIndicator from 'app/components/LoadingIndicator';
+import GenericError from 'app/components/GenericError';
 
 class Store extends React.Component {
   render() {
-    const store = this.props.navigation.getParam('store', null);
+    const selectedStore = this.props.navigation.getParam('store', null);
 
     return (
       <Container style={ContainerStyles.container}>
-        <Tabs tabBarUnderlineStyle={ContainerStyles.tabBarUnderline}>
-          <Tab
-            tabStyle={ContainerStyles.tab} 
-            activeTabStyle={ContainerStyles.activeTab}
-            textStyle={ContainerStyles.tabText}
-            activeTextStyle={ContainerStyles.activeTabText}
-            heading="Active Orders"
-          >
-            <Content padder>
-              {/* {this.getOrderQueue(store.orderQueue)} */}
-              {store.orderQueue.map(order => {
-                // if (usual.deleted) return null;
-                return this.getOrderQueueCard(order);
-              })}
-            </Content>
-          </Tab>
+        <Query query={GET_ORGANIZATION_STORES}>
+          {({ loading, error, data }) => {
+            if (error) return <GenericError message={error.message} />;
+            const organization = !loading ? data.organizationStores : null;
+            const store = !loading ? organization.stores.find(s => s._id === selectedStore._id) : selectedStore;
 
-          <Tab 
-            tabStyle={ContainerStyles.tab} 
-            activeTabStyle={ContainerStyles.activeTab}
-            textStyle={ContainerStyles.tabText}
-            activeTextStyle={ContainerStyles.activeTabText}
-            heading="Order History"
-          >
-            <Content padder>
-              {/* {this.getAboutCard(store)} */}
-              <Text>TODO: THIS WILL SHOW ALL ORDER HISTORY 
-                AND THEIR queueStatus WHICH IS SAME AS ACTIVEORDERS JUST CHANGE DOT COLOR AND GRAY THEM OUT A LITTLE</Text>
-            </Content>
-          </Tab>
-        </Tabs>
+            const pendingOrders = []
+            store.orderQueue.forEach(o => {
+              if (o.queueStatus === QueueStatus.pending) pendingOrders.push(o)
+            });
+            const otherOrders = []
+            store.orderQueue.forEach(o => {
+              if (o.queueStatus === QueueStatus.completed || o.queueStatus === QueueStatus.canceled) otherOrders.push(o)
+            });
 
-          <Tab
-            tabStyle={ContainerStyles.tab} 
-            activeTabStyle={ContainerStyles.activeTab}
-            textStyle={ContainerStyles.tabText}
-            activeTextStyle={ContainerStyles.activeTabText}
-            heading="Menu"
-          >
-            <Content padder>
-              {this.getMenuCard(store)}
-            </Content>
-          </Tab>
-          {/* <Tab
-            tabStyle={ContainerStyles.tab} 
-            activeTabStyle={ContainerStyles.activeTab}
-            textStyle={ContainerStyles.tabText}
-            activeTextStyle={ContainerStyles.activeTabText}
-            heading="Locations"
-          >
-            <Text>TODO: Figure out way to get related stores on a store for the locations...</Text>
-          </Tab> */}
-          <Tab 
-            tabStyle={ContainerStyles.tab} 
-            activeTabStyle={ContainerStyles.activeTab}
-            textStyle={ContainerStyles.tabText}
-            activeTextStyle={ContainerStyles.activeTabText}
-            heading="About"
-          >
-            <Content padder>
-              {this.getAboutCard(store)}
-            </Content>
-          </Tab>
-        </Tabs>
+            return (
+              <Tabs tabBarUnderlineStyle={ContainerStyles.tabBarUnderline}>
+                <Tab
+                  tabStyle={ContainerStyles.tab} 
+                  activeTabStyle={ContainerStyles.activeTab}
+                  textStyle={ContainerStyles.tabText}
+                  activeTextStyle={ContainerStyles.activeTabText}
+                  heading="Active Orders"
+                >
+                  <Content padder>
+                    {loading ? <LoadingIndicator title={`Loading ${store.title}`} /> 
+                    : <View>
+                        {pendingOrders.length > 0 ? pendingOrders.map(order => {
+                          return this.getOrderQueueCard(order);
+                        }) : null}
+                      </View>
+                    }
+                    {!pendingOrders.length > 0 ? this.getNoDataCard('No active orders') : null}
+                  </Content>
+                </Tab>
+
+                <Tab 
+                  tabStyle={ContainerStyles.tab} 
+                  activeTabStyle={ContainerStyles.activeTab}
+                  textStyle={ContainerStyles.tabText}
+                  activeTextStyle={ContainerStyles.activeTabText}
+                  heading="Order History"
+                >
+                  <Content padder>
+                    {loading ? <LoadingIndicator title={`Loading ${store.title}`} /> 
+                    : <View style={{opacity: 0.6}}>
+                        {otherOrders.length > 0 ? otherOrders.map(order => {
+                          return this.getOrderQueueCard(order, false);
+                        }) : null}
+                      </View>
+                    }
+                    {!otherOrders.length > 0 ? this.getNoDataCard('No previous orders') : null}
+                  </Content>
+                </Tab>
+
+                <Tab
+                  tabStyle={ContainerStyles.tab} 
+                  activeTabStyle={ContainerStyles.activeTab}
+                  textStyle={ContainerStyles.tabText}
+                  activeTextStyle={ContainerStyles.activeTabText}
+                  heading="Menu"
+                >
+                  <Content padder>
+                    {loading ? <LoadingIndicator title={`Loading ${store.title}`} /> : this.getMenuCard(store)}
+                  </Content>
+                </Tab>
+
+                <Tab 
+                  tabStyle={ContainerStyles.tab} 
+                  activeTabStyle={ContainerStyles.activeTab}
+                  textStyle={ContainerStyles.tabText}
+                  activeTextStyle={ContainerStyles.activeTabText}
+                  heading="About"
+                >
+                  <Content padder>
+                    {loading ? <LoadingIndicator title={`Loading ${store.title}`} /> : this.getAboutCard(store)}
+                  </Content>
+                </Tab>
+              </Tabs>
+            )
+          }}
+        </Query>
       </Container>
     );
   }
 
-  // getOrderQueue = (orderQueue) => {
-  //   return orderQueue.map(order => {
-  //   // console.log('orderQueue order: ', order)
-
-  //     return order.items.map(item => {
-  //       console.log('item: ', item)
-  //       return <View></View>
-  //     })
-  //   })
-  // }
-
-  getOrderQueueCard = (order) => {
+  getOrderQueueCard = (order, hasActions = true) => {
     const orderItems = order.items;
 
     const items = orderItems.map(item => {
@@ -112,20 +125,54 @@ class Store extends React.Component {
       return {title: item.product.title, options: options}
     });
 
+    let statusColor = null;
+    let statusTitle = null;
+
+    if (order.queueStatus === QueueStatus.pending) {
+      statusColor = Colors.BrandOrange;
+      statusTitle = QueueStatus.pending;
+    }
+    else if (order.queueStatus === QueueStatus.completed) {
+      statusColor = Colors.BrandGreen;
+      statusTitle = QueueStatus.completed;
+
+    }
+    else if (order.queueStatus === QueueStatus.canceled) {
+      statusColor = Colors.BrandRed;
+      statusTitle = QueueStatus.canceled;
+    }
+
     return (
-      <ExpandableCard 
-        key={order._id}
-        title={`Ordered by: ${order.orderedBy.firstName} ${order.orderedBy.lastName}    Ordered at: ${moment(order.orderedDate).format('h:mm a dd')}`}
-        actionTitle="Unsure??"
-        items={items}
-        // removable
-        // removableOnPress={() => removeUsualById({variables: {id: usual._id}})}
-        // onActionPress={() => {
-        //   createOrderByUsualId({variables: {id: usual._id}});
-        //   DeviceEmitters.activeOrderEventEmit(true);
-        // }}
-      />
-    )
+      <Mutation
+        mutation={UPDATE_ORDER_QUEUE_STATUS}
+        refetchQueries={(data) => {
+          return [{query: GET_ORGANIZATION_STORES}];
+        }}
+      >
+        {(updateOrderQueueStatus, { loading, error, data }) => {
+          const actionProps = hasActions 
+          ? {
+            actionTitle: "Complete Order",
+            onActionPress: () => {
+              updateOrderQueueStatus({variables: {orderId: order._id, status: QueueStatus.completed}});
+            },
+            removable: true,
+            removableOnPress: () => updateOrderQueueStatus({variables: {orderId: order._id, status: QueueStatus.canceled}})
+          } : {};
+
+          return (
+            <ExpandableCard 
+              key={order._id}
+              title={`Ordered by: ${order.orderedBy.firstName} ${order.orderedBy.lastName}    Ordered at: ${moment(order.orderedDate).format('h:mm a dd')}`}
+              items={items}
+              statusColor={statusColor}
+              statusTitle={statusTitle}
+              {...actionProps}
+            />
+          )
+        }}
+      </Mutation>
+    );
   }
 
   getOrderOptions = (item) => {
@@ -201,6 +248,27 @@ class Store extends React.Component {
     )
   }
 
+  getNoDataCard = (title) => {
+    return (
+      <View>
+        <View style={CardStyles.card}>
+          <Card transparent>
+            <CardItem>
+              <Body>
+                <Text style={TypographyStyles.noteEmphasize}>{title}</Text>
+              </Body>
+            </CardItem>
+          </Card>
+        </View>
+
+        {/* <GradientButton 
+          title="Manual Refresh"
+          // buttonProps={{onPress: () => this.props.navigation.navigate('Stores')}}
+        /> */}
+      </View>
+    );
+  }
+
   onItemPress = (item, productCategories, unavailableProducts) => {
     const { navigation } = this.props;
     const productCategory = productCategories.find(p => p._id === item._id);
@@ -208,5 +276,13 @@ class Store extends React.Component {
   }
 
 }
+
+const UPDATE_ORDER_QUEUE_STATUS = gql`
+  mutation updateOrderQueueStatus($orderId: String!, $status: String!) {
+    updateOrderQueueStatus(orderId: $orderId, status: $status) {
+      _id,
+    }
+  }
+`
 
 export default Store;

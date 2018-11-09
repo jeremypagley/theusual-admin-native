@@ -1,10 +1,34 @@
 import gql from 'graphql-tag';
 
-const OrganizationQuery = gql`
+const OrganizationStoresQuery = gql`
 {
-  organization {
+  organizationStores {
     _id
     title
+    productCategories {
+      _id
+      title
+      products {
+        _id
+        title
+        description
+      }
+    }
+    productModifiers {
+      title
+      options {
+        title
+        price
+      }
+    }
+    products {
+      _id,
+      title,
+      description
+    }
+    users {
+      _id
+    }
     stripeCustomerId
     accountBalance
     
@@ -68,4 +92,4 @@ const OrganizationQuery = gql`
 }
 `
 
-export default OrganizationQuery;
+export default OrganizationStoresQuery;

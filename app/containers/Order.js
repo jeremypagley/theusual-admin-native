@@ -17,6 +17,7 @@ import InputStyles from 'app/styles/generic/InputStyles';
 import Colors from 'app/styles/Colors';
 import LoadingIndicator from 'app/components/LoadingIndicator';
 import GenericError from 'app/components/GenericError';
+import GET_ORGANIZATION from 'app/graphql/query/getOrganization';
 
 class Order extends React.Component {
   constructor(props) {
@@ -46,7 +47,7 @@ class Order extends React.Component {
           </Item>
         </Header>
         <Content padder>
-          <Query query={OrganizationQuery}>
+          <Query query={GET_ORGANIZATION}>
             {({ loading, error, data }) => {
               if (loading) return <LoadingIndicator title="Loading stores" />;
               if (error) return <GenericError message={error.message} />;
@@ -95,97 +96,5 @@ class Order extends React.Component {
   }
 
 }
-
-const OrganizationQuery = gql`
-{
-  organization {
-    _id,
-    title,
-    productCategories {
-      _id,
-      title,
-      products {
-        _id,
-        title,
-        description
-      }
-    }
-    productModifiers {
-      title
-      options {
-        title
-        price
-      }
-    }
-    products {
-      _id,
-      title,
-      description
-    }
-    users {
-      _id
-    }
-    stripeCustomerId
-    accountBalance
-    
-    stores {
-      title,
-      description,
-      orderQueue {
-        _id
-        items {
-          _id
-          productModifiersOptions {
-            title
-            price
-          }
-          product {
-            _id
-            title
-            description
-            price
-            productCategory {
-              _id
-              title
-            }
-            productModifiers {
-              _id
-              title
-            }
-          }
-        }
-        orderedDate
-        orderedBy {
-          _id
-          firstName
-          lastName
-        }
-        queueStatus
-      }
-      hours {
-        start
-        end
-      },
-      phone,
-      website,
-      location {
-        address
-      },
-      unavailableProducts {
-        _id
-      }
-      productCategories {
-        _id,
-        title,
-        products {
-          _id,
-          title,
-          description
-        }
-      }
-    }
-  }
-}
-`
 
 export default Order;

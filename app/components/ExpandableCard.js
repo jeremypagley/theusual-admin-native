@@ -8,7 +8,8 @@ import {
   View,
   Card, 
   CardItem,
-  Icon
+  Icon,
+  Badge
 } from 'native-base';
 import { Row } from 'react-native-easy-grid';
 import ExpandableCardStyles from 'app/styles/ExpandableCardStyles';
@@ -26,7 +27,8 @@ class ExpandableCard extends React.Component {
     onActionPress: PropTypes.func,
     removable: PropTypes.bool,
     removableOnPress: PropTypes.func,
-    keyId: PropTypes.string
+    keyId: PropTypes.string,
+    statusColor: PropTypes.string
   }
 
   render() {
@@ -37,6 +39,8 @@ class ExpandableCard extends React.Component {
       removableOnPress,
       removable,
       items,
+      statusColor,
+      statusTitle
     } = this.props;
     
     return (
@@ -73,6 +77,14 @@ class ExpandableCard extends React.Component {
               </CardItem>
             )
           })}
+
+          {statusColor && statusTitle
+           ? <CardItem style={[CardStyles.cardStatusIndicator, actionTitle ? {bottom: 40} : {}]}>
+              <Badge style={[{ backgroundColor: statusColor}]}>
+                <Text style={CardStyles.cardStatusText}>{statusTitle}</Text>
+              </Badge>
+            </CardItem>
+          : null}
 
           {onActionPress && actionTitle ? 
           <CardItem footer button onPress={onActionPress} style={CardStyles.itemFooter}>

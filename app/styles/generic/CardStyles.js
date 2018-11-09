@@ -33,6 +33,22 @@ const Styles = StyleSheet.create({
     fontFamily: 'montserrat-bold'
   },
 
+  cardStatusIndicator: {
+    position: 'absolute', 
+    bottom: 10, 
+    right: 10,
+    backgroundColor: 'transparent',
+    paddingRight: 0,
+    paddingBottom: 0,
+    alignItems: 'flex-end',
+    alignSelf: 'flex-end',
+  },
+  cardStatusText: {
+    fontSize: 12,
+    fontFamily: 'montserrat-bold',
+    color: Colors.White,
+  },
+
   accordionCardInner: {
     flexDirection: "row", 
     padding: 15, 
