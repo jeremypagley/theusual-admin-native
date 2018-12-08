@@ -9,59 +9,17 @@ const OrganizationQuery = gql`
     accountBalance
     
     stores {
-      title,
-      description,
-      orderQueue {
-        _id
-        items {
-          _id
-          productModifiersOptions {
-            title
-            price
-          }
-          product {
-            _id
-            title
-            description
-            price
-            productCategory {
-              _id
-              title
-            }
-            productModifiers {
-              _id
-              title
-            }
-          }
-        }
-        orderedDate
-        orderedBy {
-          _id
-          firstName
-          lastName
-        }
-        queueStatus
-      }
+      _id
+      title
+      description
       hours {
         start
         end
-      },
-      phone,
-      website,
+      }
+      phone
+      website
       location {
         address
-      },
-      unavailableProducts {
-        _id
-      }
-      productCategories {
-        _id,
-        title,
-        products {
-          _id,
-          title,
-          description
-        }
       }
     }
   }

@@ -59,6 +59,7 @@ const Styles = StyleSheet.create({
     color: Colors.BrandDarkGrey,
     fontFamily: 'montserrat-regular'
   },
+  
   noteEmphasize: {
     fontSize: 28,
     color: Colors.BrandRed,
@@ -95,6 +96,11 @@ const Styles = StyleSheet.create({
 
   buttonText: {
     color: Colors.White,
+    fontSize: 16,
+    fontFamily: 'montserrat-medium',
+  },
+  buttonPrimaryText: {
+    color: Colors.BrandRed,
     fontSize: 16,
     fontFamily: 'montserrat-medium',
   },

@@ -37,7 +37,7 @@ class CardList extends React.PureComponent {
   _keyExtractor = (item, index) => item._id;
 
   _renderItem = ({item}) => {
-    const { rightActionItem } = this.props;
+    const { rightActionItem, hasNavIcon } = this.props;
     if (!item) return null;
 
     const disabled = item.disabled;
@@ -49,6 +49,7 @@ class CardList extends React.PureComponent {
         onPress={() => {
           if (!disabled && this.props.handleItemPress) this.props.handleItemPress(item);
         }}
+        key={item._id}
       >
         <Body>
           <Text style={[TypographyStyles.listItemTitle, disabledStyles]}>{item.title}</Text>
@@ -58,6 +59,10 @@ class CardList extends React.PureComponent {
         <Right>
           {rightActionItem ? rightActionItem : <Icon name="arrow-forward" style={{fontSize: 30, color: Colors.BrandRed}} />}
         </Right>
+        {rightActionItem && hasNavIcon ?
+        <Right>
+          <Icon name="arrow-forward" style={{fontSize: 30, color: Colors.BrandRed}} />
+        </Right> : null}
       </ListItem>
     );
   }

@@ -5,7 +5,8 @@ const Styles = StyleSheet.create({
   secondaryButton: {
     backgroundColor: Colors.BrandBlueGrey,
     borderRadius: 8,
-    marginTop: 12
+    marginTop: 12,
+    height: 62
   },
   secondaryButtonText: {
     fontSize: 16,

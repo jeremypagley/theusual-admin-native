@@ -8,7 +8,8 @@ import {
   Tab,
   Card,
   CardItem,
-  Content
+  Content,
+  Button
 } from 'native-base';
 import Time from 'app/utils/time';
 import moment from 'moment';
@@ -27,20 +28,23 @@ import GenericError from 'app/components/GenericError';
 
 class Store extends React.Component {
   render() {
-    const selectedStore = this.props.navigation.getParam('store', null);
+    const selectedStoreId = this.props.navigation.getParam('storeId', null);
 
     return (
       <Container style={ContainerStyles.container}>
-        <Query query={GET_ORGANIZATION_STORES}>
+        <Query query={GET_ORGANIZATION_STORES} pollInterval={10000} variables={{storeId: selectedStoreId}}>
           {({ loading, error, data }) => {
             if (error) return <GenericError message={error.message} />;
-            const organization = !loading ? data.organizationStores : null;
-            const store = !loading ? organization.stores.find(s => s._id === selectedStore._id) : selectedStore;
+            if (loading) return <LoadingIndicator title={`Loading Store`} />;
+
+            const organization = data.organizationStores;
+            const store = organization.stores[0];
 
             const pendingOrders = []
             store.orderQueue.forEach(o => {
               if (o.queueStatus === QueueStatus.pending) pendingOrders.push(o)
             });
+            // OtherOrders is completed or canceled orders
             const otherOrders = []
             store.orderQueue.forEach(o => {
               if (o.queueStatus === QueueStatus.completed || o.queueStatus === QueueStatus.canceled) otherOrders.push(o)
@@ -56,13 +60,11 @@ class Store extends React.Component {
                   heading="Active Orders"
                 >
                   <Content padder>
-                    {loading ? <LoadingIndicator title={`Loading ${store.title}`} /> 
-                    : <View>
-                        {pendingOrders.length > 0 ? pendingOrders.map(order => {
-                          return this.getOrderQueueCard(order);
-                        }) : null}
-                      </View>
-                    }
+                    <View>
+                      {pendingOrders.length > 0 ? pendingOrders.map(order => {
+                        return this.getOrderQueueCard(order);
+                      }) : null}
+                    </View>
                     {!pendingOrders.length > 0 ? this.getNoDataCard('No active orders') : null}
                   </Content>
                 </Tab>
@@ -75,13 +77,11 @@ class Store extends React.Component {
                   heading="Order History"
                 >
                   <Content padder>
-                    {loading ? <LoadingIndicator title={`Loading ${store.title}`} /> 
-                    : <View style={{opacity: 0.6}}>
-                        {otherOrders.length > 0 ? otherOrders.map(order => {
-                          return this.getOrderQueueCard(order, false);
-                        }) : null}
-                      </View>
-                    }
+                    <View style={{opacity: 0.6}}>
+                      {otherOrders.length > 0 ? otherOrders.map(order => {
+                        return this.getOrderQueueCard(order, false);
+                      }) : null}
+                    </View>
                     {!otherOrders.length > 0 ? this.getNoDataCard('No previous orders') : null}
                   </Content>
                 </Tab>
@@ -94,7 +94,7 @@ class Store extends React.Component {
                   heading="Menu"
                 >
                   <Content padder>
-                    {loading ? <LoadingIndicator title={`Loading ${store.title}`} /> : this.getMenuCard(store)}
+                    {this.getMenuCard(store)}
                   </Content>
                 </Tab>
 
@@ -106,7 +106,7 @@ class Store extends React.Component {
                   heading="About"
                 >
                   <Content padder>
-                    {loading ? <LoadingIndicator title={`Loading ${store.title}`} /> : this.getAboutCard(store)}
+                    {this.getAboutCard(store)}
                   </Content>
                 </Tab>
               </Tabs>
@@ -142,11 +142,13 @@ class Store extends React.Component {
       statusTitle = QueueStatus.canceled;
     }
 
+    const selectedStoreId = this.props.navigation.getParam('storeId', null);
+
     return (
       <Mutation
         mutation={UPDATE_ORDER_QUEUE_STATUS}
         refetchQueries={(data) => {
-          return [{query: GET_ORGANIZATION_STORES}];
+          return [{query: GET_ORGANIZATION_STORES, variables: { storeId: selectedStoreId }}];
         }}
       >
         {(updateOrderQueueStatus, { loading, error, data }) => {
@@ -201,7 +203,7 @@ class Store extends React.Component {
     return (
       <CardList
         data={this.getListData(store.productCategories)}
-        handleItemPress={(item) => this.onItemPress(item, store.productCategories, store.unavailableProducts)}
+        handleItemPress={(item) => this.onItemPress(item, store)}
       />
     )
   }
@@ -269,10 +271,10 @@ class Store extends React.Component {
     );
   }
 
-  onItemPress = (item, productCategories, unavailableProducts) => {
+  onItemPress = (item, store) => {
     const { navigation } = this.props;
-    const productCategory = productCategories.find(p => p._id === item._id);
-    navigation.navigate('Products', { productCategory, unavailableProducts });
+    const productCategory = store.productCategories.find(p => p._id === item._id);
+    navigation.navigate('Products', { productCategory, storeId: store._id });
   }
 
 }

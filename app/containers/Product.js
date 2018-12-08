@@ -12,7 +12,8 @@ import {
   Header,
   Card,
   CardItem,
-  Icon
+  Icon,
+  Button
 } from 'native-base';
 import { TouchableOpacity } from 'react-native';
 
@@ -22,11 +23,15 @@ import GET_ORDER from 'app/graphql/query/getOrder';
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
 import CardStyles from 'app/styles/generic/CardStyles';
 import TypographyStyles from 'app/styles/generic/TypographyStyles';
+import ButtonStyles from 'app/styles/generic/ButtonStyles';
 import Colors from 'app/styles/Colors';
 import GradientButton from 'app/components/GradientButton';
 import DeviceEmitters from 'app/utils/deviceEmitters';
+import GET_ORGANIZATION_STORES from 'app/graphql/query/getOrganizationStores';
+import GET_PRODUCTS from '../graphql/query/getProducts';
 
 class Product extends React.Component {
+
   constructor(props) {
     super(props);
 
@@ -67,7 +72,8 @@ class Product extends React.Component {
             </Card>
           </View>
 
-          {this.getAddItemButton(product)}
+          {/* {this.getAddItemButton(product)} */}
+          {this.getMarkAsUnavailableButton(product)}
         </Content>
       </Container>
     );
@@ -82,9 +88,7 @@ class Product extends React.Component {
       <Mutation 
         mutation={CREATE_ORDER_ITEM}
         refetchQueries={() => {
-          return [{
-             query: GET_ORDER,
-          }];
+          return [{query: GET_ORDER}, {query: GET_PRODUCTS}];
         }}
       >
          {createOrderItem => (
@@ -98,6 +102,46 @@ class Product extends React.Component {
             }}
           />
         )}
+      </Mutation>
+    );
+  }
+
+  getMarkAsUnavailableButton = (product) => {
+    const productId = product._id;
+    const unavailable = this.props.navigation.getParam('unavailable', null);
+    const selectedStoreId = this.props.navigation.getParam('storeId', null);
+
+    let title = unavailable ? 'Mark As Available' : 'Mark as Unavailable';
+
+    return (
+      <Mutation 
+        mutation={UPDATE_PRODUCT_AVAILABILITY}
+        refetchQueries={() => {
+          return [{
+             query: GET_ORGANIZATION_STORES,
+             variables: { storeId: selectedStoreId }
+          }];
+        }}
+      >
+        {(updateProductAvailability, { loading, error, data }) => {          
+          if (data) {
+            let unavailableProducts = data.updateProductAvailability.unavailableProducts;
+            const unavailableAfterUpdate = unavailableProducts.find(p => p._id === productId)
+
+            title = unavailableAfterUpdate ? 'Mark As Available' : 'Mark as Unavailable';
+          }
+
+          return (
+            <GradientButton 
+              title={title} 
+              buttonProps={{
+                onPress: () => {
+                  updateProductAvailability({variables: {productId, storeId: selectedStoreId}})
+                }
+              }}
+            />
+          )
+        }}
       </Mutation>
     );
   }
@@ -140,12 +184,12 @@ class Product extends React.Component {
       <View>
         {options.map(option => {
           return (
-            <ListItem key={option.title} icon onPress={() => this.onModifierOptionPress(option, modifier)}>
+            <ListItem key={option.title} icon onPress={() => console.log('temp disable')/*this.onModifierOptionPress(option, modifier)*/}>
               <Body>
                 <Text style={TypographyStyles.listSubItemTitle}>{option.title}</Text>
               </Body>
               <Right>
-                <Icon name="md-add" style={{fontSize: 28, color: Colors.BrandGreen}} />
+                {/* <Icon name="md-add" style={{fontSize: 28, color: Colors.BrandGreen}} /> */}
               </Right>
             </ListItem>
           )
@@ -222,6 +266,17 @@ const CREATE_ORDER_ITEM = gql`
       productModifiersOptions {
         title,
         price
+      }
+    }
+  }
+`;
+
+const UPDATE_PRODUCT_AVAILABILITY = gql`
+  mutation updateProductAvailability($productId: String!, $storeId: String!) {
+    updateProductAvailability(productId: $productId, storeId: $storeId) {
+      _id
+      unavailableProducts {
+        _id
       }
     }
   }

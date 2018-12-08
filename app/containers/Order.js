@@ -47,13 +47,14 @@ class Order extends React.Component {
           </Item>
         </Header>
         <Content padder>
-          <Query query={GET_ORGANIZATION}>
+          <Query query={GET_ORGANIZATION} pollInterval={600000}>
             {({ loading, error, data }) => {
               if (loading) return <LoadingIndicator title="Loading stores" />;
               if (error) return <GenericError message={error.message} />;
               
               const organization = data.organization;
-
+              if (!organization) return null
+              
               return (
                 <CardList
                   data={this.getListData(organization)}
@@ -92,7 +93,7 @@ class Order extends React.Component {
   onItemPress = (item, stores) => {
     const store = stores.find(s => s._id === item._id);
     const { navigation } = this.props;
-    navigation.navigate('Store', { store });
+    navigation.navigate('Store', { storeId: store._id });
   }
 
 }
