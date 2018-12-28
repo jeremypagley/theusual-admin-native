@@ -96,8 +96,10 @@ class Products extends React.Component {
   onItemPress = (item, products) => {
     const { navigation } = this.props;
     const selectedStoreId = navigation.getParam('storeId', null);
+    const productCategory = this.props.navigation.getParam('productCategory', null);
+    const productCategoryId = productCategory._id;
     const product = products.find(p => p._id === item._id);
-    navigation.navigate('Product', { product, unavailable: item.unavailable, storeId: selectedStoreId, backOverride: this.backOverride });
+    navigation.navigate('Product', { productCategoryId, product, unavailable: item.unavailable, storeId: selectedStoreId, backOverride: this.backOverride });
   }
 
 }

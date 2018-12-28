@@ -70,6 +70,10 @@ const OrganizationStoresQuery = gql`
             _id,
             title,
             description
+            productModifiers {
+              _id
+              title
+            }
           }
         }
       }

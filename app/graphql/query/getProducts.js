@@ -12,10 +12,10 @@ const ProductsQuery = gql`
         title
       },
       productModifiers {
-        _id,
-        title,
+        _id
+        title
         options {
-          title,
+          title
           price
         }
       }

@@ -93,7 +93,7 @@ class Order extends React.Component {
   onItemPress = (item, stores) => {
     const store = stores.find(s => s._id === item._id);
     const { navigation } = this.props;
-    navigation.navigate('Store', { storeId: store._id });
+    navigation.navigate('Store', { storeId: store._id, storeTitle: store.title });
   }
 
 }

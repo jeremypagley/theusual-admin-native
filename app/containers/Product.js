@@ -88,7 +88,7 @@ class Product extends React.Component {
       <Mutation 
         mutation={CREATE_ORDER_ITEM}
         refetchQueries={() => {
-          return [{query: GET_ORDER}, {query: GET_PRODUCTS}];
+          return [{query: GET_ORDER}, {query: GET_PRODUCTS, variables: { productCategoryId: productCategoryId }}];
         }}
       >
          {createOrderItem => (
@@ -110,6 +110,7 @@ class Product extends React.Component {
     const productId = product._id;
     const unavailable = this.props.navigation.getParam('unavailable', null);
     const selectedStoreId = this.props.navigation.getParam('storeId', null);
+    const productCategoryId = this.props.navigation.getParam('productCategoryId', null);
 
     let title = unavailable ? 'Mark As Available' : 'Mark as Unavailable';
 
@@ -120,7 +121,11 @@ class Product extends React.Component {
           return [{
              query: GET_ORGANIZATION_STORES,
              variables: { storeId: selectedStoreId }
-          }];
+          },
+          {
+            query: GET_PRODUCTS,
+            variables: { productCategoryId: productCategoryId }
+         }];
         }}
       >
         {(updateProductAvailability, { loading, error, data }) => {          

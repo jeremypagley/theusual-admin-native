@@ -32,23 +32,57 @@ class Store extends React.Component {
 
     return (
       <Container style={ContainerStyles.container}>
-        <Query query={GET_ORGANIZATION_STORES} pollInterval={10000} variables={{storeId: selectedStoreId}}>
+        <Query query={GET_ORGANIZATION_STORES} pollInterval={30000} variables={{storeId: selectedStoreId}} fetchPolicy="cache-and-network">
           {({ loading, error, data }) => {
             if (error) return <GenericError message={error.message} />;
-            if (loading) return <LoadingIndicator title={`Loading Store`} />;
+            
+            let activeOrdersNode = <LoadingIndicator title={`Refreshing Active Orders`} />;
+            let orderHistoryNode = <LoadingIndicator title={`Refreshing Active Orders`} />;
+            let menuNode = <LoadingIndicator title={`Refreshing Active Orders`} />;
+            let aboutNode = <LoadingIndicator title={`Refreshing Active Orders`} />;
 
-            const organization = data.organizationStores;
-            const store = organization.stores[0];
+            if (data && !loading && !error) {
+              const organization = data.organizationStores;
+              const store = organization.stores[0];
 
-            const pendingOrders = []
-            store.orderQueue.forEach(o => {
-              if (o.queueStatus === QueueStatus.pending) pendingOrders.push(o)
-            });
-            // OtherOrders is completed or canceled orders
-            const otherOrders = []
-            store.orderQueue.forEach(o => {
-              if (o.queueStatus === QueueStatus.completed || o.queueStatus === QueueStatus.canceled) otherOrders.push(o)
-            });
+              const pendingOrders = []
+              store.orderQueue.forEach(o => {
+                if (o.queueStatus === QueueStatus.pending) pendingOrders.push(o)
+              });
+              // OtherOrders is completed or canceled orders
+              let otherOrders = []
+              store.orderQueue.forEach(o => {
+                if (o.queueStatus === QueueStatus.completed || o.queueStatus === QueueStatus.canceled) otherOrders.push(o)
+              });
+
+              let previousOrders = otherOrders.reverse();
+
+              activeOrdersNode = (
+                <Content padder>
+                  <View>
+                    {pendingOrders.length > 0 ? pendingOrders.map(order => {
+                      return this.getOrderQueueCard(order);
+                    }) : null}
+                  </View>
+                  {!pendingOrders.length > 0 ? this.getNoDataCard('No active orders') : null}
+                </Content>
+              );
+
+              orderHistoryNode = (
+                <Content padder>
+                  <View style={{opacity: 0.6}}>
+                    {previousOrders.length > 0 ? previousOrders.map(order => {
+                      return this.getOrderQueueCard(order, false);
+                    }) : null}
+                  </View>
+                  {!previousOrders.length > 0 ? this.getNoDataCard('No previous orders') : null}
+                </Content>
+              );
+
+              menuNode = this.getMenuCard(store);
+              aboutNode = this.getAboutCard(store);
+
+            }
 
             return (
               <Tabs tabBarUnderlineStyle={ContainerStyles.tabBarUnderline}>
@@ -59,14 +93,7 @@ class Store extends React.Component {
                   activeTextStyle={ContainerStyles.activeTabText}
                   heading="Active Orders"
                 >
-                  <Content padder>
-                    <View>
-                      {pendingOrders.length > 0 ? pendingOrders.map(order => {
-                        return this.getOrderQueueCard(order);
-                      }) : null}
-                    </View>
-                    {!pendingOrders.length > 0 ? this.getNoDataCard('No active orders') : null}
-                  </Content>
+                  {activeOrdersNode}
                 </Tab>
 
                 <Tab 
@@ -76,14 +103,7 @@ class Store extends React.Component {
                   activeTextStyle={ContainerStyles.activeTabText}
                   heading="Order History"
                 >
-                  <Content padder>
-                    <View style={{opacity: 0.6}}>
-                      {otherOrders.length > 0 ? otherOrders.map(order => {
-                        return this.getOrderQueueCard(order, false);
-                      }) : null}
-                    </View>
-                    {!otherOrders.length > 0 ? this.getNoDataCard('No previous orders') : null}
-                  </Content>
+                  {orderHistoryNode}
                 </Tab>
 
                 <Tab
@@ -94,7 +114,7 @@ class Store extends React.Component {
                   heading="Menu"
                 >
                   <Content padder>
-                    {this.getMenuCard(store)}
+                    {menuNode}
                   </Content>
                 </Tab>
 
@@ -106,7 +126,7 @@ class Store extends React.Component {
                   heading="About"
                 >
                   <Content padder>
-                    {this.getAboutCard(store)}
+                    {aboutNode}
                   </Content>
                 </Tab>
               </Tabs>
@@ -146,6 +166,7 @@ class Store extends React.Component {
 
     return (
       <Mutation
+        key={order._id}
         mutation={UPDATE_ORDER_QUEUE_STATUS}
         refetchQueries={(data) => {
           return [{query: GET_ORGANIZATION_STORES, variables: { storeId: selectedStoreId }}];
@@ -165,7 +186,7 @@ class Store extends React.Component {
           return (
             <ExpandableCard 
               key={order._id}
-              title={`Ordered by: ${order.orderedBy.firstName} ${order.orderedBy.lastName}    Ordered at: ${moment(order.orderedDate).format('h:mm a dd')}`}
+              title={`Ordered by: ${order.orderedBy.firstName} ${order.orderedBy.lastName}    Ordered On: ${moment(order.orderedDate).format('h:mm a MMM Do')}`}
               items={items}
               statusColor={statusColor}
               statusTitle={statusTitle}
