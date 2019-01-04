@@ -7,6 +7,13 @@ const OrganizationQuery = gql`
     title
     stripeCustomerId
     accountBalance
+
+    users {
+      _id
+      firstName
+      lastName
+      email
+    }
     
     stores {
       _id

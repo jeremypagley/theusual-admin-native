@@ -32,6 +32,8 @@ class OrderHistory extends React.Component {
             return this._getNoOrderItems();
           }
 
+          // let previousOrders = userOrderHistory.orderHistory.reverse();
+
           return (
             <View style={{marginTop: 40}}>
               <Text style={[TypographyStyles.noteBold, {marginLeft: 15}]}>Previous orders</Text>

@@ -48,7 +48,7 @@ const AppStack = createBottomTabNavigator({
   Stores: StoresStack,
   // Activity: ActivityStack,
   // Cart: CartStack,
-  // Profile: ProfileStack,
+  Profile: ProfileStack,
 },
 {
   headerMode: 'float',
@@ -74,11 +74,10 @@ const AppStack = createBottomTabNavigator({
         iconName = 'md-phone-portrait';
       } else if (routeName === 'Stores') {
         iconName = 'map-marker';
-      } 
-      // else if (routeName === 'Cart') {
+      } else if (routeName === 'Profile') {
+        iconName = 'cog';
+      } // else if (routeName === 'Cart') {
       //   iconName = 'md-cart';
-      // } else if (routeName === 'Profile') {
-      //   iconName = 'md-menu';
       // }
 
       const color = focused ? Colors.BrandRed : Colors.BrandBlueGrey;

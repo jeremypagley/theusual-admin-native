@@ -11,6 +11,7 @@ import {
   Content,
   Button
 } from 'native-base';
+import { Alert } from 'react-native';
 import Time from 'app/utils/time';
 import moment from 'moment';
 import CardList from 'app/components/CardList';
@@ -47,15 +48,13 @@ class Store extends React.Component {
 
               const pendingOrders = []
               store.orderQueue.forEach(o => {
-                if (o.queueStatus === QueueStatus.pending) pendingOrders.push(o)
+                if (o.queueStatus === QueueStatus.pending) pendingOrders.unshift(o)
               });
-              // OtherOrders is completed or canceled orders
-              let otherOrders = []
+              // previousOrders is completed or canceled orders
+              let previousOrders = []
               store.orderQueue.forEach(o => {
-                if (o.queueStatus === QueueStatus.completed || o.queueStatus === QueueStatus.canceled) otherOrders.push(o)
+                if (o.queueStatus === QueueStatus.completed || o.queueStatus === QueueStatus.canceled) previousOrders.unshift(o)
               });
-
-              let previousOrders = otherOrders.reverse();
 
               activeOrdersNode = (
                 <Content padder>
@@ -180,7 +179,17 @@ class Store extends React.Component {
               updateOrderQueueStatus({variables: {orderId: order._id, status: QueueStatus.completed}});
             },
             removable: true,
-            removableOnPress: () => updateOrderQueueStatus({variables: {orderId: order._id, status: QueueStatus.canceled}})
+            removableOnPress: () => {
+              Alert.alert(
+                'Cancel Order', 
+                `Are you sure you want to cancel this order? ` +
+                'Canceled orders cannot be restored. ',
+                [
+                  {text: 'OK', onPress: () => updateOrderQueueStatus({variables: {orderId: order._id, status: QueueStatus.canceled}})},
+                  {text: "Cancel", style: 'cancel'}
+                ]
+              );
+            }
           } : {};
 
           return (
