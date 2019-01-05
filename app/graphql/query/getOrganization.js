@@ -6,7 +6,10 @@ const OrganizationQuery = gql`
     _id
     title
     stripeCustomerId
-    accountBalance
+    billing {
+      balance
+      tips
+    }
 
     users {
       _id
