@@ -14,7 +14,10 @@ const OrganizationStoresQuery = gql`
         _id
       }
       stripeCustomerId
-      accountBalance
+      billing {
+        balance
+        tips
+      }
       
       stores {
         _id
@@ -70,6 +73,10 @@ const OrganizationStoresQuery = gql`
             _id,
             title,
             description
+            productModifiers {
+              _id
+              title
+            }
           }
         }
       }

@@ -69,17 +69,18 @@ class CardList extends React.PureComponent {
 
   render() {
     const { title } = this.props;
+    const titleNode = title ? (
+      <CardItem header style={CardStyles.itemHeader}>
+        <Left>
+          <Text style={TypographyStyles.listTitle}>{title}</Text>
+        </Left>
+      </CardItem>
+    ) : null;
 
     return (
       <View style={CardStyles.card}>
         <Card transparent>
-          {title
-            ? <CardItem header style={CardStyles.itemHeader}>
-                <Left>
-                  <Text style={TypographyStyles.listTitle}>{title}</Text>
-                </Left>
-              </CardItem>
-            : null}
+          {titleNode}
 
           <FlatList
             data={this.props.data}

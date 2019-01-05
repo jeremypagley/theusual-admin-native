@@ -3,7 +3,7 @@ import OrderContainer from 'app/containers/Order';
 
 class Order extends React.Component {
   static navigationOptions = {
-    title: 'Order',
+    title: 'Stores',
   };
 
   render() {

@@ -10,6 +10,8 @@ import GradientButton from 'app/components/GradientButton';
 import CardList from 'app/components/CardList';
 import LoadingIndicator from 'app/components/LoadingIndicator';
 import GenericError from 'app/components/GenericError';
+import GET_ORGANIZATION from 'app/graphql/query/getOrganization';
+import { Query } from 'react-apollo';
 
 class ProfileContainer extends React.Component {
   constructor(props) {
@@ -24,7 +26,7 @@ class ProfileContainer extends React.Component {
         <Header style={[ContainerStyles.header]}></Header>
 
         <Content padder style={ContainerStyles.content}>
-          {loading && <LoadingIndicator title="Loading stores" />}
+          {loading && <LoadingIndicator title="Loading your info" />}
           {error && <GenericError message={error.message} />}
 
           {loading || error 
@@ -36,8 +38,36 @@ class ProfileContainer extends React.Component {
                 subtitle: currentUser.email
               }]}
               rightActionItem={<View></View>}
+              title="Your Info"
             />
           }
+
+          <Query query={GET_ORGANIZATION}>
+            {({ loading, error, data }) => {
+              if (loading) return <LoadingIndicator title="Loading organization info" />;
+              if (error) return <GenericError message={error.message} />;
+              
+              const organization = data.organization;
+              if (!organization) return null
+
+              let orgUsers = organization.users.map(user => {
+                return {
+                  _id: user._id,
+                  title: `${user.firstName} ${user.lastName}`,
+                  subtitle: `${user.email}`
+                }
+              })
+
+              return (
+                <CardList
+                  data={orgUsers}
+                  title={`${organization.title} - Users`}
+                  loading={loading}
+                  rightActionItem={<View></View>}
+                />
+              )
+            }}
+          </Query>
 
           <GradientButton 
             title="Logout"

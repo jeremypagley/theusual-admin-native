@@ -7,6 +7,7 @@ import {
   Item,
   Input,
   Text,
+  View
 } from 'native-base';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
@@ -18,6 +19,7 @@ import Colors from 'app/styles/Colors';
 import LoadingIndicator from 'app/components/LoadingIndicator';
 import GenericError from 'app/components/GenericError';
 import GET_ORGANIZATION from 'app/graphql/query/getOrganization';
+import TypographyStyles from 'app/styles/generic/TypographyStyles';
 
 class Order extends React.Component {
   constructor(props) {
@@ -55,11 +57,16 @@ class Order extends React.Component {
               const organization = data.organization;
               if (!organization) return null
               
+              const listData = this.getListData(organization);
+              let title = 'Found';
+
+              if (listData.length < 1) title = 'No stores found';
+              
               return (
                 <CardList
-                  data={this.getListData(organization)}
+                  data={listData}
                   handleItemPress={(item) => this.onItemPress(item, organization.stores)}
-                  title="Found"
+                  title={title}
                   loading={loading}
                 />
               )
@@ -93,7 +100,7 @@ class Order extends React.Component {
   onItemPress = (item, stores) => {
     const store = stores.find(s => s._id === item._id);
     const { navigation } = this.props;
-    navigation.navigate('Store', { storeId: store._id });
+    navigation.navigate('Store', { storeId: store._id, storeTitle: store.title });
   }
 
 }
