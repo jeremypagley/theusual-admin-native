@@ -51,10 +51,6 @@ const OrganizationStoresQuery = gql`
             title
             description
             price
-            productCategory {
-              _id
-              title
-            }
             productModifiers {
               _id
               title
