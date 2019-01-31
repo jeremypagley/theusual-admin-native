@@ -26,6 +26,7 @@ import gql from 'graphql-tag';
 import { Mutation, Query } from 'react-apollo';
 import LoadingIndicator from 'app/components/LoadingIndicator';
 import GenericError from 'app/components/GenericError';
+import { Audio } from 'expo';
 
 class Store extends React.Component {
   render() {
@@ -44,7 +45,7 @@ class Store extends React.Component {
 
             if (data && !loading && !error) {
               const organization = data.organizationStores;
-              const store = organization.stores[0];
+              const store = organization.stores.find(store => store._id === selectedStoreId);
 
               const pendingOrders = []
               store.orderQueue.forEach(o => {
