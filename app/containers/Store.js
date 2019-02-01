@@ -26,7 +26,6 @@ import gql from 'graphql-tag';
 import { Mutation, Query } from 'react-apollo';
 import LoadingIndicator from 'app/components/LoadingIndicator';
 import GenericError from 'app/components/GenericError';
-import { Audio } from 'expo';
 
 class Store extends React.Component {
   render() {
