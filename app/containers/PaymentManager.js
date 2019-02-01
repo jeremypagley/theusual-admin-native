@@ -62,18 +62,6 @@ class PaymentManager extends React.Component {
         // Only iOS support this options
         smsAutofillDisabled: false,
         requiredBillingAddressFields: 'full',
-        prefilledInformation: {
-          billingAddress: {
-            name: 'Jeremy K Pagley',
-            line1: '777 North Orange Ave',
-            line2: '412',
-            city: 'Orlando',
-            state: 'FL',
-            country: 'United States',
-            postalCode: '32801',
-            email: 'jeremyjkp@gmail.com',
-          },
-        },
       });
 
       this.setState({ creditCardLoading: false, token });

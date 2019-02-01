@@ -44,7 +44,7 @@ class Store extends React.Component {
 
             if (data && !loading && !error) {
               const organization = data.organizationStores;
-              const store = organization.stores[0];
+              const store = organization.stores.find(store => store._id === selectedStoreId);
 
               const pendingOrders = []
               store.orderQueue.forEach(o => {
@@ -183,7 +183,7 @@ class Store extends React.Component {
               Alert.alert(
                 'Cancel Order', 
                 `Are you sure you want to cancel this order? ` +
-                'Canceled orders cannot be restored. ',
+                'Canceled orders cannot be restored and do not issue a refund to the user.',
                 [
                   {text: 'OK', onPress: () => updateOrderQueueStatus({variables: {orderId: order._id, status: QueueStatus.canceled}})},
                   {text: "Cancel", style: 'cancel'}

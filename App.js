@@ -18,7 +18,7 @@ import AppIntroSlider from 'react-native-app-intro-slider';
 
 console.ignoredYellowBox = ['Remote debugger'];
 
-const httpLink = new HttpLink({ uri: 'http://localhost:4000' });
+const httpLink = new HttpLink({ uri: 'http://192.168.0.8:4000/graphql' });
 const cache = new InMemoryCache();
 
 const authLink = setContext(async (req, { headers }) => {
