@@ -14,11 +14,15 @@ import Colors from './app/styles/Colors';
 import TypographyStyles from './app/styles/generic/TypographyStyles';
 import DeviceEmitters from './app/utils/deviceEmitters';
 import { AsyncStorage } from 'react-native';
-import AppIntroSlider from 'react-native-app-intro-slider';
+import Auth from './app/auth';
 
 console.ignoredYellowBox = ['Remote debugger'];
 
-const httpLink = new HttpLink({ uri: 'http://192.168.0.8:4000/graphql' });
+const {
+  apiEndpoint
+} = Auth.getKeys();
+
+const httpLink = new HttpLink({ uri: apiEndpoint });
 const cache = new InMemoryCache();
 
 const authLink = setContext(async (req, { headers }) => {

@@ -3,7 +3,9 @@ import {
   Container,
   Content,
   Header,
-  View
+  View,
+  Button,
+  Text
 } from 'native-base';
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
 import GradientButton from 'app/components/GradientButton';
@@ -12,14 +14,30 @@ import LoadingIndicator from 'app/components/LoadingIndicator';
 import GenericError from 'app/components/GenericError';
 import GET_ORGANIZATION from 'app/graphql/query/getOrganization';
 import { Query } from 'react-apollo';
+import Auth from 'app/auth';
+import { Constants } from 'expo';
+import ButtonStyles from 'app/styles/generic/ButtonStyles';
+
+const {
+  apiEndpoint
+} = Auth.getKeys();
+
 
 class ProfileContainer extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      showDevSettings: false
+    }
   }
 
   render() {
     const { currentUser, loading, error } = this.props.data;
+    const manifest = Constants.manifest;
+    const buildNumber = manifest.ios.buildNumber;
+    const version = manifest.version;
+    const releaseChannel = manifest.releaseChannel;
 
     return (
       <Container style={ContainerStyles.container}>
@@ -68,6 +86,43 @@ class ProfileContainer extends React.Component {
               )
             }}
           </Query>
+
+          {!this.state.showDevSettings
+          ? null
+          : <CardList
+              data={[
+                {
+                  _id: apiEndpoint,
+                  title: "apiEndpoint:",
+                  subtitle: apiEndpoint
+                },
+                {
+                  _id: version,
+                  title: "version:",
+                  subtitle: version
+                },
+                {
+                  _id: buildNumber,
+                  title: "buildNumber:",
+                  subtitle: buildNumber
+                },
+                {
+                  _id: releaseChannel,
+                  title: "releaseChannel:",
+                  subtitle: releaseChannel
+                }
+              ]}
+              rightActionItem={<View></View>}
+            />
+          }
+
+          <Button 
+            block 
+            style={ButtonStyles.secondaryButton}
+            onPress={() => this.setState({showDevSettings: true})}
+          >
+            <Text style={ButtonStyles.secondaryButtonText}>Dev Settings</Text>
+          </Button>
 
           <GradientButton 
             title="Logout"

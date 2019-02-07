@@ -41,6 +41,7 @@
 		2C1548D9E4CB1AEFA5CCAE6D /* Pods-theusual-admin-native.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-theusual-admin-native.debug.xcconfig"; path = "Pods/Target Support Files/Pods-theusual-admin-native/Pods-theusual-admin-native.debug.xcconfig"; sourceTree = "<group>"; };
 		2D90ED40F4C94779AB2DF0FC /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/native-base/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		31F291F2A27D4E4B9351772B /* rubicon-icon-font.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "rubicon-icon-font.ttf"; path = "../node_modules/native-base/Fonts/rubicon-icon-font.ttf"; sourceTree = "<group>"; };
+		3FEC0466220BA60B0005DF41 /* theusual-admin-native.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "theusual-admin-native.entitlements"; sourceTree = "<group>"; };
 		4DC56678D637437796705815 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/native-base/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		6FF11988E1BD43258E138054 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/native-base/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		799B9180FB8E4B3E8559A8DB /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/native-base/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
@@ -149,6 +150,7 @@
 		B56386431DB9693800A0598C /* theusual-admin-native */ = {
 			isa = PBXGroup;
 			children = (
+				3FEC0466220BA60B0005DF41 /* theusual-admin-native.entitlements */,
 				B56386471DB9693800A0598C /* AppDelegate.h */,
 				B56386481DB9693800A0598C /* AppDelegate.m */,
 				B56386501DB9693800A0598C /* Assets.xcassets */,
@@ -211,6 +213,11 @@
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = 6C8622NQYH;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -468,6 +475,7 @@
 			baseConfigurationReference = FAC9E382CA3C597E99DB1BF8 /* Pods-theusual-admin-native.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "theusual-admin-native/theusual-admin-native.entitlements";
 				DEVELOPMENT_TEAM = 6C8622NQYH;
 				INFOPLIST_FILE = "$(SRCROOT)/theusual-admin-native/Supporting/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -482,6 +490,7 @@
 			baseConfigurationReference = 7F0F91004B10D71000D1D81F /* Pods-theusual-admin-native.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "theusual-admin-native/theusual-admin-native.entitlements";
 				DEVELOPMENT_TEAM = 6C8622NQYH;
 				INFOPLIST_FILE = "$(SRCROOT)/theusual-admin-native/Supporting/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

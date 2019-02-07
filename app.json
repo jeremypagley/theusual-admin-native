@@ -1,15 +1,15 @@
 {
   "expo": {
     "name": "theusual-admin-native",
-    "description": "A very interesting project.",
-    "slug": "theusual-admin-native",
-    "privacy": "public",
+    "description": "The usual vendor app.",
+    "slug": "theusual-admin-vendors",
+    "privacy": "unlisted",
     "sdkVersion": "30.0.0",
     "platforms": [
       "ios",
       "android"
     ],
-    "version": "1.0.0",
+    "version": "1.0",
     "orientation": "default",
     "icon": "./assets/images/icon.png",
     "splash": {
@@ -18,7 +18,9 @@
       "backgroundColor": "#ffffff"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "enabled": true,
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 30000
     },
     "assetBundlePatterns": [
       "**/*"
@@ -27,7 +29,13 @@
       "supportsTablet": true,
       "bundleIdentifier": "io.theusual.admin.native",
       "publishBundlePath": "ios/theusual-admin-native/Supporting/shell-app.bundle",
-      "publishManifestPath": "ios/theusual-admin-native/Supporting/shell-app-manifest.json"
+      "publishManifestPath": "ios/theusual-admin-native/Supporting/shell-app-manifest.json",
+      "infoPlist": {
+        "privacyPolicy": "https://theusual.io/privacy-policy/"
+      },
+      "buildNumber": "1",
+      "supportsTablet": true,
+      "usesIcloudStorage": false
     },
     "isDetached": true,
     "detach": {
@@ -35,10 +43,23 @@
       "androidExpoViewUrl": "https://s3.amazonaws.com/exp-exponent-view-code/android-v2.8.1-sdk30.0.0-271c32ab-0715-4dfb-8270-ecead3679bb4.tar.gz"
     },
     "scheme": "expe6512e39094c4fa59c3fbbf586be6811",
+    "androidStatusBar": {
+      "backgroundColor": "#DB4C65"
+    },
+    "primaryColor": "#DB4C65",
     "android": {
       "package": "io.theusual.admin.native",
       "publishBundlePath": "android/app/src/main/assets/shell-app.bundle",
-      "publishManifestPath": "android/app/src/main/assets/shell-app-manifest.json"
+      "publishManifestPath": "android/app/src/main/assets/shell-app-manifest.json",
+      "versionCode": 1
+    },
+    "extra": {
+      "DEV_API_KEY": "",
+      "DEV_APP_ENDPOINT": "http://localhost:4000/graphql",
+      "DEV_API_ENDPOINT_FORGOT": "http://localhost:4000/forgot",
+      "PROD_API_KEY": "",
+      "PROD_API_ENDPOINT": "https://theusual.io/graphql",
+      "PROD_API_ENDPOINT_FORGOT": "https://theusual.io/forgot"
     }
   }
 }
