@@ -11,6 +11,12 @@ import Colors from 'app/styles/Colors';
 import GradientButton from 'app/components/GradientButton';
 import GenericError from 'app/components/GenericError';
 import validator from 'validator';
+import { WebBrowser } from 'expo';
+import Auth from 'app/auth';
+
+const {
+  apiEndpointTerms
+} = Auth.getKeys();
 
 class Register extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -145,6 +151,11 @@ class Register extends React.Component {
               </Form>
             </Card>
           </View>
+
+          <Text style={{fontSize: 12, color: 'grey', marginTop: 10}}>By signing up you will be agreeing to our Terms of Service</Text>
+          <Button style={{paddingLeft: 0, marginLeft: 0}} transparent onPress={() => WebBrowser.openBrowserAsync(apiEndpointTerms)}>
+            <Text style={{fontSize: 14, fontFamily: 'montserrat-bold', paddingLeft: 0}}>View Terms of Service</Text>
+          </Button>
           
           <GradientButton
             disabled={disabled}

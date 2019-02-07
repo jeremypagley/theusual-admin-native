@@ -35,6 +35,7 @@ const getKeys = () => {
 
     apiEndpoint: 'http://192.168.0.26:4000/graphql',
     apiEndpointForgot: 'http://192.168.0.26:4000/forgot',
+    apiEndpointTerms: 'http://192.168.0.26:4000/terms'
   }
 
   // Since releaseChannels are undefined in dev, return default.
@@ -79,6 +80,7 @@ const getKeys = () => {
     keys.apiKey = manifestExtra.PROD_API_KEY;
     keys.apiEndpoint = manifestExtra.PROD_API_ENDPOINT;
     keys.apiEndpointForgot = manifestExtra.PROD_API_ENDPOINT_FORGOT;
+    keys.apiEndpointTerms = manifestExtra.PROD_API_ENDPOINT_TERMS;
 
     return keys;
   }

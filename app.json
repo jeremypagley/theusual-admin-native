@@ -54,12 +54,13 @@
       "versionCode": 1
     },
     "extra": {
-      "DEV_API_KEY": "",
       "DEV_APP_ENDPOINT": "http://localhost:4000/graphql",
       "DEV_API_ENDPOINT_FORGOT": "http://localhost:4000/forgot",
+      "DEV_API_ENDPOINT_TERMS": "http://localhost:4000/terms",
       "PROD_API_KEY": "",
       "PROD_API_ENDPOINT": "https://theusual.io/graphql",
-      "PROD_API_ENDPOINT_FORGOT": "https://theusual.io/forgot"
+      "PROD_API_ENDPOINT_FORGOT": "https://theusual.io/forgot",
+      "PROD_API_ENDPOINT_TERMS": "https://theusual.io/terms"
     }
   }
 }
