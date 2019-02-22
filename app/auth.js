@@ -28,14 +28,16 @@ const getReleaseChannel = () => {
 const getKeys = () => {
   const releaseChannel = getReleaseChannel();
   const manifestExtra = getManifestExtra();
+  // const endpoint = 'http://192.168.0.15:4000/';
+  const endpoint = 'http://172.31.99.30:4000/';
   let keys = {
     apiKey: '',
     // apiEndpoint: 'http://localhost:4000/graphql',
     // apiEndpointForgot: 'http://localhost:4000/forgot',
-
-    apiEndpoint: 'http://192.168.0.26:4000/graphql',
-    apiEndpointForgot: 'http://192.168.0.26:4000/forgot',
-    apiEndpointTerms: 'http://192.168.0.26:4000/terms'
+    
+    apiEndpoint: `${endpoint}graphql`,
+    apiEndpointForgot: `${endpoint}forgot`,
+    apiEndpointTerms: `${endpoint}terms`,
   }
 
   // Since releaseChannels are undefined in dev, return default.

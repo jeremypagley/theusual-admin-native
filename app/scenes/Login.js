@@ -11,6 +11,12 @@ import GradientButton from 'app/components/GradientButton';
 import GenericError from 'app/components/GenericError';
 import validator from 'validator';
 import ButtonStyles from 'app/styles/generic/ButtonStyles';
+import { WebBrowser } from 'expo';
+import Auth from 'app/auth';
+
+const {
+  apiEndpointTerms
+} = Auth.getKeys();
 
 class Login extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -80,27 +86,32 @@ class Login extends React.Component {
             {passwordError && <GenericError message={passwordError} style={{marginLeft: 10}} />}
             <Card transparent>
               <Form>
-                <Item floatingLabel>
-                  <Label>Email</Label>
+                <Item>
                   <Input
                     onChangeText={value => this.handleInputChange('email', value)}
                     keyboardType="email-address"
                     autoCapitalize="none"
                     autoCorrect={false}
+                    placeholder="email"
                   />
                 </Item>
-                <Item floatingLabel>
-                  <Label>Password</Label>
+                <Item>
                   <Input
                     onChangeText={value => this.handleInputChange('password', value)}
                     autoCapitalize="none"
                     autoCorrect={false}
                     secureTextEntry
+                    placeholder="password"
                   />
                 </Item>
               </Form>
             </Card>
           </View>
+
+          <Text style={{fontSize: 12, color: 'grey', marginTop: 10}}>By using this vendor app you're agreeing to our Terms of Service</Text>
+          <Button style={{paddingLeft: 0, marginLeft: 0}} transparent onPress={() => WebBrowser.openBrowserAsync(apiEndpointTerms)}>
+            <Text style={{fontSize: 14, fontFamily: 'montserrat-bold', paddingLeft: 0}}>View Terms of Service</Text>
+          </Button>
           
           <GradientButton
             disabled={disabled}

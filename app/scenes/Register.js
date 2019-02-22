@@ -11,10 +11,13 @@ import Colors from 'app/styles/Colors';
 import GradientButton from 'app/components/GradientButton';
 import GenericError from 'app/components/GenericError';
 import validator from 'validator';
-import { WebBrowser } from 'expo';
+import { WebBrowser, Constants } from 'expo';
 import Auth from 'app/auth';
+import CardList from 'app/components/CardList';
+
 
 const {
+  apiEndpoint,
   apiEndpointTerms
 } = Auth.getKeys();
 
@@ -96,6 +99,11 @@ class Register extends React.Component {
         disabled = false;
       }
 
+    const manifest = Constants.manifest;
+    const buildNumber = manifest.ios.buildNumber;
+    const version = manifest.version;
+    const releaseChannel = manifest.releaseChannel;
+
     return (
       <Container style={ContainerStyles.container}>
         <Header style={[ContainerStyles.header]}></Header>
@@ -107,45 +115,45 @@ class Register extends React.Component {
             {confirmPasswordError && <GenericError message={confirmPasswordError} style={{marginLeft: 10}} />}
             <Card transparent>
               <Form>
-                <Item floatingLabel>
-                  <Label>First Name</Label>
+                <Item>
                   <Input
                     onChangeText={value => this.handleInputChange('firstName', value)}
                     autoCorrect={false}
+                    placeholder="first name"
                   />
                 </Item>
-                <Item floatingLabel>
-                  <Label>Last Name</Label>
+                <Item>
                   <Input
                     onChangeText={value => this.handleInputChange('lastName', value)}
                     autoCorrect={false}
+                    placeholder="last name"
                   />
                 </Item>
-                <Item floatingLabel>
-                  <Label>Email</Label>
+                <Item>
                   <Input
                     onChangeText={value => this.handleInputChange('email', value)}
                     keyboardType="email-address"
                     autoCapitalize="none"
                     autoCorrect={false}
+                    placeholder="email"
                   />
                 </Item>
-                <Item floatingLabel>
-                  <Label>Password (minimum 6 characters)</Label>
+                <Item>
                   <Input
                     onChangeText={value => this.handleInputChange('password', value)}
                     autoCapitalize="none"
                     autoCorrect={false}
                     secureTextEntry
+                    placeholder="password (minimum 6 characters)"
                   />
                 </Item>
-                <Item floatingLabel>
-                  <Label>Confirm password</Label>
+                <Item last>
                   <Input
                     onChangeText={value => this.handleInputChange('confirmPassword', value)}
                     autoCapitalize="none"
                     autoCorrect={false}
                     secureTextEntry
+                    placeholder="confirm password"
                   />
                 </Item>
               </Form>
@@ -156,6 +164,37 @@ class Register extends React.Component {
           <Button style={{paddingLeft: 0, marginLeft: 0}} transparent onPress={() => WebBrowser.openBrowserAsync(apiEndpointTerms)}>
             <Text style={{fontSize: 14, fontFamily: 'montserrat-bold', paddingLeft: 0}}>View Terms of Service</Text>
           </Button>
+
+          <CardList
+              data={[
+                {
+                  _id: apiEndpoint,
+                  title: "apiEndpoint OTA 1.1:",
+                  subtitle: apiEndpoint
+                },
+                {
+                  _id: manifest.sdkVersion,
+                  title: "sdkVersion:",
+                  subtitle: manifest.sdkVersion
+                },
+                {
+                  _id: version,
+                  title: "version:",
+                  subtitle: version
+                },
+                {
+                  _id: buildNumber,
+                  title: "buildNumber:",
+                  subtitle: buildNumber
+                },
+                {
+                  _id: releaseChannel,
+                  title: "releaseChannel:",
+                  subtitle: releaseChannel
+                } 
+              ]}
+              rightActionItem={<View></View>}
+            />
           
           <GradientButton
             disabled={disabled}

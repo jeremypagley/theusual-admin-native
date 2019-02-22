@@ -22,6 +22,6 @@ export default {
   BrandSecondaryBlue: '#A4C3DE',
   BrandBorderGrey: '#EBEEF1',
   BrandShadow: '#222425',
-  BrandGradientStart: '#D65E5E',
-  BrandGradientEnd: '#FF4D74',
+  BrandGradientStart: '#FF2655',
+  BrandGradientEnd: '#FF117E',
 }
