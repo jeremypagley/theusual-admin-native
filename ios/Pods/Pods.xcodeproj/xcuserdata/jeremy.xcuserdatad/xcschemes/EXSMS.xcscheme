@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "8428CD2AD84D3D3DE82855C0BA812A85"
+               BlueprintIdentifier = "385241E1A2381189B418E7ED6B77E8F1"
+               BuildableName = "libEXSMS.a"
                BlueprintName = "EXSMS"
-               ReferencedContainer = "container:Pods.xcodeproj"
-               BuildableName = "libEXSMS.a">
+               ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

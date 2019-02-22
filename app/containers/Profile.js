@@ -121,7 +121,7 @@ class ProfileContainer extends React.Component {
             style={ButtonStyles.secondaryButton}
             onPress={() => this.setState({showDevSettings: true})}
           >
-            <Text style={ButtonStyles.secondaryButtonText}>Dev Settings</Text>
+            <Text style={ButtonStyles.secondaryButtonText}>Version Info</Text>
           </Button>
 
           <GradientButton 

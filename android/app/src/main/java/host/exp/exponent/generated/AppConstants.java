@@ -11,25 +11,25 @@ import host.exp.exponent.Constants;
 @DoNotStrip
 public class AppConstants {
 
-  public static final String VERSION_NAME = "2.8.1";
+  public static final String VERSION_NAME = "2.10.7";
   public static String INITIAL_URL = "exp://exp.host/@jeremykpagley/theusual-admin-native";
-  public static final boolean IS_DETACHED = true;
-  public static final String SHELL_APP_SCHEME = "expe6512e39094c4fa59c3fbbf586be6811";
+  public static final String SHELL_APP_SCHEME = "exp6d87efb2a26540d5a45114f5ceed0c25";
   public static final String RELEASE_CHANNEL = "staging";
-  public static boolean SHOW_LOADING_VIEW_IN_SHELL_APP = false;
+  public static boolean SHOW_LOADING_VIEW_IN_SHELL_APP = true;
   public static boolean ARE_REMOTE_UPDATES_ENABLED = true;
   public static final List<Constants.EmbeddedResponse> EMBEDDED_RESPONSES;
   public static boolean FCM_ENABLED = false;
-  public static boolean ANALYTICS_ENABLED = true;
 
   static {
     List<Constants.EmbeddedResponse> embeddedResponses = new ArrayList<>();
 
     
+        
+        
         // ADD EMBEDDED RESPONSES HERE
         // START EMBEDDED RESPONSES
-        embeddedResponses.add(new Constants.EmbeddedResponse("https://exp.host/@jeremykpagley/theusual-admin-vendors", "assets://shell-app-manifest.json", "application/json"));
-        embeddedResponses.add(new Constants.EmbeddedResponse("https://d1wp6m56sqw74a.cloudfront.net/%40jeremykpagley%2Ftheusual-admin-vendors%2F1.0%2F616fffd59ea11271cadf2331138d9b22-30.0.0-android.js", "assets://shell-app.bundle", "application/javascript"));
+        embeddedResponses.add(new Constants.EmbeddedResponse("https://exp.host/@jeremykpagley/theusual-admin-native", "assets://shell-app-manifest.json", "application/json"));
+        embeddedResponses.add(new Constants.EmbeddedResponse("https://d1wp6m56sqw74a.cloudfront.net/%40jeremykpagley%2Ftheusual-admin-native%2F1.0.2%2F16885ed5f40e36f33f3f79d36f8cc4b1-32.0.0-android.js", "assets://shell-app.bundle", "application/javascript"));
         // END EMBEDDED RESPONSES
     EMBEDDED_RESPONSES = embeddedResponses;
   }
@@ -39,7 +39,6 @@ public class AppConstants {
     Constants.ExpoViewAppConstants constants = new Constants.ExpoViewAppConstants();
     constants.VERSION_NAME = VERSION_NAME;
     constants.INITIAL_URL = INITIAL_URL;
-    constants.IS_DETACHED = IS_DETACHED;
     constants.SHELL_APP_SCHEME = SHELL_APP_SCHEME;
     constants.RELEASE_CHANNEL = RELEASE_CHANNEL;
     constants.SHOW_LOADING_VIEW_IN_SHELL_APP = SHOW_LOADING_VIEW_IN_SHELL_APP;
@@ -47,7 +46,6 @@ public class AppConstants {
     constants.EMBEDDED_RESPONSES = EMBEDDED_RESPONSES;
     constants.ANDROID_VERSION_CODE = BuildConfig.VERSION_CODE;
     constants.FCM_ENABLED = FCM_ENABLED;
-    constants.ANALYTICS_ENABLED = ANALYTICS_ENABLED;
     return constants;
   }
 }

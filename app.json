@@ -1,16 +1,15 @@
 {
   "expo": {
     "name": "theusual-admin-native",
-    "description": "The usual vendor app.",
-    "slug": "theusual-admin-vendors",
+    "slug": "theusual-admin-native",
     "privacy": "unlisted",
-    "sdkVersion": "30.0.0",
+    "sdkVersion": "32.0.0",
     "platforms": [
       "ios",
       "android"
     ],
-    "version": "1.1",
-    "orientation": "default",
+    "version": "1.0.2",
+    "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "splash": {
       "image": "./assets/images/splash.png",
@@ -18,40 +17,37 @@
       "backgroundColor": "#FF4D73"
     },
     "updates": {
-      "enabled": true,
-      "checkAutomatically": "ON_LOAD",
-      "fallbackToCacheTimeout": 30000
+      "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "io.theusual.admin.native",
-      "publishBundlePath": "ios/theusual-admin-native/Supporting/shell-app.bundle",
-      "publishManifestPath": "ios/theusual-admin-native/Supporting/shell-app-manifest.json",
+      "usesIcloudStorage": false,
+      "buildNumber": "1",
       "infoPlist": {
         "privacyPolicy": "https://theusual.io/privacy-policy/"
       },
-      "buildNumber": "1",
-      "supportsTablet": true,
-      "usesIcloudStorage": false
+      "bundleIdentifier": "io.theusual.admin.native",
+      "publishBundlePath": "ios/theusual-admin-native/Supporting/shell-app.bundle",
+      "publishManifestPath": "ios/theusual-admin-native/Supporting/shell-app-manifest.json"
     },
     "isDetached": true,
     "detach": {
-      "iosExpoViewUrl": "https://s3.amazonaws.com/exp-exponent-view-code/ios-v2.8.2-sdk30.0.0-769da6d6-27c8-479e-91c7-0d33fcac97c8.tar.gz",
-      "androidExpoViewUrl": "https://s3.amazonaws.com/exp-exponent-view-code/android-v2.8.1-sdk30.0.0-271c32ab-0715-4dfb-8270-ecead3679bb4.tar.gz"
+      "iosExpoViewUrl": "https://s3.amazonaws.com/exp-exponent-view-code/ios-v2.10.2-sdk32.0.0-c59c23cd-1d49-49d2-a633-d03f9d554cf6.tar.gz",
+      "androidExpoViewUrl": "https://s3.amazonaws.com/exp-exponent-view-code/android-v2.10.7-sdk32.0.0-3ff7f3bf-8e53-4d61-b963-1d7d92a77d79.tar.gz"
     },
-    "scheme": "expe6512e39094c4fa59c3fbbf586be6811",
+    "scheme": "exp6d87efb2a26540d5a45114f5ceed0c25",
     "androidStatusBar": {
       "backgroundColor": "#DB4C65"
     },
     "primaryColor": "#DB4C65",
     "android": {
       "package": "io.theusual.admin.native",
+      "versionCode": 1,
       "publishBundlePath": "android/app/src/main/assets/shell-app.bundle",
-      "publishManifestPath": "android/app/src/main/assets/shell-app-manifest.json",
-      "versionCode": 1
+      "publishManifestPath": "android/app/src/main/assets/shell-app-manifest.json"
     },
     "extra": {
       "DEV_APP_ENDPOINT": "http://localhost:4000/graphql",

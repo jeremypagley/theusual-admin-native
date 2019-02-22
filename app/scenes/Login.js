@@ -92,6 +92,7 @@ class Login extends React.Component {
                     keyboardType="email-address"
                     autoCapitalize="none"
                     autoCorrect={false}
+                    autoFocus
                     placeholder="email"
                   />
                 </Item>
@@ -115,8 +116,9 @@ class Login extends React.Component {
           
           <GradientButton
             disabled={disabled}
-            title={loggingIn ? <Text style={TypographyStyles.buttonText}><ActivityIndicator size="small" color={Colors.White} /> Logging In</Text> : "Sign In"}
+            title={loggingIn ? <Text style={TypographyStyles.buttonText}>Logging In</Text> : "Sign In"}
             fill
+            loading={loggingIn}
             buttonProps={{
               onPress: () => this.handleSubmit()
             }}

@@ -44,6 +44,21 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>EXAppAuth.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>EXAppLoaderProvider.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>EXBackgroundFetch.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>EXBarCodeScanner.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -69,6 +84,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>EXErrors.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>EXFileSystem.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -89,7 +109,17 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>EXGoogleSignIn.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>EXLocalAuthentication.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>EXLocalization.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -139,6 +169,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>EXTaskManager.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>ExpoKit.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -164,7 +199,17 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>GTMSessionFetcher.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Google-Maps-iOS-Utils.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>GoogleToolboxForMac.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>

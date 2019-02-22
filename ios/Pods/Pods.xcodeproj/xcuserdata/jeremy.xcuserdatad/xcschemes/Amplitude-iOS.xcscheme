@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "05B303175DD1E48F19B3B275125E8B78"
+               BlueprintIdentifier = "12166936E7398A17A919ADE94EA25FA6"
+               BuildableName = "libAmplitude-iOS.a"
                BlueprintName = "Amplitude-iOS"
-               ReferencedContainer = "container:Pods.xcodeproj"
-               BuildableName = "libAmplitude-iOS.a">
+               ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F3CC769EE5C7034ED60FE8F02AA8D0BE"
+               BlueprintIdentifier = "A6EBCF6746E17DCF8E679BCCFA53B791"
+               BuildableName = "libEXGL.a"
                BlueprintName = "EXGL"
-               ReferencedContainer = "container:Pods.xcodeproj"
-               BuildableName = "libEXGL.a">
+               ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

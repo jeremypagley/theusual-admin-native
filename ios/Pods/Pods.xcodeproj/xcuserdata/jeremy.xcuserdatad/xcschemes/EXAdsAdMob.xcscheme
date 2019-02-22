@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E1AE9DA24696D7D0BA842055E2D9E470"
+               BlueprintIdentifier = "B3FA3172AD83D76DB4E104DC17FC9AC0"
+               BuildableName = "libEXAdsAdMob.a"
                BlueprintName = "EXAdsAdMob"
-               ReferencedContainer = "container:Pods.xcodeproj"
-               BuildableName = "libEXAdsAdMob.a">
+               ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

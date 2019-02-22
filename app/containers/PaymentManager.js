@@ -27,7 +27,6 @@ import ContainerStyles from 'app/styles/generic/ContainerStyles';
 import TypographyStyles from 'app/styles/generic/TypographyStyles';
 import CardStyles from 'app/styles/generic/CardStyles';
 import Money from 'app/utils/money';
-import Config from '../../config.json';
 import GenericError from 'app/components/GenericError';
 import { compose } from 'react-apollo';
 
@@ -50,9 +49,9 @@ class PaymentManager extends React.Component {
   }
 
   componentWillMount() {
-    Stripe.setOptionsAsync({
-      publishableKey: Config.STRIPE_PUBLISHABLE_TEST_KEY,
-    });
+    // Stripe.setOptionsAsync({
+    //   publishableKey: Config.STRIPE_PUBLISHABLE_TEST_KEY,
+    // });
   }
 
   handleCardPayPress = async (cardHandler) => {

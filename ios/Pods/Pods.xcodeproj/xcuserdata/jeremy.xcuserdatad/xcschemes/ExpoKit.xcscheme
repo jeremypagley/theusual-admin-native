@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E1084870EE82455BBC5499E6AF97C680"
+               BlueprintIdentifier = "35FCEE90C3CBF0108400E5D13FA2312E"
+               BuildableName = "libExpoKit.a"
                BlueprintName = "ExpoKit"
-               ReferencedContainer = "container:Pods.xcodeproj"
-               BuildableName = "libExpoKit.a">
+               ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

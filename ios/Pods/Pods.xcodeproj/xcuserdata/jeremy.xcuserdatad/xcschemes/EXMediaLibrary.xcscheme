@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "DDA96EFF2AAA23A2E82BDC0E6EE69B79"
+               BlueprintIdentifier = "C62B19C055C72FC6084A06036CFABC12"
+               BuildableName = "libEXMediaLibrary.a"
                BlueprintName = "EXMediaLibrary"
-               ReferencedContainer = "container:Pods.xcodeproj"
-               BuildableName = "libEXMediaLibrary.a">
+               ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

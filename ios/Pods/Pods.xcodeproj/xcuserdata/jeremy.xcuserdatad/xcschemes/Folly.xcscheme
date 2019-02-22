@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "664B10C29BD20C75E0C7465C5FAA92FD"
+               BlueprintIdentifier = "C337908D4BAB31E42C5EC2E818980594"
+               BuildableName = "libFolly.a"
                BlueprintName = "Folly"
-               ReferencedContainer = "container:Pods.xcodeproj"
-               BuildableName = "libFolly.a">
+               ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

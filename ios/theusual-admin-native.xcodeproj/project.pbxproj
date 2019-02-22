@@ -7,17 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1493F973A08043FD90B66062 /* rubicon-icon-font.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 31F291F2A27D4E4B9351772B /* rubicon-icon-font.ttf */; };
-		180719A2A28240F7850ED32E /* Roboto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CE77BCD2BF4D4CC8895997CB /* Roboto.ttf */; };
-		2C300F59BB864D1EBCE9A13A /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A01374BA273F4F6BA2CE7F19 /* MaterialIcons.ttf */; };
-		321263C6A8A8453EBE79DF31 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FC6DA707DD8740258A5C0492 /* MaterialCommunityIcons.ttf */; };
-		61CCEA00C0C647A9997ABD0B /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C19AC212B4694816B4CA485B /* Foundation.ttf */; };
-		6821A369670E499FBE4FD141 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 799B9180FB8E4B3E8559A8DB /* SimpleLineIcons.ttf */; };
-		7925F91D98694A78925D3ED5 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2D90ED40F4C94779AB2DF0FC /* Zocial.ttf */; };
-		7CE857506EC74969BD87C836 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F9FFE8C52DFF42ECAE46093C /* FontAwesome.ttf */; };
-		8307DEB8A5A444C78B0F0785 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9A70E962EABA4F618F8E8328 /* Ionicons.ttf */; };
-		83E9E6A539514A03B4109E25 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6FF11988E1BD43258E138054 /* Feather.ttf */; };
-		B3CE11B7CC33434FBE76E6CD /* Roboto_medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EDA646D4B6DB4843AD20EB14 /* Roboto_medium.ttf */; };
 		B501732B1DC01252003445D9 /* EXShell.plist in Resources */ = {isa = PBXBuildFile; fileRef = B501732A1DC01252003445D9 /* EXShell.plist */; };
 		B56386491DB9693800A0598C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B56386481DB9693800A0598C /* AppDelegate.m */; };
 		B56386511DB9693800A0598C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B56386501DB9693800A0598C /* Assets.xcassets */; };
@@ -29,27 +18,12 @@
 		B5CFBF4F1EDE419400B4BE24 /* EXBuildConstants.plist in Resources */ = {isa = PBXBuildFile; fileRef = B5CFBF4E1EDE419400B4BE24 /* EXBuildConstants.plist */; };
 		B5DB04801F3A684600E91581 /* shell-app-manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = B5DB047E1F3A684600E91581 /* shell-app-manifest.json */; };
 		B5DB04811F3A684600E91581 /* shell-app.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B5DB047F1F3A684600E91581 /* shell-app.bundle */; };
-		BE08A4CDCFCE45068994781F /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AF64235560014AEDAF02F025 /* EvilIcons.ttf */; };
-		C992297D6D4E4DC79FF7D294 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4DC56678D637437796705815 /* Octicons.ttf */; };
-		CE028030BDFA40E89BB113D5 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EE013E79A3224A519B776BFB /* Entypo.ttf */; };
 		EBB8117C1BFA0514F79CAF74 /* libPods-theusual-admin-native.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C4A88D15726AD99E8A257BC7 /* libPods-theusual-admin-native.a */; };
-		F62865CD42F0EA72FA63D8F1 /* libPods-theusual-admin-native.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0E8EBFCB59B0FDA19316A422 /* libPods-theusual-admin-native.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0E8EBFCB59B0FDA19316A422 /* libPods-theusual-admin-native.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-theusual-admin-native.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C1548D9E4CB1AEFA5CCAE6D /* Pods-theusual-admin-native.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-theusual-admin-native.debug.xcconfig"; path = "Pods/Target Support Files/Pods-theusual-admin-native/Pods-theusual-admin-native.debug.xcconfig"; sourceTree = "<group>"; };
-		2D90ED40F4C94779AB2DF0FC /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/native-base/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
-		31F291F2A27D4E4B9351772B /* rubicon-icon-font.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "rubicon-icon-font.ttf"; path = "../node_modules/native-base/Fonts/rubicon-icon-font.ttf"; sourceTree = "<group>"; };
-		3FEC0466220BA60B0005DF41 /* theusual-admin-native.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "theusual-admin-native.entitlements"; sourceTree = "<group>"; };
-		4DC56678D637437796705815 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/native-base/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
-		6FF11988E1BD43258E138054 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/native-base/Fonts/Feather.ttf"; sourceTree = "<group>"; };
-		799B9180FB8E4B3E8559A8DB /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/native-base/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
-		7F0F91004B10D71000D1D81F /* Pods-theusual-admin-native.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-theusual-admin-native.release.xcconfig"; path = "Pods/Target Support Files/Pods-theusual-admin-native/Pods-theusual-admin-native.release.xcconfig"; sourceTree = "<group>"; };
-		9A70E962EABA4F618F8E8328 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/native-base/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
-		A01374BA273F4F6BA2CE7F19 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/native-base/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		A47FE4D7F70906B7DC8CE39B /* Pods-theusual-admin-native.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-theusual-admin-native.release.xcconfig"; path = "Pods/Target Support Files/Pods-theusual-admin-native/Pods-theusual-admin-native.release.xcconfig"; sourceTree = "<group>"; };
-		AF64235560014AEDAF02F025 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/native-base/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		B501732A1DC01252003445D9 /* EXShell.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = EXShell.plist; sourceTree = "<group>"; };
 		B56386411DB9693800A0598C /* theusual-admin-native.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "theusual-admin-native.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B56386471DB9693800A0598C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -64,14 +38,7 @@
 		B5CFBF4E1EDE419400B4BE24 /* EXBuildConstants.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = EXBuildConstants.plist; sourceTree = "<group>"; };
 		B5DB047E1F3A684600E91581 /* shell-app-manifest.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shell-app-manifest.json"; sourceTree = "<group>"; };
 		B5DB047F1F3A684600E91581 /* shell-app.bundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "shell-app.bundle"; sourceTree = "<group>"; };
-		C19AC212B4694816B4CA485B /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/native-base/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		C4A88D15726AD99E8A257BC7 /* libPods-theusual-admin-native.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-theusual-admin-native.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		CE77BCD2BF4D4CC8895997CB /* Roboto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Roboto.ttf; path = "../node_modules/native-base/Fonts/Roboto.ttf"; sourceTree = "<group>"; };
-		EDA646D4B6DB4843AD20EB14 /* Roboto_medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Roboto_medium.ttf; path = "../node_modules/native-base/Fonts/Roboto_medium.ttf"; sourceTree = "<group>"; };
-		EE013E79A3224A519B776BFB /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/native-base/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
-		F9FFE8C52DFF42ECAE46093C /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/native-base/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
-		FAC9E382CA3C597E99DB1BF8 /* Pods-theusual-admin-native.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-theusual-admin-native.debug.xcconfig"; path = "Pods/Target Support Files/Pods-theusual-admin-native/Pods-theusual-admin-native.debug.xcconfig"; sourceTree = "<group>"; };
-		FC6DA707DD8740258A5C0492 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/native-base/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,7 +47,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				EBB8117C1BFA0514F79CAF74 /* libPods-theusual-admin-native.a in Frameworks */,
-				F62865CD42F0EA72FA63D8F1 /* libPods-theusual-admin-native.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -91,7 +57,6 @@
 			isa = PBXGroup;
 			children = (
 				C4A88D15726AD99E8A257BC7 /* libPods-theusual-admin-native.a */,
-				0E8EBFCB59B0FDA19316A422 /* libPods-theusual-admin-native.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -101,31 +66,8 @@
 			children = (
 				2C1548D9E4CB1AEFA5CCAE6D /* Pods-theusual-admin-native.debug.xcconfig */,
 				A47FE4D7F70906B7DC8CE39B /* Pods-theusual-admin-native.release.xcconfig */,
-				FAC9E382CA3C597E99DB1BF8 /* Pods-theusual-admin-native.debug.xcconfig */,
-				7F0F91004B10D71000D1D81F /* Pods-theusual-admin-native.release.xcconfig */,
 			);
 			name = Pods;
-			sourceTree = "<group>";
-		};
-		90C5FEAAB2024DF89311A3E5 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				EE013E79A3224A519B776BFB /* Entypo.ttf */,
-				AF64235560014AEDAF02F025 /* EvilIcons.ttf */,
-				6FF11988E1BD43258E138054 /* Feather.ttf */,
-				F9FFE8C52DFF42ECAE46093C /* FontAwesome.ttf */,
-				C19AC212B4694816B4CA485B /* Foundation.ttf */,
-				9A70E962EABA4F618F8E8328 /* Ionicons.ttf */,
-				FC6DA707DD8740258A5C0492 /* MaterialCommunityIcons.ttf */,
-				A01374BA273F4F6BA2CE7F19 /* MaterialIcons.ttf */,
-				4DC56678D637437796705815 /* Octicons.ttf */,
-				EDA646D4B6DB4843AD20EB14 /* Roboto_medium.ttf */,
-				CE77BCD2BF4D4CC8895997CB /* Roboto.ttf */,
-				31F291F2A27D4E4B9351772B /* rubicon-icon-font.ttf */,
-				799B9180FB8E4B3E8559A8DB /* SimpleLineIcons.ttf */,
-				2D90ED40F4C94779AB2DF0FC /* Zocial.ttf */,
-			);
-			name = Resources;
 			sourceTree = "<group>";
 		};
 		B56386381DB9693800A0598C = {
@@ -135,7 +77,6 @@
 				B56386421DB9693800A0598C /* Products */,
 				5B29BC350A332C58878A9F13 /* Pods */,
 				1A42804E64B7E9E0AB8B6799 /* Frameworks */,
-				90C5FEAAB2024DF89311A3E5 /* Resources */,
 			);
 			sourceTree = "<group>";
 		};
@@ -150,7 +91,6 @@
 		B56386431DB9693800A0598C /* theusual-admin-native */ = {
 			isa = PBXGroup;
 			children = (
-				3FEC0466220BA60B0005DF41 /* theusual-admin-native.entitlements */,
 				B56386471DB9693800A0598C /* AppDelegate.h */,
 				B56386481DB9693800A0598C /* AppDelegate.m */,
 				B56386501DB9693800A0598C /* Assets.xcassets */,
@@ -206,18 +146,13 @@
 		B56386391DB9693800A0598C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 900;
+				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = "650 Industries, Inc.";
 				TargetAttributes = {
 					B56386401DB9693800A0598C = {
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = J897WZ5SV4;
 						ProvisioningStyle = Automatic;
-						SystemCapabilities = {
-							com.apple.Keychain = {
-								enabled = 1;
-							};
-						};
 					};
 				};
 			};
@@ -253,20 +188,6 @@
 				B5DB04801F3A684600E91581 /* shell-app-manifest.json in Resources */,
 				B5DB04811F3A684600E91581 /* shell-app.bundle in Resources */,
 				B56386511DB9693800A0598C /* Assets.xcassets in Resources */,
-				CE028030BDFA40E89BB113D5 /* Entypo.ttf in Resources */,
-				BE08A4CDCFCE45068994781F /* EvilIcons.ttf in Resources */,
-				83E9E6A539514A03B4109E25 /* Feather.ttf in Resources */,
-				7CE857506EC74969BD87C836 /* FontAwesome.ttf in Resources */,
-				61CCEA00C0C647A9997ABD0B /* Foundation.ttf in Resources */,
-				8307DEB8A5A444C78B0F0785 /* Ionicons.ttf in Resources */,
-				321263C6A8A8453EBE79DF31 /* MaterialCommunityIcons.ttf in Resources */,
-				2C300F59BB864D1EBCE9A13A /* MaterialIcons.ttf in Resources */,
-				C992297D6D4E4DC79FF7D294 /* Octicons.ttf in Resources */,
-				B3CE11B7CC33434FBE76E6CD /* Roboto_medium.ttf in Resources */,
-				180719A2A28240F7850ED32E /* Roboto.ttf in Resources */,
-				1493F973A08043FD90B66062 /* rubicon-icon-font.ttf in Resources */,
-				6821A369670E499FBE4FD141 /* SimpleLineIcons.ttf in Resources */,
-				7925F91D98694A78925D3ED5 /* Zocial.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -285,7 +206,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -eo pipefail\n\nif [ \"$CONFIGURATION\" == \"Debug\" ]; then\n  echo \"Skipping asset bundling in debug mode.\"\n  exit 0\nfi\n\npushd \"${SRCROOT}/..\"\nvalue=$(cat ~/.expo/PATH)\ndest=$CONFIGURATION_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH\nPATH=\"$PATH:$value\" exp bundle-assets --platform ios --dest \"$dest\"\npopd";
+			shellScript = "set -eo pipefail\n\nif [ \"$CONFIGURATION\" == \"Debug\" ]; then\n  echo \"Skipping asset bundling in debug mode.\"\n  exit 0\nfi\n\npushd \"${SRCROOT}/..\"\nexport PATH=\"$(if [ -f ~/.expo/PATH ]; then echo $PATH:$(cat ~/.expo/PATH); else echo $PATH; fi)\"\ndest=\"$CONFIGURATION_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH\"\nexpo bundle-assets --platform ios --dest \"$dest\"\npopd\n";
 		};
 		23539343DCC44EF8449429EE /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -317,7 +238,6 @@
 				"${PODS_ROOT}/Amplitude-iOS/Amplitude/ComodoRsaCA.der",
 				"${PODS_ROOT}/Amplitude-iOS/Amplitude/ComodoRsaDomainValidationCA.der",
 				"${PODS_ROOT}/FBSDKCoreKit/FacebookSDKStrings.bundle",
-				"${PODS_ROOT}/GoogleAuthUtilities/Frameworks/frameworks/GoogleAuthUtilities.framework/Resources/GTMOAuth2ViewTouch.xib",
 				"${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle",
 				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/Stripe/Stripe.bundle",
@@ -329,7 +249,6 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ComodoRsaCA.der",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ComodoRsaDomainValidationCA.der",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FacebookSDKStrings.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GTMOAuth2ViewTouch.nib",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleMaps.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Stripe.bundle",
@@ -351,7 +270,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "set -eo pipefail\n\npushd \"${SRCROOT}/..\"\nvalue=$(cat ~/.expo/PATH)\nPATH=\"$PATH:$value\" exp prepare-detached-build --platform ios\npopd\n";
+			shellScript = "set -eo pipefail\n\npushd \"${SRCROOT}/..\"\nexport PATH=\"$(if [ -f ~/.expo/PATH ]; then echo $PATH:$(cat ~/.expo/PATH); else echo $PATH; fi)\"\nexpo prepare-detached-build --platform ios\npopd\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -415,7 +334,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -463,7 +382,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -472,14 +391,13 @@
 		};
 		B56386591DB9693800A0598C /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FAC9E382CA3C597E99DB1BF8 /* Pods-theusual-admin-native.debug.xcconfig */;
+			baseConfigurationReference = 2C1548D9E4CB1AEFA5CCAE6D /* Pods-theusual-admin-native.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = "theusual-admin-native/theusual-admin-native.entitlements";
 				DEVELOPMENT_TEAM = J897WZ5SV4;
 				INFOPLIST_FILE = "$(SRCROOT)/theusual-admin-native/Supporting/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = io.theusual.admin.native;
+				PRODUCT_BUNDLE_IDENTIFIER = "io.theusual.native-vendor";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -487,14 +405,13 @@
 		};
 		B563865A1DB9693800A0598C /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7F0F91004B10D71000D1D81F /* Pods-theusual-admin-native.release.xcconfig */;
+			baseConfigurationReference = A47FE4D7F70906B7DC8CE39B /* Pods-theusual-admin-native.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = "theusual-admin-native/theusual-admin-native.entitlements";
 				DEVELOPMENT_TEAM = J897WZ5SV4;
 				INFOPLIST_FILE = "$(SRCROOT)/theusual-admin-native/Supporting/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = io.theusual.admin.native;
+				PRODUCT_BUNDLE_IDENTIFIER = "io.theusual.native-vendor";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

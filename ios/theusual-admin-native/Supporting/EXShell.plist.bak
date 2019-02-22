@@ -3,12 +3,12 @@
 <plist version="1.0">
 <dict>
 	<key>isManifestVerificationBypassed</key>
-	<false/>
+	<true/>
 	<key>isShell</key>
 	<true/>
 	<key>manifestUrl</key>
 	<string>exp://exp.host/@jeremykpagley/theusual-admin-native</string>
 	<key>releaseChannel</key>
-	<string>default</string>
+	<string>staging</string>
 </dict>
 </plist>

@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3023F36BD2B6B06E119D3EBAF1403B41"
+               BlueprintIdentifier = "5F8E7B7B59B720B4A3CCE351AC123382"
+               BuildableName = "libEXPaymentsStripe.a"
                BlueprintName = "EXPaymentsStripe"
-               ReferencedContainer = "container:Pods.xcodeproj"
-               BuildableName = "libEXPaymentsStripe.a">
+               ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "0CA6CF0CDBB41E445A8FCBAD60CEB871"
+               BlueprintIdentifier = "B06FD2769478AC8F1159FF2FDDBE44CE"
+               BuildableName = "libEXBarCodeScanner.a"
                BlueprintName = "EXBarCodeScanner"
-               ReferencedContainer = "container:Pods.xcodeproj"
-               BuildableName = "libEXBarCodeScanner.a">
+               ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

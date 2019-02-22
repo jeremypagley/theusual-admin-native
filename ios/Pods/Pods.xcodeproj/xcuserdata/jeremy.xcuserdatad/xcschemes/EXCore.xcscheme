@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "5A88916315E46C5A7A049A2BB9EB024D"
+               BlueprintIdentifier = "D86E7B392305562C95C7100C6215A55D"
+               BuildableName = "libEXCore.a"
                BlueprintName = "EXCore"
-               ReferencedContainer = "container:Pods.xcodeproj"
-               BuildableName = "libEXCore.a">
+               ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

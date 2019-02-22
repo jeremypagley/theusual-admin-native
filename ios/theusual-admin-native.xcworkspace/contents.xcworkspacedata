@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:/Users/jeremy/btc/theusual/theusual-admin-native/ios/theusual-admin-native.xcodeproj">
+      location = "group:theusual-admin-native.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">

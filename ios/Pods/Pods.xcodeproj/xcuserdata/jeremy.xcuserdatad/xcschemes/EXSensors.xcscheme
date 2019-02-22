@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "61C6C23C3DD96438A9F3FF0F3D6EBCEC"
+               BlueprintIdentifier = "BD0A294C9D4EFBE79A6B50D603ABC326"
+               BuildableName = "libEXSensors.a"
                BlueprintName = "EXSensors"
-               ReferencedContainer = "container:Pods.xcodeproj"
-               BuildableName = "libEXSensors.a">
+               ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

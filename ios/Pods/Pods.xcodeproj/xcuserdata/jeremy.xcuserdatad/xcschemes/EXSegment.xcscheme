@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "EB69C20758D11CBC3E8A75563EACF324"
+               BlueprintIdentifier = "3DBBCD072C9429D689E213D01353CF2E"
+               BuildableName = "libEXSegment.a"
                BlueprintName = "EXSegment"
-               ReferencedContainer = "container:Pods.xcodeproj"
-               BuildableName = "libEXSegment.a">
+               ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

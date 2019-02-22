@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2DEE8B7DA27DAC4E4875053B45049CEC"
+               BlueprintIdentifier = "BD4C91A7C3DE402B9C72CF314ABF3885"
+               BuildableName = "libEXFont.a"
                BlueprintName = "EXFont"
-               ReferencedContainer = "container:Pods.xcodeproj"
-               BuildableName = "libEXFont.a">
+               ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

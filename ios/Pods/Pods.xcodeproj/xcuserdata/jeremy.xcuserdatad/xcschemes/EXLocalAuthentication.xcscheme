@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "9F72AA16CB420C10F6CD71101D7A0037"
+               BlueprintIdentifier = "7228114703EDCB4234BA2451E885115D"
+               BuildableName = "libEXLocalAuthentication.a"
                BlueprintName = "EXLocalAuthentication"
-               ReferencedContainer = "container:Pods.xcodeproj"
-               BuildableName = "libEXLocalAuthentication.a">
+               ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

@@ -165,11 +165,11 @@ class Register extends React.Component {
             <Text style={{fontSize: 14, fontFamily: 'montserrat-bold', paddingLeft: 0}}>View Terms of Service</Text>
           </Button>
 
-          <CardList
+          {/* <CardList
               data={[
                 {
                   _id: apiEndpoint,
-                  title: "apiEndpoint OTA 1.1:",
+                  title: "apiEndpoint:",
                   subtitle: apiEndpoint
                 },
                 {
@@ -194,7 +194,7 @@ class Register extends React.Component {
                 } 
               ]}
               rightActionItem={<View></View>}
-            />
+            /> */}
           
           <GradientButton
             disabled={disabled}

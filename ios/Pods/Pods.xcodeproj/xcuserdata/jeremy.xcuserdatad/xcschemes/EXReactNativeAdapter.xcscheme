@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B57CBC1578F18D2C6F30EAD95A24B20F"
+               BlueprintIdentifier = "960D872451C9B02FF9839CFF743BCB62"
+               BuildableName = "libEXReactNativeAdapter.a"
                BlueprintName = "EXReactNativeAdapter"
-               ReferencedContainer = "container:Pods.xcodeproj"
-               BuildableName = "libEXReactNativeAdapter.a">
+               ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

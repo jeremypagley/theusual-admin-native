@@ -12,7 +12,6 @@
 #import "EXKernelLinkingManager.h"
 #import "EXReactAppExceptionHandler.h"
 #import "EXRemoteNotificationManager.h"
-#import "EXLocalNotificationManager.h"
 #import "EXBranchManager.h"
 
 #import <Crashlytics/Crashlytics.h>
@@ -89,12 +88,8 @@ NSString * const EXAppDidRegisterUserNotificationSettingsNotification = @"kEXApp
 
 - (void)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  if (@available(iOS 10, *)) {
-    [DDLog addLogger:[DDOSLogger sharedInstance]];
-  } else {
-    [DDLog addLogger:[DDASLLogger sharedInstance]];
-    [DDLog addLogger:[DDTTYLogger sharedInstance]];
-  }
+  [DDLog addLogger:[DDOSLogger sharedInstance]];
+  
 
   RCTSetFatalHandler(handleFatalReactError);
 
@@ -117,6 +112,7 @@ NSString * const EXAppDidRegisterUserNotificationSettingsNotification = @"kEXApp
     }
   }
 
+  [UNUserNotificationCenter currentNotificationCenter].delegate = [EXKernel sharedInstance].serviceRegistry.notificationsManager;
   // This is safe to call; if the app doesn't have permission to display user-facing notifications
   // then registering for a push token is a no-op
   [[EXKernel sharedInstance].serviceRegistry.remoteNotificationManager registerForRemoteNotifications];
@@ -152,21 +148,12 @@ NSString * const EXAppDidRegisterUserNotificationSettingsNotification = @"kEXApp
   [[NSNotificationCenter defaultCenter] postNotificationName:EXAppDidRegisterForRemoteNotificationsNotification object:nil];
 }
 
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)notification
-{
-  BOOL isFromBackground = !(application.applicationState == UIApplicationStateActive);
-  [[EXKernel sharedInstance].serviceRegistry.remoteNotificationManager handleRemoteNotification:notification fromBackground:isFromBackground];
-}
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
 
-- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
-{
-  BOOL isFromBackground = !(application.applicationState == UIApplicationStateActive);
-  [[EXLocalNotificationManager sharedInstance] handleLocalNotification:notification fromBackground:isFromBackground];
-}
+  // Here background task execution should go.
 
-- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(nonnull UIUserNotificationSettings *)notificationSettings
-{
-  [[NSNotificationCenter defaultCenter] postNotificationName:EXAppDidRegisterUserNotificationSettingsNotification object:nil];
+  completionHandler(UIBackgroundFetchResultNoData);
 }
 
 #pragma mark - deep linking hooks

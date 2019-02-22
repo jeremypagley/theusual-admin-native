@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "8E8538575C0346D865CFF5960EB4A404"
+               BlueprintIdentifier = "36FD10779C2619D8E751BC2E76A8AB43"
+               BuildableName = "libEXPrint.a"
                BlueprintName = "EXPrint"
-               ReferencedContainer = "container:Pods.xcodeproj"
-               BuildableName = "libEXPrint.a">
+               ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

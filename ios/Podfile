@@ -1,16 +1,24 @@
 source 'https://github.com/CocoaPods/Specs.git'
-platform :ios, '9.0'
+platform :ios, '10.0'
 
 target 'theusual-admin-native' do
   pod 'ExpoKit',
     :git => "http://github.com/expo/expo.git",
-    :tag => "ios/2.8.2",
+    :tag => "ios/2.10.2",
     :subspecs => [
       "Core"
     ],
     :inhibit_warnings => true
   pod 'EXAdsAdMob',
     :path => "../node_modules/expo-ads-admob/ios"
+  pod 'EXSegment',
+    :path => "../node_modules/expo-analytics-segment/ios"
+  pod 'EXAppAuth',
+    :path => "../node_modules/expo-app-auth/ios"
+  pod 'EXAppLoaderProvider',
+    :path => "../node_modules/expo-app-loader-provider/ios"
+  pod 'EXBackgroundFetch',
+    :path => "../node_modules/expo-background-fetch/ios"
   pod 'EXBarCodeScanner',
     :path => "../node_modules/expo-barcode-scanner/ios"
   pod 'EXBarCodeScannerInterface',
@@ -27,6 +35,8 @@ target 'theusual-admin-native' do
     :path => "../node_modules/expo-contacts/ios"
   pod 'EXCore',
     :path => "../node_modules/expo-core/ios"
+  pod 'EXErrors',
+    :path => "../node_modules/expo-errors/ios"
   pod 'EXFaceDetectorInterface',
     :path => "../node_modules/expo-face-detector-interface/ios"
   pod 'EXFileSystem',
@@ -41,10 +51,14 @@ target 'theusual-admin-native' do
     :path => "../node_modules/expo-gl/ios"
   pod 'EXGL-CPP',
     :path => "../node_modules/expo-gl-cpp/cpp"
+  pod 'EXGoogleSignIn',
+    :path => "../node_modules/expo-google-sign-in/ios"
   pod 'EXImageLoaderInterface',
     :path => "../node_modules/expo-image-loader-interface/ios"
   pod 'EXLocalAuthentication',
     :path => "../node_modules/expo-local-authentication/ios"
+  pod 'EXLocalization',
+    :path => "../node_modules/expo-localization/ios"
   pod 'EXLocation',
     :path => "../node_modules/expo-location/ios"
   pod 'EXMediaLibrary',
@@ -59,14 +73,16 @@ target 'theusual-admin-native' do
     :path => "../node_modules/expo-print/ios"
   pod 'EXReactNativeAdapter',
     :path => "../node_modules/expo-react-native-adapter/ios"
-  pod 'EXSegment',
-    :path => "../node_modules/expo-analytics-segment/ios"
   pod 'EXSensors',
     :path => "../node_modules/expo-sensors/ios"
   pod 'EXSensorsInterface',
     :path => "../node_modules/expo-sensors-interface/ios"
   pod 'EXSMS',
     :path => "../node_modules/expo-sms/ios"
+  pod 'EXTaskManager',
+    :path => "../node_modules/expo-task-manager/ios"
+  pod 'EXTaskManagerInterface',
+    :path => "../node_modules/expo-task-manager-interface/ios"
 
   pod 'React',
     :path => "../node_modules/react-native",
@@ -121,22 +137,25 @@ target 'theusual-admin-native' do
 
     if ['Amplitude-iOS','Analytics','AppAuth','Branch','CocoaLumberjack','FBSDKCoreKit','FBSDKLoginKit','FBSDKShareKit','GPUImage','JKBigInteger2'].include? target.pod_name
       target.native_target.build_configurations.each do |config|
-        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '9.0'
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '10.0'
       end
     end
     # Can't specify this in the React podspec because we need
     # to use those podspecs for detached projects which don't reference ExponentCPP.
     if target.pod_name.start_with?('React')
       target.native_target.build_configurations.each do |config|
-        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '9.0'
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '10.0'
         config.build_settings['HEADER_SEARCH_PATHS'] ||= ['$(inherited)']
       end
     end
-    # Build React Native with RCT_DEV enabled
+    # Build React Native with RCT_DEV enabled and RCT_ENABLE_INSPECTOR and
+    # RCT_ENABLE_PACKAGER_CONNECTION disabled
     next unless target.pod_name == 'React'
     target.native_target.build_configurations.each do |config|
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'RCT_DEV=1'
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'RCT_ENABLE_INSPECTOR=0'
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'ENABLE_PACKAGER_CONNECTION=0'
     end
 
     end
