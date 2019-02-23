@@ -38,6 +38,7 @@ const getKeys = () => {
     apiEndpoint: `${endpoint}graphql`,
     apiEndpointForgot: `${endpoint}forgot`,
     apiEndpointTerms: `${endpoint}terms`,
+    apiEndpointPushNotifications: `${endpoint}terms`,
   }
 
   // Since releaseChannels are undefined in dev, return default.

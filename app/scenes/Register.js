@@ -15,7 +15,6 @@ import { WebBrowser, Constants } from 'expo';
 import Auth from 'app/auth';
 import CardList from 'app/components/CardList';
 
-
 const {
   apiEndpoint,
   apiEndpointTerms

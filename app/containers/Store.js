@@ -11,7 +11,7 @@ import {
   Content,
   Button
 } from 'native-base';
-import { Alert } from 'react-native';
+import { Alert, FlatList, RefreshControl, Dimensions } from 'react-native';
 import Time from 'app/utils/time';
 import moment from 'moment';
 import CardList from 'app/components/CardList';
@@ -27,14 +27,21 @@ import { Mutation, Query } from 'react-apollo';
 import LoadingIndicator from 'app/components/LoadingIndicator';
 import GenericError from 'app/components/GenericError';
 
+const screenHeight = Dimensions.get('window').height;
+
 class Store extends React.Component {
+
+  componentDidMount() {
+    console.log('==============this.props: ', this.props)
+  }
+
   render() {
     const selectedStoreId = this.props.navigation.getParam('storeId', null);
 
     return (
       <Container style={ContainerStyles.container}>
         <Query query={GET_ORGANIZATION_STORES} pollInterval={30000} variables={{storeId: selectedStoreId}} fetchPolicy="cache-and-network">
-          {({ loading, error, data }) => {
+          {({ loading, error, data, refetch }) => {
             if (error) return <GenericError message={error.message} />;
             
             let activeOrdersNode = <LoadingIndicator title={`Refreshing Active Orders`} />;
@@ -57,14 +64,20 @@ class Store extends React.Component {
               });
 
               activeOrdersNode = (
-                <Content padder>
-                  <View>
-                    {pendingOrders.length > 0 ? pendingOrders.map(order => {
-                      return this.getOrderQueueCard(order);
-                    }) : null}
-                  </View>
+                <View>
+                  <FlatList
+                    data={pendingOrders}
+                    renderItem={({ item }) => {
+                      return this.getOrderQueueCard(item)
+                    }}
+                    onRefresh={() => refetch()}
+                    refreshing={data.networkStatus === 4}
+                    keyExtractor={this._keyExtractor}
+                    contentContainerStyle={{marginBottom: 250, padding: 15}}
+                  />
+                  
                   {!pendingOrders.length > 0 ? this.getNoDataCard('No active orders') : null}
-                </Content>
+                </View>
               );
 
               orderHistoryNode = (
@@ -135,6 +148,8 @@ class Store extends React.Component {
       </Container>
     );
   }
+
+  _keyExtractor = (item, index) => item._id;
 
   getOrderQueueCard = (order, hasActions = true) => {
     const orderItems = order.items;
