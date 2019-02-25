@@ -26,13 +26,38 @@ import gql from 'graphql-tag';
 import { Mutation, Query } from 'react-apollo';
 import LoadingIndicator from 'app/components/LoadingIndicator';
 import GenericError from 'app/components/GenericError';
+import PNHelper from 'app/utils/pushNotificationsHelper';
 
 const screenHeight = Dimensions.get('window').height;
 
 class Store extends React.Component {
 
-  componentDidMount() {
-    console.log('==============this.props: ', this.props)
+  async componentWillReceiveProps(nextProps) {
+    const { screenProps } = nextProps;
+    const { currentUser, loading, error } = nextProps.data;
+    const apolloClient = screenProps.client;
+    // console.log('nextProps: ', nextProps)
+
+    
+    if (!loading && !error && currentUser && currentUser._id && !currentUser.pushNotificationToken) {
+
+      const pnToken = await PNHelper.registerForPushNotificationsAsync();
+      console.log('pnTokenL: ', pnToken)
+      const updatedUser = Object.assign({}, currentUser, {pushNotificationToken: pnToken});
+
+      // See backend schema as it only supports updating fields that you put in the UserInput
+      const updateUser = gql`
+        mutation updateUser($user: UserInput!) {
+          updateUser(user: $user) {
+            _id,
+          }
+        }
+      `;
+
+      console.log('updatedUser: ', updatedUser);
+
+      apolloClient.mutate({mutation: updateUser, variables: {user: updatedUser}});
+    }
   }
 
   render() {

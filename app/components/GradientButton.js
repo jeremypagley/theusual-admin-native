@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import {
   Text,
-  Button
+  Button,
+  Spinner
 } from 'native-base';
 import { LinearGradient } from 'expo';
 import Colors from 'app/styles/Colors';

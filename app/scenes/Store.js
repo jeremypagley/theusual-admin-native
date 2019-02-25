@@ -2,6 +2,8 @@ import React from 'react';
 import StoreContainer from 'app/containers/Store';
 import { View, Text } from 'react-native';
 import TypographyStyles from 'app/styles/generic/TypographyStyles';
+import { graphql } from 'react-apollo';
+import gql from 'graphql-tag';
 
 class Store extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -25,4 +27,16 @@ class Store extends React.Component {
   }
 }
 
-export default Store;
+export default graphql(
+  gql`
+    query User {
+      currentUser {
+        _id
+        email
+        firstName
+        lastName
+        pushNotificationToken
+      }
+    }
+  `
+)(Store);
