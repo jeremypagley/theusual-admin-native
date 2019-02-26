@@ -27,6 +27,7 @@ import gql from 'graphql-tag';
 import { Mutation, Query } from 'react-apollo';
 import LoadingIndicator from 'app/components/LoadingIndicator';
 import GenericError from 'app/components/GenericError';
+import { Audio } from 'expo';
 
 
 const screenHeight = Dimensions.get('window').height;
@@ -185,6 +186,17 @@ class Store extends React.Component {
     );
   }
 
+ playNotificationSound = async () => {
+    const soundObject = new Audio.Sound();
+    try {
+      await soundObject.loadAsync(require('./sounds/graceful.mp3'));
+      await soundObject.playAsync();
+      // Your sound is playing!
+    } catch (error) {
+      // An error occurred!
+    }
+  }
+
   notifier = (newPendingOrdersLength) => {
     let { previousPendingOrdersLength } = this.state;
 
@@ -196,6 +208,8 @@ class Store extends React.Component {
           buttonText: 'Got it',
           duration: 2000,
         });
+
+        this.playNotificationSound();
       }
 
       this.setState({previousPendingOrdersLength: newPendingOrdersLength});
