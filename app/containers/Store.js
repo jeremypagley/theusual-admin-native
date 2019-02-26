@@ -9,7 +9,8 @@ import {
   Card,
   CardItem,
   Content,
-  Button
+  Button,
+  Toast
 } from 'native-base';
 import { Alert, FlatList, RefreshControl, Dimensions } from 'react-native';
 import Time from 'app/utils/time';
@@ -26,39 +27,48 @@ import gql from 'graphql-tag';
 import { Mutation, Query } from 'react-apollo';
 import LoadingIndicator from 'app/components/LoadingIndicator';
 import GenericError from 'app/components/GenericError';
-import PNHelper from 'app/utils/pushNotificationsHelper';
+
 
 const screenHeight = Dimensions.get('window').height;
 
 class Store extends React.Component {
 
-  async componentWillReceiveProps(nextProps) {
-    const { screenProps } = nextProps;
-    const { currentUser, loading, error } = nextProps.data;
-    const apolloClient = screenProps.client;
-    // console.log('nextProps: ', nextProps)
+  constructor(props) {
+    super(props);
 
-    
-    if (!loading && !error && currentUser && currentUser._id && !currentUser.pushNotificationToken) {
-
-      const pnToken = await PNHelper.registerForPushNotificationsAsync();
-      console.log('pnTokenL: ', pnToken)
-      const updatedUser = Object.assign({}, currentUser, {pushNotificationToken: pnToken});
-
-      // See backend schema as it only supports updating fields that you put in the UserInput
-      const updateUser = gql`
-        mutation updateUser($user: UserInput!) {
-          updateUser(user: $user) {
-            _id,
-          }
-        }
-      `;
-
-      console.log('updatedUser: ', updatedUser);
-
-      apolloClient.mutate({mutation: updateUser, variables: {user: updatedUser}});
+    this.state = {
+      previousPendingOrdersLength: null
     }
   }
+
+  // componentDidMount() {
+  //   const { screenProps } = this.props;
+  //   const { currentUser, loading, error } = this.props.data;
+  //   const apolloClient = screenProps.client;
+  //   // console.log('nextProps: ', nextProps)
+  //   // TODO: YOU SHOULDNT NEED THIS AS YOU ONLY NEED LOCAL ONES Notifications.presentLocalNotificationAsync(localNotification)
+  //   const pnToken = PNHelper.registerForPushNotificationsAsync();
+  //   console.log('pnTokenL: ', pnToken)
+
+    
+  //   if (!loading && !error && currentUser && currentUser._id && !currentUser.pushNotificationToken) {
+
+  //     const updatedUser = Object.assign({}, currentUser, {pushNotificationToken: pnToken});
+
+  //     // See backend schema as it only supports updating fields that you put in the UserInput
+  //     const updateUser = gql`
+  //       mutation updateUser($user: UserInput!) {
+  //         updateUser(user: $user) {
+  //           _id,
+  //         }
+  //       }
+  //     `;
+
+  //     console.log('updatedUser: ', updatedUser);
+
+  //     apolloClient.mutate({mutation: updateUser, variables: {user: updatedUser}});
+  //   }
+  // }
 
   render() {
     const selectedStoreId = this.props.navigation.getParam('storeId', null);
@@ -74,7 +84,7 @@ class Store extends React.Component {
             let menuNode = <LoadingIndicator title={`Refreshing Active Orders`} />;
             let aboutNode = <LoadingIndicator title={`Refreshing Active Orders`} />;
 
-            if (data && !loading && !error) {
+            if (data && data.organizationStores && !error) {
               const organization = data.organizationStores;
               const store = organization.stores.find(store => store._id === selectedStoreId);
 
@@ -88,7 +98,10 @@ class Store extends React.Component {
                 if (o.queueStatus === QueueStatus.completed || o.queueStatus === QueueStatus.canceled) previousOrders.unshift(o)
               });
 
-              activeOrdersNode = (
+              //TODO: Send toast only if ordered date is within the last 30 seconds
+              this.notifier(pendingOrders.length);
+
+              activeOrdersNode = pendingOrders.length > 0 ? (
                 <View>
                   <FlatList
                     data={pendingOrders}
@@ -100,10 +113,8 @@ class Store extends React.Component {
                     keyExtractor={this._keyExtractor}
                     contentContainerStyle={{marginBottom: 250, padding: 15}}
                   />
-                  
-                  {!pendingOrders.length > 0 ? this.getNoDataCard('No active orders') : null}
                 </View>
-              );
+              ) : <Content padder>{this.getNoDataCard('No active orders')}</Content>;
 
               orderHistoryNode = (
                 <Content padder>
@@ -174,6 +185,25 @@ class Store extends React.Component {
     );
   }
 
+  notifier = (newPendingOrdersLength) => {
+    let { previousPendingOrdersLength } = this.state;
+
+    if (newPendingOrdersLength > previousPendingOrdersLength) {
+      // Dont show on initial scene load
+      if (previousPendingOrdersLength !== null) {
+        Toast.show({
+          text: 'New order',
+          buttonText: 'Got it',
+          duration: 2000,
+        });
+      }
+
+      this.setState({previousPendingOrdersLength: newPendingOrdersLength});
+    } else if (newPendingOrdersLength !== previousPendingOrdersLength) {
+      this.setState({previousPendingOrdersLength: newPendingOrdersLength});
+    }
+  }
+
   _keyExtractor = (item, index) => item._id;
 
   getOrderQueueCard = (order, hasActions = true) => {
@@ -217,15 +247,21 @@ class Store extends React.Component {
             actionTitle: "Complete Order",
             onActionPress: () => {
               updateOrderQueueStatus({variables: {orderId: order._id, status: QueueStatus.completed}});
+              let { previousPendingOrdersLength } = this.state;
+              this.setState({previousPendingOrdersLength: previousPendingOrdersLength-- });
             },
             removable: true,
             removableOnPress: () => {
               Alert.alert(
                 'Cancel Order', 
                 `Are you sure you want to cancel this order? ` +
-                'Canceled orders cannot be restored and do not issue a refund to the user.',
+                'Canceled orders cannot be restored and do not issue a refund to the customer.',
                 [
-                  {text: 'OK', onPress: () => updateOrderQueueStatus({variables: {orderId: order._id, status: QueueStatus.canceled}})},
+                  {text: 'OK', onPress: () => {
+                    updateOrderQueueStatus({variables: {orderId: order._id, status: QueueStatus.canceled}});
+                    let { previousPendingOrdersLength } = this.state;
+                    this.setState({previousPendingOrdersLength: previousPendingOrdersLength-- });
+                  }},
                   {text: "Cancel", style: 'cancel'}
                 ]
               );
