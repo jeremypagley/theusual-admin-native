@@ -9,7 +9,8 @@ import {
   Card, 
   CardItem,
   Icon,
-  Badge
+  Badge,
+  Spinner
 } from 'native-base';
 import { Row } from 'react-native-easy-grid';
 import ExpandableCardStyles from 'app/styles/ExpandableCardStyles';
@@ -38,10 +39,19 @@ class ExpandableCard extends React.Component {
       onActionPress,
       removableOnPress,
       removable,
+      actionLoading,
+      actionLoadingTitle,
       items,
       statusColor,
       statusTitle
     } = this.props;
+
+    let actionTitleNode = !actionLoading ? <Text style={CardStyles.itemButtonTitle}>{actionTitle}</Text> :(
+      <View>
+        <Text style={CardStyles.itemButtonTitle}>{actionLoadingTitle}</Text>
+        <View style={{position: 'absolute', top: -30, left: -40}}><Spinner color={Colors.BrandRed} /></View>
+      </View>
+    );
     
     return (
       <View style={CardStyles.card}>
@@ -90,7 +100,7 @@ class ExpandableCard extends React.Component {
           <CardItem footer button onPress={onActionPress} style={CardStyles.itemFooter}>
             <Left />
             <Right>
-              <Text style={CardStyles.itemButtonTitle}>{actionTitle}</Text>
+              {actionTitleNode}
             </Right>
           </CardItem>
           : null}

@@ -12,7 +12,7 @@ import {
   Button,
   Toast
 } from 'native-base';
-import { Alert, FlatList, RefreshControl, Dimensions } from 'react-native';
+import { Alert, FlatList, Platform, Dimensions, SafeAreaView } from 'react-native';
 import Time from 'app/utils/time';
 import moment from 'moment';
 import CardList from 'app/components/CardList';
@@ -27,10 +27,18 @@ import gql from 'graphql-tag';
 import { Mutation, Query } from 'react-apollo';
 import LoadingIndicator from 'app/components/LoadingIndicator';
 import GenericError from 'app/components/GenericError';
-import { Audio } from 'expo';
-
+import { Audio, Constants, Notifications, Permissions } from 'expo';
 
 const screenHeight = Dimensions.get('window').height;
+
+async function getiOSNotificationPermission() {
+  const { status } = await Permissions.getAsync(
+    Permissions.NOTIFICATIONS
+  );
+  if (status !== 'granted') {
+    await Permissions.askAsync(Permissions.NOTIFICATIONS);
+  }
+}
 
 class Store extends React.Component {
 
@@ -42,41 +50,55 @@ class Store extends React.Component {
     }
   }
 
-  // componentDidMount() {
-  //   const { screenProps } = this.props;
-  //   const { currentUser, loading, error } = this.props.data;
-  //   const apolloClient = screenProps.client;
-  //   // console.log('nextProps: ', nextProps)
-  //   // TODO: YOU SHOULDNT NEED THIS AS YOU ONLY NEED LOCAL ONES Notifications.presentLocalNotificationAsync(localNotification)
-  //   const pnToken = PNHelper.registerForPushNotificationsAsync();
-  //   console.log('pnTokenL: ', pnToken)
+  // Logic for local notification permission granting
+  // componentWillMount() {
+  //   getiOSNotificationPermission();
+  //   this.listenForNotifications();
+  // }
+
+  listenForNotifications = () => {
+    Notifications.addListener(notification => {
+      if (notification.origin === 'received' && Platform.OS === 'ios') {
+        Alert.alert(notification.title, notification.body);
+      }
+    });
+  };
+
+  /*
+  // Logic for push notifications
+  componentDidMount() {
+    const { screenProps } = this.props;
+    const { currentUser, loading, error } = this.props.data;
+    const apolloClient = screenProps.client;
+    const pnToken = PNHelper.registerForPushNotificationsAsync();
+    console.log('pnTokenL: ', pnToken)
 
     
-  //   if (!loading && !error && currentUser && currentUser._id && !currentUser.pushNotificationToken) {
+    if (!loading && !error && currentUser && currentUser._id && !currentUser.pushNotificationToken) {
 
-  //     const updatedUser = Object.assign({}, currentUser, {pushNotificationToken: pnToken});
+      const updatedUser = Object.assign({}, currentUser, {pushNotificationToken: pnToken});
 
-  //     // See backend schema as it only supports updating fields that you put in the UserInput
-  //     const updateUser = gql`
-  //       mutation updateUser($user: UserInput!) {
-  //         updateUser(user: $user) {
-  //           _id,
-  //         }
-  //       }
-  //     `;
+      // See backend schema as it only supports updating fields that you put in the UserInput
+      const updateUser = gql`
+        mutation updateUser($user: UserInput!) {
+          updateUser(user: $user) {
+            _id,
+          }
+        }
+      `;
 
-  //     console.log('updatedUser: ', updatedUser);
 
-  //     apolloClient.mutate({mutation: updateUser, variables: {user: updatedUser}});
-  //   }
-  // }
+      apolloClient.mutate({mutation: updateUser, variables: {user: updatedUser}});
+    }
+  }
+  */
 
   render() {
     const selectedStoreId = this.props.navigation.getParam('storeId', null);
 
     return (
       <Container style={ContainerStyles.container}>
-        <Query query={GET_ORGANIZATION_STORES} pollInterval={30000} variables={{storeId: selectedStoreId}} fetchPolicy="cache-and-network">
+        <Query query={GET_ORGANIZATION_STORES} pollInterval={60000} variables={{storeId: selectedStoreId}} fetchPolicy="cache-and-network">
           {({ loading, error, data, refetch }) => {
             if (error) return <GenericError message={error.message} />;
             
@@ -99,11 +121,14 @@ class Store extends React.Component {
                 if (o.queueStatus === QueueStatus.completed || o.queueStatus === QueueStatus.canceled) previousOrders.unshift(o)
               });
 
-              //TODO: Send toast only if ordered date is within the last 30 seconds
-              this.notifier(pendingOrders.length);
+              /**
+               * Handles carefully notifying foreground app with toast and sound
+               */
+              this.notifier(pendingOrders.length, store.title);
 
+              // TODO: Change no active orders to be the last list item if there are no pending orders as we want them to be ableto pull down to refresh on no orders
               activeOrdersNode = pendingOrders.length > 0 ? (
-                <View>
+                <SafeAreaView>
                   <FlatList
                     data={pendingOrders}
                     renderItem={({ item }) => {
@@ -114,7 +139,7 @@ class Store extends React.Component {
                     keyExtractor={this._keyExtractor}
                     contentContainerStyle={{marginBottom: 250, padding: 15}}
                   />
-                </View>
+                </SafeAreaView>
               ) : <Content padder>{this.getNoDataCard('No active orders')}</Content>;
 
               orderHistoryNode = (
@@ -186,6 +211,29 @@ class Store extends React.Component {
     );
   }
 
+  sendLocalNotification = (storeTitle) => {
+    const localnotification = {
+      title: `New Order`,
+      body: `There are new orders for ${storeTitle}`,
+      android: {
+        sound: true,
+      },
+      ios: {
+        sound: true,
+      },
+    };
+    let sendAfterFiveSeconds = Date.now();
+    sendAfterFiveSeconds += 5000;
+
+    const schedulingOptions = { time: sendAfterFiveSeconds };
+    Notifications.scheduleLocalNotificationAsync(
+      localnotification,
+      schedulingOptions
+    );
+  };
+
+
+
  playNotificationSound = async () => {
     const soundObject = new Audio.Sound();
     try {
@@ -197,7 +245,7 @@ class Store extends React.Component {
     }
   }
 
-  notifier = (newPendingOrdersLength) => {
+  notifier = (newPendingOrdersLength, storeTitle) => {
     let { previousPendingOrdersLength } = this.state;
 
     if (newPendingOrdersLength > previousPendingOrdersLength) {
@@ -206,9 +254,14 @@ class Store extends React.Component {
         Toast.show({
           text: 'New order',
           buttonText: 'Got it',
-          duration: 2000,
+          duration: 3000,
         });
 
+
+        // Note we are not sending local notifications as they dont show up in the lock screen.
+        // we will need to rafactor stores in organizations to have unique users per store so that push notifications
+        // for a new order can be sent only to users in an org for the store they are working at.
+        // this.sendLocalNotification(storeTitle);
         this.playNotificationSound();
       }
 
@@ -264,6 +317,8 @@ class Store extends React.Component {
               let { previousPendingOrdersLength } = this.state;
               this.setState({previousPendingOrdersLength: previousPendingOrdersLength-- });
             },
+            actionLoading: loading,
+            actionLoadingTitle: 'Updating Status...',
             removable: true,
             removableOnPress: () => {
               Alert.alert(

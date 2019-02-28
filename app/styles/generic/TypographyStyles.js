@@ -107,9 +107,11 @@ const Styles = StyleSheet.create({
 
 
   headerTitle: {
-    fontSize: 17,
+    fontSize: 16,
     color: Colors.White,
     fontFamily: 'montserrat-bold',
+    textAlign: 'center',
+    marginLeft: 20,
   },
 });
 

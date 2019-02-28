@@ -12,7 +12,7 @@ class Store extends React.Component {
     
     return {
       headerTitle: (
-        <View style={{flexDirection: 'column', alignItems: 'center'}}>
+        <View style={{flexDirection: 'column', alignItems: 'center', marginTop: 10}}>
           <Text style={TypographyStyles.headerTitle}>{title}</Text>
           <Text style={TypographyStyles.headerTitle}>{address}</Text>
         </View>
