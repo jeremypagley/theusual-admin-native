@@ -29,7 +29,7 @@
       "infoPlist": {
         "privacyPolicy": "https://theusual.io/privacy-policy/"
       },
-      "bundleIdentifier": "io.theusual.admin.native",
+      "bundleIdentifier": "io.theusual.native.vendor",
       "publishBundlePath": "ios/theusual-admin-native/Supporting/shell-app.bundle",
       "publishManifestPath": "ios/theusual-admin-native/Supporting/shell-app-manifest.json"
     },
@@ -44,7 +44,7 @@
     },
     "primaryColor": "#DB4C65",
     "android": {
-      "package": "io.theusual.admin.native",
+      "package": "io.theusual.native.vendor",
       "versionCode": 1,
       "publishBundlePath": "android/app/src/main/assets/shell-app.bundle",
       "publishManifestPath": "android/app/src/main/assets/shell-app-manifest.json"

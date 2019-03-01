@@ -1,9 +1,4 @@
-import { Permissions, Notifications, Constants } from 'expo';
-
-const manifest = Constants.manifest;
-const buildNumber = manifest.ios.buildNumber;
-
-const PUSH_ENDPOINT = 'https://your-server.com/users/push-token';
+import { Permissions, Notifications } from 'expo';
 
 async function registerForPushNotificationsAsync() {
   const { status: existingStatus } = await Permissions.getAsync(
@@ -46,4 +41,8 @@ async function registerForPushNotificationsAsync() {
   //     },
   //   }),
   // });
+}
+
+export default {
+  registerForPushNotificationsAsync
 }

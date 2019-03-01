@@ -9,9 +9,10 @@ import {
   Card,
   CardItem,
   Content,
-  Button
+  Button,
+  Toast
 } from 'native-base';
-import { Alert, FlatList, RefreshControl, Dimensions } from 'react-native';
+import { Alert, FlatList, Platform, Dimensions, SafeAreaView } from 'react-native';
 import Time from 'app/utils/time';
 import moment from 'moment';
 import CardList from 'app/components/CardList';
@@ -26,21 +27,78 @@ import gql from 'graphql-tag';
 import { Mutation, Query } from 'react-apollo';
 import LoadingIndicator from 'app/components/LoadingIndicator';
 import GenericError from 'app/components/GenericError';
+import { Audio, Constants, Notifications, Permissions } from 'expo';
 
 const screenHeight = Dimensions.get('window').height;
 
+async function getiOSNotificationPermission() {
+  const { status } = await Permissions.getAsync(
+    Permissions.NOTIFICATIONS
+  );
+  if (status !== 'granted') {
+    await Permissions.askAsync(Permissions.NOTIFICATIONS);
+  }
+}
+
 class Store extends React.Component {
 
-  componentDidMount() {
-    console.log('==============this.props: ', this.props)
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      previousPendingOrdersLength: null
+    }
   }
+
+  // Logic for local notification permission granting
+  // componentWillMount() {
+  //   getiOSNotificationPermission();
+  //   this.listenForNotifications();
+  // }
+
+  listenForNotifications = () => {
+    Notifications.addListener(notification => {
+      if (notification.origin === 'received' && Platform.OS === 'ios') {
+        Alert.alert(notification.title, notification.body);
+      }
+    });
+  };
+
+  /*
+  // Logic for push notifications
+  componentDidMount() {
+    const { screenProps } = this.props;
+    const { currentUser, loading, error } = this.props.data;
+    const apolloClient = screenProps.client;
+    const pnToken = PNHelper.registerForPushNotificationsAsync();
+    console.log('pnTokenL: ', pnToken)
+
+    
+    if (!loading && !error && currentUser && currentUser._id && !currentUser.pushNotificationToken) {
+
+      const updatedUser = Object.assign({}, currentUser, {pushNotificationToken: pnToken});
+
+      // See backend schema as it only supports updating fields that you put in the UserInput
+      const updateUser = gql`
+        mutation updateUser($user: UserInput!) {
+          updateUser(user: $user) {
+            _id,
+          }
+        }
+      `;
+
+
+      apolloClient.mutate({mutation: updateUser, variables: {user: updatedUser}});
+    }
+  }
+  */
 
   render() {
     const selectedStoreId = this.props.navigation.getParam('storeId', null);
 
     return (
       <Container style={ContainerStyles.container}>
-        <Query query={GET_ORGANIZATION_STORES} pollInterval={30000} variables={{storeId: selectedStoreId}} fetchPolicy="cache-and-network">
+        <Query query={GET_ORGANIZATION_STORES} pollInterval={60000} variables={{storeId: selectedStoreId}} fetchPolicy="cache-and-network">
           {({ loading, error, data, refetch }) => {
             if (error) return <GenericError message={error.message} />;
             
@@ -49,7 +107,7 @@ class Store extends React.Component {
             let menuNode = <LoadingIndicator title={`Refreshing Active Orders`} />;
             let aboutNode = <LoadingIndicator title={`Refreshing Active Orders`} />;
 
-            if (data && !loading && !error) {
+            if (data && data.organizationStores && !error) {
               const organization = data.organizationStores;
               const store = organization.stores.find(store => store._id === selectedStoreId);
 
@@ -63,8 +121,14 @@ class Store extends React.Component {
                 if (o.queueStatus === QueueStatus.completed || o.queueStatus === QueueStatus.canceled) previousOrders.unshift(o)
               });
 
-              activeOrdersNode = (
-                <View>
+              /**
+               * Handles carefully notifying foreground app with toast and sound
+               */
+              this.notifier(pendingOrders.length, store.title);
+
+              // TODO: Change no active orders to be the last list item if there are no pending orders as we want them to be ableto pull down to refresh on no orders
+              activeOrdersNode = pendingOrders.length > 0 ? (
+                <SafeAreaView>
                   <FlatList
                     data={pendingOrders}
                     renderItem={({ item }) => {
@@ -75,10 +139,8 @@ class Store extends React.Component {
                     keyExtractor={this._keyExtractor}
                     contentContainerStyle={{marginBottom: 250, padding: 15}}
                   />
-                  
-                  {!pendingOrders.length > 0 ? this.getNoDataCard('No active orders') : null}
-                </View>
-              );
+                </SafeAreaView>
+              ) : <Content padder>{this.getNoDataCard('No active orders')}</Content>;
 
               orderHistoryNode = (
                 <Content padder>
@@ -149,6 +211,66 @@ class Store extends React.Component {
     );
   }
 
+  sendLocalNotification = (storeTitle) => {
+    const localnotification = {
+      title: `New Order`,
+      body: `There are new orders for ${storeTitle}`,
+      android: {
+        sound: true,
+      },
+      ios: {
+        sound: true,
+      },
+    };
+    let sendAfterFiveSeconds = Date.now();
+    sendAfterFiveSeconds += 5000;
+
+    const schedulingOptions = { time: sendAfterFiveSeconds };
+    Notifications.scheduleLocalNotificationAsync(
+      localnotification,
+      schedulingOptions
+    );
+  };
+
+
+
+ playNotificationSound = async () => {
+    const soundObject = new Audio.Sound();
+    try {
+      await soundObject.loadAsync(require('./sounds/graceful.mp3'));
+      await soundObject.playAsync();
+      // Your sound is playing!
+    } catch (error) {
+      // An error occurred!
+    }
+  }
+
+  notifier = (newPendingOrdersLength, storeTitle) => {
+    let { previousPendingOrdersLength } = this.state;
+
+    if (newPendingOrdersLength > previousPendingOrdersLength) {
+      // Dont show on initial scene load
+      if (previousPendingOrdersLength !== null) {
+        Toast.show({
+          text: 'New order',
+          buttonText: 'Got it',
+          duration: 3000,
+        });
+
+
+        // Note we are not sending local notifications as they dont show up in the lock screen.
+        // we will need to rafactor stores in organizations to have unique users per store so that push notifications
+        // for a new order can be sent only to users in an org for the store they are working at.
+        // this.sendLocalNotification(storeTitle);
+        this.playNotificationSound();
+      }
+
+      this.setState({previousPendingOrdersLength: newPendingOrdersLength});
+    } else if (newPendingOrdersLength !== previousPendingOrdersLength) {
+      this.setState({previousPendingOrdersLength: newPendingOrdersLength});
+    }
+  }
+
   _keyExtractor = (item, index) => item._id;
 
   getOrderQueueCard = (order, hasActions = true) => {
@@ -192,15 +314,23 @@ class Store extends React.Component {
             actionTitle: "Complete Order",
             onActionPress: () => {
               updateOrderQueueStatus({variables: {orderId: order._id, status: QueueStatus.completed}});
+              let { previousPendingOrdersLength } = this.state;
+              this.setState({previousPendingOrdersLength: previousPendingOrdersLength-- });
             },
+            actionLoading: loading,
+            actionLoadingTitle: 'Updating Status...',
             removable: true,
             removableOnPress: () => {
               Alert.alert(
                 'Cancel Order', 
                 `Are you sure you want to cancel this order? ` +
-                'Canceled orders cannot be restored and do not issue a refund to the user.',
+                'Canceled orders cannot be restored and do not issue a refund to the customer.',
                 [
-                  {text: 'OK', onPress: () => updateOrderQueueStatus({variables: {orderId: order._id, status: QueueStatus.canceled}})},
+                  {text: 'OK', onPress: () => {
+                    updateOrderQueueStatus({variables: {orderId: order._id, status: QueueStatus.canceled}});
+                    let { previousPendingOrdersLength } = this.state;
+                    this.setState({previousPendingOrdersLength: previousPendingOrdersLength-- });
+                  }},
                   {text: "Cancel", style: 'cancel'}
                 ]
               );

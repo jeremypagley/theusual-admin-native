@@ -9,7 +9,7 @@ import { ApolloClient, HttpLink, InMemoryCache, ApolloLink } from 'apollo-client
 import { setContext } from 'apollo-link-context';
 import { withClientState } from 'apollo-link-state';
 import { Font, Icon, AppLoading } from 'expo';
-import { Content, Spinner, Container, H2, View } from 'native-base';
+import { Root, View } from 'native-base';
 import Colors from './app/styles/Colors';
 import TypographyStyles from './app/styles/generic/TypographyStyles';
 import DeviceEmitters from './app/utils/deviceEmitters';
@@ -200,16 +200,18 @@ export default class App extends Component {
 
     return (
       <ApolloProvider client={client}>
-        {this.state.loggedIn
-        ? (
-            <View style={{flex: 1}}>
-              <AppNavigator screenProps={{ activeOrder: this.state.activeOrder, changeLoginState: this.handleChangeLoginState }} />
-            </View>
-          )
-        : (
-            <AuthNavigator screenProps={{ changeLoginState: this.handleChangeLoginState }} />
-          )
-        }
+        <Root>
+          {this.state.loggedIn
+          ? (
+              <View style={{flex: 1}}>
+                <AppNavigator screenProps={{ activeOrder: this.state.activeOrder, changeLoginState: this.handleChangeLoginState, client }} />
+              </View>
+            )
+          : (
+              <AuthNavigator screenProps={{ changeLoginState: this.handleChangeLoginState }} />
+            )
+          }
+        </Root>
       </ApolloProvider>
     );
   }
