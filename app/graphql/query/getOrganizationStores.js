@@ -25,6 +25,7 @@ const OrganizationStoresQuery = gql`
         description,
         orderQueue {
           _id
+          tip
           items {
             _id
             productModifiersOptions {

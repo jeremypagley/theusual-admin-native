@@ -15,17 +15,17 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="splash_vendor.png" translatesAutoresizingMaskIntoConstraints="NO" id="Bsh-cT-K4l" userLabel="Background Image View">
+                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="splash_vendor.png" translatesAutoresizingMaskIntoConstraints="NO" id="Bsh-cT-K4l" userLabel="Background Image View">
                     <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                     <color key="backgroundColor" red="1" green="0.30196078430000001" blue="0.4549019608" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                 </imageView>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstAttribute="trailing" secondItem="Bsh-cT-K4l" secondAttribute="trailing" id="4Bz-Vy-RfD"/>
-                <constraint firstItem="Bsh-cT-K4l" firstAttribute="top" secondItem="OfY-5Y-tS4" secondAttribute="top" id="5FF-OI-m4s"/>
-                <constraint firstItem="Bsh-cT-K4l" firstAttribute="leading" secondItem="OfY-5Y-tS4" secondAttribute="leading" id="ZLr-Ag-Lsg"/>
-                <constraint firstAttribute="bottom" secondItem="Bsh-cT-K4l" secondAttribute="bottom" id="xDi-Tc-3P0"/>
+                <constraint firstAttribute="trailing" secondItem="Bsh-cT-K4l" secondAttribute="trailing" id="Eeb-JM-pBY"/>
+                <constraint firstItem="Bsh-cT-K4l" firstAttribute="top" secondItem="OfY-5Y-tS4" secondAttribute="top" id="XXA-Ku-EYY"/>
+                <constraint firstAttribute="bottom" secondItem="Bsh-cT-K4l" secondAttribute="bottom" id="rSL-VW-nnD"/>
+                <constraint firstItem="Bsh-cT-K4l" firstAttribute="leading" secondItem="OfY-5Y-tS4" secondAttribute="leading" id="yPZ-75-GEf"/>
             </constraints>
             <point key="canvasLocation" x="201" y="453"/>
         </view>

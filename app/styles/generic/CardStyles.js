@@ -33,6 +33,17 @@ const Styles = StyleSheet.create({
     fontFamily: 'montserrat-bold'
   },
 
+  cardTipIndicator: {
+    position: 'absolute', 
+    bottom: 50, 
+    right: 10,
+    backgroundColor: 'transparent',
+    paddingRight: 0,
+    paddingBottom: 0,
+    alignItems: 'flex-end',
+    alignSelf: 'flex-end',
+  },
+
   cardStatusIndicator: {
     position: 'absolute', 
     bottom: 10, 

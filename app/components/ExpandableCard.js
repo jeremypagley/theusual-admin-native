@@ -43,7 +43,9 @@ class ExpandableCard extends React.Component {
       actionLoadingTitle,
       items,
       statusColor,
-      statusTitle
+      statusTitle,
+      tipColor,
+      tipTitle,
     } = this.props;
 
     let actionTitleNode = !actionLoading ? <Text style={CardStyles.itemButtonTitle}>{actionTitle}</Text> :(
@@ -87,6 +89,14 @@ class ExpandableCard extends React.Component {
               </CardItem>
             )
           })}
+
+          {tipColor && tipTitle
+           ? <CardItem style={[CardStyles.cardTipIndicator, actionTitle ? {bottom: 70} : {}]}>
+              <Badge style={[{ backgroundColor: tipColor}]}>
+                <Text style={CardStyles.cardStatusText}>{tipTitle}</Text>
+              </Badge>
+            </CardItem>
+          : null}
 
           {statusColor && statusTitle
            ? <CardItem style={[CardStyles.cardStatusIndicator, actionTitle ? {bottom: 40} : {}]}>

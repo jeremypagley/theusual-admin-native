@@ -113,7 +113,9 @@ class Store extends React.Component {
 
               const pendingOrders = []
               store.orderQueue.forEach(o => {
-                if (o.queueStatus === QueueStatus.pending) pendingOrders.unshift(o)
+                if (o.queueStatus === QueueStatus.pending) {
+                  pendingOrders.unshift(o)
+                }
               });
               // previousOrders is completed or canceled orders
               let previousOrders = []
@@ -144,7 +146,7 @@ class Store extends React.Component {
 
               orderHistoryNode = (
                 <Content padder>
-                  <View style={{opacity: 0.6}}>
+                  <View style={{opacity: 1}}>
                     {previousOrders.length > 0 ? previousOrders.map(order => {
                       return this.getOrderQueueCard(order, false);
                     }) : null}
@@ -300,6 +302,11 @@ class Store extends React.Component {
 
     const selectedStoreId = this.props.navigation.getParam('storeId', null);
 
+    const tipProps = {
+      tipColor: Colors.BrandDarkGrey,
+      tipTitle: order.tip ? `Tip: $${order.tip}` : 'No Tip'
+    }
+
     return (
       <Mutation
         key={order._id}
@@ -337,6 +344,8 @@ class Store extends React.Component {
             }
           } : {};
 
+          if (!order.orderedBy) return null;
+
           return (
             <ExpandableCard 
               key={order._id}
@@ -344,6 +353,7 @@ class Store extends React.Component {
               items={items}
               statusColor={statusColor}
               statusTitle={statusTitle}
+              {...tipProps}
               {...actionProps}
             />
           )

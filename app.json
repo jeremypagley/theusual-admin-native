@@ -8,7 +8,7 @@
       "ios",
       "android"
     ],
-    "version": "1.0.2",
+    "version": "1.0.7",
     "orientation": "default",
     "icon": "./assets/images/icon.png",
     "splash": {
@@ -29,7 +29,7 @@
       "infoPlist": {
         "privacyPolicy": "https://theusual.io/privacy-policy/"
       },
-      "bundleIdentifier": "io.theusual.native.vendor",
+      "bundleIdentifier": "io.theusual.vendor.native",
       "publishBundlePath": "ios/theusual-admin-native/Supporting/shell-app.bundle",
       "publishManifestPath": "ios/theusual-admin-native/Supporting/shell-app-manifest.json"
     },
@@ -44,7 +44,7 @@
     },
     "primaryColor": "#DB4C65",
     "android": {
-      "package": "io.theusual.native.vendor",
+      "package": "io.theusual.vendor.native",
       "versionCode": 1,
       "publishBundlePath": "android/app/src/main/assets/shell-app.bundle",
       "publishManifestPath": "android/app/src/main/assets/shell-app-manifest.json"
