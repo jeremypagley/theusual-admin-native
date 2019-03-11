@@ -12,34 +12,40 @@ const Styles = StyleSheet.create({
   },
 
   header: {
-    backgroundColor: Colors.BrandRed,
+    backgroundColor: Colors.BrandLightGrey,
     paddingTop: 0,
+    borderBottomColor: 'transparent',
+    height: 45
   },
 
   content: {
     marginTop: -70
   },
 
+  tabContent: {
+    backgroundColor: Colors.BrandLightGrey,
+  },
+
   tab: {
-    backgroundColor: Colors.BrandRed,
+    backgroundColor: Colors.BrandLightGrey,
   },
 
   activeTab: {
-    backgroundColor: Colors.BrandRed,
+    backgroundColor: Colors.BrandLightGrey,
   },
 
   tabText: {
-    color: Colors.White,
+    color: Colors.BrandBlack,
     fontFamily: 'montserrat-medium'
   },
 
   activeTabText: {
-    color: Colors.White,
+    color: Colors.BrandRed,
     fontFamily: 'montserrat-bold'
   },
 
   tabBarUnderline: {
-    backgroundColor: Colors.White
+    backgroundColor: Colors.BrandRed
   },
 
   innerContainer: {

@@ -14,12 +14,13 @@ import Colors from 'app/styles/Colors';
 const reusableNavOptions = {
   navigationOptions: ({ navigation }) => ({
     headerStyle: {
-      backgroundColor: Colors.BrandRed,
+      backgroundColor: Colors.BrandLightGrey,
       borderBottomWidth: 0,
     },
-    headerTintColor: Colors.White,
+    headerTintColor: Colors.Black,
     headerTitleStyle: {
       fontWeight: 'bold',
+      fontSize: 30,
       fontFamily: 'montserrat-bold'
     },
   })

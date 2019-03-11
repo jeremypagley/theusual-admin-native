@@ -130,7 +130,7 @@ class Store extends React.Component {
 
               // TODO: Change no active orders to be the last list item if there are no pending orders as we want them to be ableto pull down to refresh on no orders
               activeOrdersNode = pendingOrders.length > 0 ? (
-                <SafeAreaView>
+                <SafeAreaView style={{backgroundColor: Colors.BrandLightGrey}}>
                   <FlatList
                     data={pendingOrders}
                     renderItem={({ item }) => {
@@ -142,10 +142,10 @@ class Store extends React.Component {
                     contentContainerStyle={{marginBottom: 250, padding: 15}}
                   />
                 </SafeAreaView>
-              ) : <Content padder>{this.getNoDataCard('No active orders')}</Content>;
+              ) : <Content style={ContainerStyles.tabContent} padder>{this.getNoDataCard('No active orders')}</Content>;
 
               orderHistoryNode = (
-                <Content padder>
+                <Content style={ContainerStyles.tabContent} padder>
                   <View style={{opacity: 1}}>
                     {previousOrders.length > 0 ? previousOrders.map(order => {
                       return this.getOrderQueueCard(order, false);
@@ -163,7 +163,7 @@ class Store extends React.Component {
             return (
               <Tabs tabBarUnderlineStyle={ContainerStyles.tabBarUnderline}>
                 <Tab
-                  tabStyle={ContainerStyles.tab} 
+                  tabStyle={ContainerStyles.tab}
                   activeTabStyle={ContainerStyles.activeTab}
                   textStyle={ContainerStyles.tabText}
                   activeTextStyle={ContainerStyles.activeTabText}
@@ -189,7 +189,7 @@ class Store extends React.Component {
                   activeTextStyle={ContainerStyles.activeTabText}
                   heading="Menu"
                 >
-                  <Content padder>
+                  <Content style={ContainerStyles.tabContent} padder>
                     {menuNode}
                   </Content>
                 </Tab>
@@ -201,7 +201,7 @@ class Store extends React.Component {
                   activeTextStyle={ContainerStyles.activeTabText}
                   heading="About"
                 >
-                  <Content padder>
+                  <Content style={ContainerStyles.tabContent} padder>
                     {aboutNode}
                   </Content>
                 </Tab>

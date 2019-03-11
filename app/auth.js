@@ -28,7 +28,6 @@ const getReleaseChannel = () => {
 const getKeys = () => {
   const releaseChannel = getReleaseChannel();
   const manifestExtra = getManifestExtra();
-  // const endpoint = 'http://192.168.0.23:4000/';
   // const endpoint = 'http://172.31.99.30:4000/';
   const endpoint = 'http://192.168.0.16:4000/';
   let keys = {

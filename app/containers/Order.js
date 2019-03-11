@@ -41,11 +41,11 @@ class Order extends React.Component {
             <Input
               clearButtonMode="always"
               value={search}
-              placeholder="Search"
+              placeholder="Search for your store"
               onChangeText={(text) => this.setState({ search: text })}
               placeholderTextColor={Colors.BrandDarkGrey}
             />
-            <Icon name="md-pin" style={{color: Colors.BrandBlack}} />
+            <Icon name="md-pin" style={{color: Colors.BrandGrey}} />
           </Item>
         </Header>
         <Content padder>

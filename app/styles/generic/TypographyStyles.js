@@ -108,7 +108,7 @@ const Styles = StyleSheet.create({
 
   headerTitle: {
     fontSize: 16,
-    color: Colors.White,
+    color: Colors.BrandBlack,
     fontFamily: 'montserrat-bold',
     textAlign: 'center',
     marginLeft: 20,
