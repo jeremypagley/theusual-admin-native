@@ -17,7 +17,7 @@ const reusableNavOptions = {
       backgroundColor: Colors.BrandLightGrey,
       borderBottomWidth: 0,
     },
-    headerTintColor: Colors.Black,
+    headerTintColor: Colors.BrandBlack,
     headerTitleStyle: {
       fontWeight: 'bold',
       fontSize: 30,

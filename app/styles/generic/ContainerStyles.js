@@ -19,6 +19,7 @@ const Styles = StyleSheet.create({
   },
 
   content: {
+    backgroundColor: Colors.BrandLightGrey,
     marginTop: -70
   },
 
@@ -74,7 +75,7 @@ const Styles = StyleSheet.create({
 
 
   modalContent: {
-    backgroundColor: Colors.White,
+    backgroundColor: Colors.BrandLightGrey,
     height: contentHeight,
     marginTop: marginTopOffset,
     borderRadius: 20,

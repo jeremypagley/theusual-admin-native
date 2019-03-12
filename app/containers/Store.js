@@ -111,7 +111,7 @@ class Store extends React.Component {
               const organization = data.organizationStores;
               const store = organization.stores.find(store => store._id === selectedStoreId);
 
-              const pendingOrders = []
+              let pendingOrders = []
               store.orderQueue.forEach(o => {
                 if (o.queueStatus === QueueStatus.pending) {
                   pendingOrders.unshift(o)
@@ -129,11 +129,15 @@ class Store extends React.Component {
               this.notifier(pendingOrders.length, store.title);
 
               // TODO: Change no active orders to be the last list item if there are no pending orders as we want them to be ableto pull down to refresh on no orders
-              activeOrdersNode = pendingOrders.length > 0 ? (
-                <SafeAreaView style={{backgroundColor: Colors.BrandLightGrey}}>
+              if (pendingOrders.length < 1) {
+                pendingOrders = [{type: 'noorders'}]
+              }
+              activeOrdersNode = (
+                <SafeAreaView style={{backgroundColor: Colors.BrandLightGrey, height: screenHeight}}>
                   <FlatList
                     data={pendingOrders}
                     renderItem={({ item }) => {
+                      if (item.type && item.type === 'noorders') return this.getNoDataCard('No active orders');
                       return this.getOrderQueueCard(item)
                     }}
                     onRefresh={() => refetch()}
@@ -142,7 +146,7 @@ class Store extends React.Component {
                     contentContainerStyle={{marginBottom: 250, padding: 15}}
                   />
                 </SafeAreaView>
-              ) : <Content style={ContainerStyles.tabContent} padder>{this.getNoDataCard('No active orders')}</Content>;
+              )
 
               orderHistoryNode = (
                 <Content style={ContainerStyles.tabContent} padder>

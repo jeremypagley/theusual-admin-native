@@ -8,10 +8,10 @@ const reusableNavOptions = {
   navigationOptions: ({ navigation }) => ({
     headerLeft: null,
     headerStyle: {
-      backgroundColor: Colors.BrandRed,
+      backgroundColor: Colors.BrandLightGrey,
       borderBottomWidth: 0,
     },
-    headerTintColor: Colors.White,
+    headerTintColor: Colors.BrandBlack,
     headerTitleStyle: {
       fontWeight: 'bold',
       fontFamily: 'montserrat-bold'

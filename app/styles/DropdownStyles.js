@@ -13,7 +13,7 @@ const Styles = StyleSheet.create({
   },
 
   dropdownText: {
-    color: Colors.Black,
+    color: Colors.BrandBlack,
     fontSize: 18,
     paddingTop: 5,
     paddingRight: 10,
@@ -34,7 +34,7 @@ const Styles = StyleSheet.create({
 
   dropdownRow: {
     padding: 15,
-    color: Colors.Black,
+    color: Colors.BrandBlack,
     fontSize: 18
   },
 

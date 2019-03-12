@@ -71,18 +71,41 @@ class ProfileContainer extends React.Component {
               let orgUsers = organization.users.map(user => {
                 return {
                   _id: user._id,
-                  title: `${user.firstName} ${user.lastName}`,
-                  subtitle: `${user.email}`
+                  title: `${user.email}`,
+                  subtitle: `${user.firstName} ${user.lastName}`
                 }
-              })
+              });
+
+              let orgBalance = [
+                {
+                  _id: 'amount',
+                  title: `$${organization.billing.balance/100}`,
+                  subtitle: `Balance`
+                },
+                {
+                  _id: 'tips',
+                  title: `$${organization.billing.tips/100}`,
+                  subtitle: `Tips`
+                },
+              ]
 
               return (
-                <CardList
-                  data={orgUsers}
-                  title={`${organization.title} - Users`}
-                  loading={loading}
-                  rightActionItem={<View></View>}
-                />
+                <View>
+                  <CardList
+                    smallTitle
+                    data={orgUsers}
+                    title={`Users`}
+                    loading={loading}
+                    rightActionItem={<View></View>}
+                  />
+                  <CardList
+                    smallTitle
+                    data={orgBalance}
+                    title={`Account`}
+                    loading={loading}
+                    rightActionItem={<View></View>}
+                  />
+                </View>
               )
             }}
           </Query>
