@@ -63,7 +63,7 @@ class ExpandableCard extends React.Component {
             <Text style={TypographyStyles.noteTitle}>{title}</Text>
             <Left />
             {removable ?
-            <Right>
+            <Right style={{marginLeft: -15}}>
               <Icon name="md-close" style={{fontSize: 30, color: Colors.BrandGrey}} onPress={removableOnPress} />
             </Right>
             : null}

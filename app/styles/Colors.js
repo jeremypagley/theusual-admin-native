@@ -19,7 +19,7 @@ export default {
   BrandLightRed: '#F9A7AC',
   BrandDarkBlue: '#323643',
   BrandBlueGrey: '#B9CEE0',
-  BrandSecondaryBlue: '#A4C3DE',
+  BrandSecondaryBlue: '#262160',
   BrandBorderGrey: '#EBEEF1',
   BrandShadow: '#222425',
   BrandGradientStart: '#FF2655',
