@@ -3,8 +3,8 @@
   "expoServerPort": null,
   "packagerPort": null,
   "packagerPid": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null,
+  "expoServerNgrokUrl": "https://rb-r4a.jeremykpagley.theusual-admin-native.exp.direct",
+  "packagerNgrokUrl": "https://packager.rb-r4a.jeremykpagley.theusual-admin-native.exp.direct",
+  "ngrokPid": 50662,
   "webpackServerPort": null
 }

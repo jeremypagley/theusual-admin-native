@@ -128,7 +128,6 @@ class Store extends React.Component {
                */
               this.notifier(pendingOrders.length, store.title);
 
-              // TODO: Change no active orders to be the last list item if there are no pending orders as we want them to be ableto pull down to refresh on no orders
               if (pendingOrders.length < 1) {
                 pendingOrders = [{type: 'noorders'}]
               }

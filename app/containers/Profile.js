@@ -5,7 +5,11 @@ import {
   Header,
   View,
   Button,
-  Text
+  Text,
+  Spinner,
+  CardItem,
+  Left,
+  Right
 } from 'native-base';
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
 import GradientButton from 'app/components/GradientButton';
@@ -17,6 +21,8 @@ import { Query } from 'react-apollo';
 import Auth from 'app/auth';
 import { Constants } from 'expo';
 import ButtonStyles from 'app/styles/generic/ButtonStyles';
+import Colors from 'app/styles/Colors';
+import CardStyles from 'app/styles/generic/CardStyles';
 
 const {
   apiEndpoint
@@ -61,7 +67,7 @@ class ProfileContainer extends React.Component {
           }
 
           <Query query={GET_ORGANIZATION}>
-            {({ loading, error, data }) => {
+            {({ loading, error, data, refetch }) => {
               if (loading) return <LoadingIndicator title="Loading organization info" />;
               if (error) return <GenericError message={error.message} />;
               
@@ -89,6 +95,9 @@ class ProfileContainer extends React.Component {
                 },
               ]
 
+              // It seems to refresh when an order is completed and when you click on a location to start with
+              // const cardFooterAction = data.networkStatus === 4 ? <Spinner color={Colors.BrandRed} /> : <Text style={CardStyles.itemButtonTitle}>Refresh</Text>;
+
               return (
                 <View>
                   <CardList
@@ -104,6 +113,14 @@ class ProfileContainer extends React.Component {
                     title={`Account`}
                     loading={loading}
                     rightActionItem={<View></View>}
+                    // cardFooter={
+                    //   <CardItem footer button onPress={() => refetch()} style={[CardStyles.itemFooter, {paddingTop: 15}]}>
+                    //     <Left />
+                    //     <Right>
+                    //       {cardFooterAction}
+                    //     </Right>
+                    //   </CardItem>
+                    // }
                   />
                 </View>
               )

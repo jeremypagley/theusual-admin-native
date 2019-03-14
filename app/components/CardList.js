@@ -34,6 +34,11 @@ class CardList extends React.PureComponent {
     rightActionItem: PropTypes.element
   }
 
+  static defaultProps = {
+    flatListProps: {},
+    cardFooter: null
+  }
+
   _keyExtractor = (item, index) => item._id;
 
   _renderItem = ({item}) => {
@@ -68,7 +73,7 @@ class CardList extends React.PureComponent {
   }
 
   render() {
-    const { title } = this.props;
+    const { title, flatListProps, cardFooter } = this.props;
     const titleNode = title ? (
       <CardItem header style={CardStyles.itemHeader}>
         <Left>
@@ -87,7 +92,10 @@ class CardList extends React.PureComponent {
             extraData={this.state}
             keyExtractor={this._keyExtractor}
             renderItem={this._renderItem}
+            {...flatListProps}
           />
+
+          {cardFooter}
         </Card>
       </View>
     );
