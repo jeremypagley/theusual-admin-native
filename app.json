@@ -38,7 +38,7 @@
       "iosExpoViewUrl": "https://s3.amazonaws.com/exp-exponent-view-code/ios-v2.10.2-sdk32.0.0-c59c23cd-1d49-49d2-a633-d03f9d554cf6.tar.gz",
       "androidExpoViewUrl": "https://s3.amazonaws.com/exp-exponent-view-code/android-v2.10.7-sdk32.0.0-3ff7f3bf-8e53-4d61-b963-1d7d92a77d79.tar.gz"
     },
-    "scheme": "exp6d87efb2a26540d5a45114f5ceed0c25",
+    "scheme": "theusualvendor",
     "androidStatusBar": {
       "backgroundColor": "#DB4C65"
     },
@@ -53,10 +53,12 @@
       "DEV_APP_ENDPOINT": "http://localhost:4000/graphql",
       "DEV_API_ENDPOINT_FORGOT": "http://localhost:4000/forgot",
       "DEV_API_ENDPOINT_TERMS": "http://localhost:4000/terms",
+      "DEV_STRIPE_CLIENT_ID": "ca_EguFfQcjqGz1uYd7UHfCJIOwi0yvcukp",
       "PROD_API_KEY": "",
       "PROD_API_ENDPOINT": "https://theusual.io/graphql",
       "PROD_API_ENDPOINT_FORGOT": "https://theusual.io/forgot",
-      "PROD_API_ENDPOINT_TERMS": "https://theusual.io/terms"
+      "PROD_API_ENDPOINT_TERMS": "https://theusual.io/terms",
+      "PROD_STRIPE_CLIENT_ID": "ca_EguFTKCnfL5NtYxwDu2pc0cMsA7GDrCX",
     }
   }
 }

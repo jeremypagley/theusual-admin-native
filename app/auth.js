@@ -29,7 +29,7 @@ const getKeys = () => {
   const releaseChannel = getReleaseChannel();
   const manifestExtra = getManifestExtra();
   // const endpoint = 'http://172.31.99.30:4000/';
-  const endpoint = 'http://192.168.0.16:4000/';
+  const endpoint = 'http://192.168.0.9:4000/';
   let keys = {
     apiKey: '',
     // apiEndpoint: 'http://localhost:4000/graphql',
@@ -38,6 +38,7 @@ const getKeys = () => {
     apiEndpoint: `${endpoint}graphql`,
     apiEndpointForgot: `${endpoint}forgot`,
     apiEndpointTerms: `${endpoint}terms`,
+    stripeClientId: manifestExtra.DEV_STRIPE_CLIENT_ID,
   }
 
   // Since releaseChannels are undefined in dev, return default.
@@ -76,6 +77,7 @@ const getKeys = () => {
     keys.apiEndpoint = manifestExtra.PROD_API_ENDPOINT;
     keys.apiEndpointForgot = manifestExtra.PROD_API_ENDPOINT_FORGOT;
     keys.apiEndpointTerms = manifestExtra.PROD_API_ENDPOINT_TERMS;
+    keys.stripeClientId = manifestExtra.DEV_STRIPE_CLIENT_ID;
 
     return keys;
   }
@@ -86,6 +88,7 @@ const getKeys = () => {
     keys.apiEndpoint = manifestExtra.PROD_API_ENDPOINT;
     keys.apiEndpointForgot = manifestExtra.PROD_API_ENDPOINT_FORGOT;
     keys.apiEndpointTerms = manifestExtra.PROD_API_ENDPOINT_TERMS;
+    keys.stripeClientId = manifestExtra.PROD_STRIPE_CLIENT_ID;
 
     return keys;
   }

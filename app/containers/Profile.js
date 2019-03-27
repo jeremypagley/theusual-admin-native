@@ -19,13 +19,14 @@ import GenericError from 'app/components/GenericError';
 import GET_ORGANIZATION from 'app/graphql/query/getOrganization';
 import { Query } from 'react-apollo';
 import Auth from 'app/auth';
-import { Constants } from 'expo';
+import { Constants, WebBrowser, Linking } from 'expo';
 import ButtonStyles from 'app/styles/generic/ButtonStyles';
 import Colors from 'app/styles/Colors';
 import CardStyles from 'app/styles/generic/CardStyles';
 
 const {
-  apiEndpoint
+  apiEndpoint,
+  stripeClientId
 } = Auth.getKeys();
 
 
@@ -95,6 +96,19 @@ class ProfileContainer extends React.Component {
                 },
               ]
 
+              // We add `?` at the end of the URL since the test backend that is used
+              // just appends `authToken=<token>` to the URL provided.
+              // const linkingUri = Linking.makeUrl('/?');
+              console.log('organization: ', organization)
+
+              const hasStripePayments = organization.stripe_user_id;
+              let stripeAuthorizeUrl = `https://connect.stripe.com/oauth/authorize?response_type=code&client_id=${stripeClientId}&scope=read_write&state=${organization._id}`
+
+              // To test you must use the test url from stripe
+              stripeAuthorizeUrl = `https://dashboard.stripe.com/oauth/authorize?response_type=code&client_id=ca_EguFfQcjqGz1uYd7UHfCJIOwi0yvcukp&scope=read_write&state=${organization._id}`
+              console.log('stripeAuthrozieUrl: ', stripeAuthorizeUrl)
+              const paymentsNode = this._getPaymentsNode(hasStripePayments, stripeAuthorizeUrl, refetch);
+
               // It seems to refresh when an order is completed and when you click on a location to start with
               // const cardFooterAction = data.networkStatus === 4 ? <Spinner color={Colors.BrandRed} /> : <Text style={CardStyles.itemButtonTitle}>Refresh</Text>;
 
@@ -122,6 +136,8 @@ class ProfileContainer extends React.Component {
                     //   </CardItem>
                     // }
                   />
+
+                  {paymentsNode}
                 </View>
               )
             }}
@@ -156,6 +172,11 @@ class ProfileContainer extends React.Component {
             />
           }
 
+          <GradientButton 
+            title="Logout"
+            buttonProps={{onPress: () => this.props.onLogout()}}
+          />
+
           <Button 
             block 
             style={ButtonStyles.secondaryButton}
@@ -164,15 +185,72 @@ class ProfileContainer extends React.Component {
             <Text style={ButtonStyles.secondaryButtonText}>Version Info</Text>
           </Button>
 
-          <GradientButton 
-            title="Logout"
-            buttonProps={{onPress: () => this.props.onLogout()}}
-          />
-
         </Content>
       </Container>
     );
+  } 
+  
+  _getPaymentsNode = (hasStripePayments, stripeAuthorizeUrl, refetch) => {
+    const { redirectData } = this.state;
+
+    console.log('this.state======: ', this.state)
+
+    if (redirectData && redirectData.path === 'stripe/auth/' && redirectData.queryParams.access && redirectData.queryParams.access === 'granted') {
+      // Refetch org data
+      refetch();
+    }
+
+    console.log('hasStriepPayments: ', hasStripePayments)
+    
+    if (hasStripePayments) {
+      return <Text>Has payments</Text>
+    } else {
+      return (
+        <Button style={{paddingLeft: 0, marginLeft: 0}} transparent onPress={() => this._openWebBrowserAsync(stripeAuthorizeUrl)}>
+          <Text style={{fontSize: 14, fontFamily: 'montserrat-bold', paddingLeft: 0}}>Setup Payments</Text>
+        </Button>
+      );
+    }
   }
+  
+  _handleRedirect = event => {
+    WebBrowser.dismissBrowser();
+
+    let data = Linking.parse(event.url);
+
+    this.setState({ redirectData: data });
+  };
+
+  _openWebBrowserAsync = async (stripeAuthorizeUrl) => {
+    try {
+      this._addLinkingListener();
+      let result = await WebBrowser.openBrowserAsync(
+        stripeAuthorizeUrl
+      );
+      console.log('result========: ', result)
+      this._removeLinkingListener();
+      this.setState({ result });
+    } catch (error) {
+      alert(error);
+      console.log(error);
+    }
+  };
+
+  _addLinkingListener = () => {
+    Linking.addEventListener('url', this._handleRedirect);
+  };
+
+  _removeLinkingListener = () => {
+    Linking.removeEventListener('url', this._handleRedirect);
+  };
+
+  _maybeRenderRedirectData = () => {
+    if (!this.state.redirectData) {
+      return;
+    }
+
+    return <Text>{JSON.stringify(this.state.redirectData)}</Text>;
+  };
 
 }
 
