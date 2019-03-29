@@ -131,6 +131,7 @@ class Store extends React.Component {
               if (pendingOrders.length < 1) {
                 pendingOrders = [{type: 'noorders'}]
               }
+              
               activeOrdersNode = (
                 <SafeAreaView style={{backgroundColor: Colors.BrandLightGrey, height: screenHeight}}>
                   <FlatList
@@ -149,8 +150,13 @@ class Store extends React.Component {
 
               orderHistoryNode = (
                 <Content style={ContainerStyles.tabContent} padder>
+                  {this.getTipSums(previousOrders)}
+
+                  <Text style={[TypographyStyles.noteBold, {marginTop: 10}]}>This weeks previous orders</Text>
                   <View style={{opacity: 1}}>
                     {previousOrders.length > 0 ? previousOrders.map(order => {
+                      let inWeek = moment(order.orderedDate).isSame(new Date(), 'week');
+                      if (!inWeek) return null;
                       return this.getOrderQueueCard(order, false);
                     }) : null}
                   </View>
@@ -214,6 +220,31 @@ class Store extends React.Component {
         </Query>
       </Container>
     );
+  }
+
+  getTipSums = (previousOrders) => {
+    let weekSums = 0;
+    let daySums = 0;
+
+    previousOrders.forEach(order => {
+      // let inMonth = moment('2010-01-01').isSame('2011-01-01', 'month'); // false, different year
+      let inWeek = moment(order.orderedDate).isSame(new Date(), 'week');   // false, different month
+      let inDay = moment(order.orderedDate).isSame(new Date(), 'day');   // false, different month
+
+      if (inWeek && order.tip) weekSums += order.tip;
+      if (inDay && order.tip) daySums += order.tip;
+    });
+
+    return (
+      <View style={{marginTop: 10, marginBottom: 10}}>
+        <View style={{flexDirection: 'row', marginBottom: 5}}>
+          <Text style={TypographyStyles.h3}>Weeks Tips: ${weekSums}</Text>
+        </View>
+        <View style={{flexDirection: 'row'}}>
+          <Text style={TypographyStyles.h3}>Todays Tips: ${daySums}</Text>
+        </View>
+      </View>
+    )
   }
 
   sendLocalNotification = (storeTitle) => {
@@ -352,7 +383,12 @@ class Store extends React.Component {
           return (
             <ExpandableCard 
               key={order._id}
-              title={`Ordered by: ${order.orderedBy.firstName} ${order.orderedBy.lastName}    Ordered On: ${moment(order.orderedDate).format('h:mm a MMM Do')}`}
+              title={
+                <View>
+                  <Text style={TypographyStyles.noteTitle}>{order.orderedBy.firstName} {order.orderedBy.lastName} </Text>
+                  <Text style={TypographyStyles.noteTitle}>{moment(order.orderedDate).format('h:mm a MMM Do')}</Text>
+                </View>
+              }
               items={items}
               statusColor={statusColor}
               statusTitle={statusTitle}

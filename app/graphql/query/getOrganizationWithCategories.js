@@ -29,7 +29,8 @@ const OrganizationStoresQuery = gql`
     users {
       _id
     }
-    stripeCustomerId
+    stripe_refresh_token
+    stripe_user_id
     billing {
       balance
       tips

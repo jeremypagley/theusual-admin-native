@@ -5,7 +5,8 @@ const OrganizationQuery = gql`
   organization {
     _id
     title
-    stripeCustomerId
+    stripe_refresh_token
+    stripe_user_id
     billing {
       balance
       tips

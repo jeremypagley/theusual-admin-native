@@ -6,10 +6,7 @@ import {
   View,
   Button,
   Text,
-  Spinner,
-  CardItem,
-  Left,
-  Right
+  Toast
 } from 'native-base';
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
 import GradientButton from 'app/components/GradientButton';
@@ -19,13 +16,14 @@ import GenericError from 'app/components/GenericError';
 import GET_ORGANIZATION from 'app/graphql/query/getOrganization';
 import { Query } from 'react-apollo';
 import Auth from 'app/auth';
-import { Constants } from 'expo';
+import { Constants, WebBrowser, Linking } from 'expo';
 import ButtonStyles from 'app/styles/generic/ButtonStyles';
 import Colors from 'app/styles/Colors';
 import CardStyles from 'app/styles/generic/CardStyles';
 
 const {
-  apiEndpoint
+  apiEndpoint,
+  stripeClientId
 } = Auth.getKeys();
 
 
@@ -62,7 +60,7 @@ class ProfileContainer extends React.Component {
                 subtitle: currentUser.email
               }]}
               rightActionItem={<View></View>}
-              title="Your Info"
+              title="You"
             />
           }
 
@@ -95,11 +93,26 @@ class ProfileContainer extends React.Component {
                 },
               ]
 
+              const hasStripePayments = organization.stripe_user_id;
+              let stripeAuthorizeUrl = `https://connect.stripe.com/oauth/authorize?response_type=code&client_id=${stripeClientId}&scope=read_write&state=${organization._id}`
+
+              // To test you must use the test url from stripe
+              // stripeAuthorizeUrl = `https://dashboard.stripe.com/oauth/authorize?response_type=code&client_id=ca_EguFfQcjqGz1uYd7UHfCJIOwi0yvcukp&scope=read_write&state=${organization._id}`
+              const paymentsNode = this._getPaymentsNode(hasStripePayments, stripeAuthorizeUrl, refetch);
+
               // It seems to refresh when an order is completed and when you click on a location to start with
               // const cardFooterAction = data.networkStatus === 4 ? <Spinner color={Colors.BrandRed} /> : <Text style={CardStyles.itemButtonTitle}>Refresh</Text>;
 
               return (
                 <View>
+                  <CardList
+                    data={[{
+                      _id: organization._id,
+                      title: organization.title,
+                    }]}
+                    rightActionItem={<View></View>}
+                    title="Organization"
+                  />
                   <CardList
                     smallTitle
                     data={orgUsers}
@@ -107,7 +120,8 @@ class ProfileContainer extends React.Component {
                     loading={loading}
                     rightActionItem={<View></View>}
                   />
-                  <CardList
+                  
+                  {/* <CardList
                     smallTitle
                     data={orgBalance}
                     title={`Account`}
@@ -121,7 +135,9 @@ class ProfileContainer extends React.Component {
                     //     </Right>
                     //   </CardItem>
                     // }
-                  />
+                  /> */}
+
+                  {paymentsNode}
                 </View>
               )
             }}
@@ -172,7 +188,95 @@ class ProfileContainer extends React.Component {
         </Content>
       </Container>
     );
+  } 
+  
+  _getPaymentsNode = (hasStripePayments, stripeAuthorizeUrl, refetch) => {
+    const { redirectData } = this.state;
+
+    if (redirectData && redirectData.path === 'stripe/auth/' && redirectData.queryParams.access && redirectData.queryParams.access === 'granted') {
+      Toast.show({
+        text: 'Your payments are setup successfully 💸',
+        buttonText: 'Great',
+        duration: 3000,
+        type: 'success',
+        style: {
+          backgroundColor: Colors.BrandRed,
+          color: Colors.White
+         }
+      });
+      // Refetch org data
+      refetch();
+    }
+
+    if (hasStripePayments) {
+      return (
+        <View>
+          <Button 
+            block 
+            style={ButtonStyles.secondaryButton}
+            onPress={() => WebBrowser.openBrowserAsync('https://dashboard.stripe.com/dashboard')}
+          >
+            <Text style={ButtonStyles.secondaryButtonText}>View Stripe Dashboard</Text>
+          </Button>
+          <Button 
+            block 
+            style={ButtonStyles.secondaryButton}
+            onPress={() => WebBrowser.openBrowserAsync('https://www.youtube.com/watch?v=AwklziE5HKo')}
+          >
+            <Text style={ButtonStyles.secondaryButtonText}>Using the Stripe Dashboard Tutorial</Text>
+          </Button>
+        </View>
+      )
+    } else {
+      return (
+        <Button 
+          block 
+          style={ButtonStyles.secondaryButton}
+          onPress={() => this._openWebBrowserAsync(stripeAuthorizeUrl)}
+        >
+          <Text style={ButtonStyles.secondaryButtonText}>Setup Payments</Text>
+        </Button>
+      );
+    }
   }
+  
+  _handleRedirect = event => {
+    WebBrowser.dismissBrowser();
+
+    let data = Linking.parse(event.url);
+
+    this.setState({ redirectData: data });
+  };
+
+  _openWebBrowserAsync = async (stripeAuthorizeUrl) => {
+    try {
+      this._addLinkingListener();
+      let result = await WebBrowser.openBrowserAsync(
+        stripeAuthorizeUrl
+      );
+      this._removeLinkingListener();
+      this.setState({ result });
+    } catch (error) {
+      alert(error);
+      console.log(error);
+    }
+  };
+
+  _addLinkingListener = () => {
+    Linking.addEventListener('url', this._handleRedirect);
+  };
+
+  _removeLinkingListener = () => {
+    Linking.removeEventListener('url', this._handleRedirect);
+  };
+
+  _maybeRenderRedirectData = () => {
+    if (!this.state.redirectData) {
+      return;
+    }
+
+    return <Text>{JSON.stringify(this.state.redirectData)}</Text>;
+  };
 
 }
 

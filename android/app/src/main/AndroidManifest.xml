@@ -74,7 +74,7 @@
       android:theme="@style/Theme.Exponent.Splash"
       android:windowSoftInputMode="adjustResize">
       <intent-filter>
-        <data android:scheme="exp6d87efb2a26540d5a45114f5ceed0c25"/>
+        <data android:scheme="theusualvendor"/>
 
         <action android:name="android.intent.action.VIEW"/>
 

@@ -60,7 +60,7 @@ class ExpandableCard extends React.Component {
         <Card transparent>
           {title ? 
           <CardItem header style={CardStyles.itemHeader}>
-            <Text style={TypographyStyles.noteTitle}>{title}</Text>
+            <View>{title}</View>
             <Left />
             {removable ?
             <Right style={{marginLeft: -15}}>

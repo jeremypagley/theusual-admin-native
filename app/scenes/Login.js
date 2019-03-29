@@ -124,13 +124,13 @@ class Login extends React.Component {
             }}
           />
           
-          <Button 
+          {/* <Button 
             block 
             style={ButtonStyles.secondaryButton}
             onPress={() => navigation.navigate('Register')}
           >
             <Text style={ButtonStyles.secondaryButtonText}>Sign Up</Text>
-          </Button>
+          </Button> */}
         </Content>
       </Container>
     );

@@ -13,7 +13,6 @@ const OrganizationStoresQuery = gql`
       users {
         _id
       }
-      stripeCustomerId
       billing {
         balance
         tips
