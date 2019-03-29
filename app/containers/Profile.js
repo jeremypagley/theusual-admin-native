@@ -194,8 +194,6 @@ class ProfileContainer extends React.Component {
     const { redirectData } = this.state;
 
     if (redirectData && redirectData.path === 'stripe/auth/' && redirectData.queryParams.access && redirectData.queryParams.access === 'granted') {
-      // Refetch org data
-      refetch();
       Toast.show({
         text: 'Your payments are setup successfully 💸',
         buttonText: 'Great',
@@ -205,11 +203,12 @@ class ProfileContainer extends React.Component {
           backgroundColor: Colors.BrandRed,
           color: Colors.White
          }
-      })
+      });
+      // Refetch org data
+      refetch();
     }
 
     if (hasStripePayments) {
-      // TODO: Show Successful connected account https://www.youtube.com/watch?v=AwklziE5HKo
       return (
         <View>
           <Button 
