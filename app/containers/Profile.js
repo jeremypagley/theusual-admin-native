@@ -6,10 +6,7 @@ import {
   View,
   Button,
   Text,
-  Spinner,
-  CardItem,
-  Left,
-  Right
+  Toast
 } from 'native-base';
 import ContainerStyles from 'app/styles/generic/ContainerStyles';
 import GradientButton from 'app/components/GradientButton';
@@ -63,7 +60,7 @@ class ProfileContainer extends React.Component {
                 subtitle: currentUser.email
               }]}
               rightActionItem={<View></View>}
-              title="Your Info"
+              title="You"
             />
           }
 
@@ -96,17 +93,11 @@ class ProfileContainer extends React.Component {
                 },
               ]
 
-              // We add `?` at the end of the URL since the test backend that is used
-              // just appends `authToken=<token>` to the URL provided.
-              // const linkingUri = Linking.makeUrl('/?');
-              console.log('organization: ', organization)
-
               const hasStripePayments = organization.stripe_user_id;
               let stripeAuthorizeUrl = `https://connect.stripe.com/oauth/authorize?response_type=code&client_id=${stripeClientId}&scope=read_write&state=${organization._id}`
 
               // To test you must use the test url from stripe
-              stripeAuthorizeUrl = `https://dashboard.stripe.com/oauth/authorize?response_type=code&client_id=ca_EguFfQcjqGz1uYd7UHfCJIOwi0yvcukp&scope=read_write&state=${organization._id}`
-              console.log('stripeAuthrozieUrl: ', stripeAuthorizeUrl)
+              // stripeAuthorizeUrl = `https://dashboard.stripe.com/oauth/authorize?response_type=code&client_id=ca_EguFfQcjqGz1uYd7UHfCJIOwi0yvcukp&scope=read_write&state=${organization._id}`
               const paymentsNode = this._getPaymentsNode(hasStripePayments, stripeAuthorizeUrl, refetch);
 
               // It seems to refresh when an order is completed and when you click on a location to start with
@@ -115,13 +106,22 @@ class ProfileContainer extends React.Component {
               return (
                 <View>
                   <CardList
+                    data={[{
+                      _id: organization._id,
+                      title: organization.title,
+                    }]}
+                    rightActionItem={<View></View>}
+                    title="Organization"
+                  />
+                  <CardList
                     smallTitle
                     data={orgUsers}
                     title={`Users`}
                     loading={loading}
                     rightActionItem={<View></View>}
                   />
-                  <CardList
+                  
+                  {/* <CardList
                     smallTitle
                     data={orgBalance}
                     title={`Account`}
@@ -135,7 +135,7 @@ class ProfileContainer extends React.Component {
                     //     </Right>
                     //   </CardItem>
                     // }
-                  />
+                  /> */}
 
                   {paymentsNode}
                 </View>
@@ -172,11 +172,6 @@ class ProfileContainer extends React.Component {
             />
           }
 
-          <GradientButton 
-            title="Logout"
-            buttonProps={{onPress: () => this.props.onLogout()}}
-          />
-
           <Button 
             block 
             style={ButtonStyles.secondaryButton}
@@ -184,6 +179,11 @@ class ProfileContainer extends React.Component {
           >
             <Text style={ButtonStyles.secondaryButtonText}>Version Info</Text>
           </Button>
+
+          <GradientButton 
+            title="Logout"
+            buttonProps={{onPress: () => this.props.onLogout()}}
+          />
 
         </Content>
       </Container>
@@ -193,21 +193,49 @@ class ProfileContainer extends React.Component {
   _getPaymentsNode = (hasStripePayments, stripeAuthorizeUrl, refetch) => {
     const { redirectData } = this.state;
 
-    console.log('this.state======: ', this.state)
-
     if (redirectData && redirectData.path === 'stripe/auth/' && redirectData.queryParams.access && redirectData.queryParams.access === 'granted') {
       // Refetch org data
       refetch();
+      Toast.show({
+        text: 'Your payments are setup successfully 💸',
+        buttonText: 'Great',
+        duration: 3000,
+        type: 'success',
+        style: {
+          backgroundColor: Colors.BrandRed,
+          color: Colors.White
+         }
+      })
     }
 
-    console.log('hasStriepPayments: ', hasStripePayments)
-    
     if (hasStripePayments) {
-      return <Text>Has payments</Text>
+      // TODO: Show Successful connected account https://www.youtube.com/watch?v=AwklziE5HKo
+      return (
+        <View>
+          <Button 
+            block 
+            style={ButtonStyles.secondaryButton}
+            onPress={() => WebBrowser.openBrowserAsync('https://dashboard.stripe.com/dashboard')}
+          >
+            <Text style={ButtonStyles.secondaryButtonText}>View Stripe Dashboard</Text>
+          </Button>
+          <Button 
+            block 
+            style={ButtonStyles.secondaryButton}
+            onPress={() => WebBrowser.openBrowserAsync('https://www.youtube.com/watch?v=AwklziE5HKo')}
+          >
+            <Text style={ButtonStyles.secondaryButtonText}>Using the Stripe Dashboard Tutorial</Text>
+          </Button>
+        </View>
+      )
     } else {
       return (
-        <Button style={{paddingLeft: 0, marginLeft: 0}} transparent onPress={() => this._openWebBrowserAsync(stripeAuthorizeUrl)}>
-          <Text style={{fontSize: 14, fontFamily: 'montserrat-bold', paddingLeft: 0}}>Setup Payments</Text>
+        <Button 
+          block 
+          style={ButtonStyles.secondaryButton}
+          onPress={() => this._openWebBrowserAsync(stripeAuthorizeUrl)}
+        >
+          <Text style={ButtonStyles.secondaryButtonText}>Setup Payments</Text>
         </Button>
       );
     }
@@ -227,7 +255,6 @@ class ProfileContainer extends React.Component {
       let result = await WebBrowser.openBrowserAsync(
         stripeAuthorizeUrl
       );
-      console.log('result========: ', result)
       this._removeLinkingListener();
       this.setState({ result });
     } catch (error) {
