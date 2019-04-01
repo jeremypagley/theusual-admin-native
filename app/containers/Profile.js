@@ -214,9 +214,9 @@ class ProfileContainer extends React.Component {
           <Button 
             block 
             style={ButtonStyles.secondaryButton}
-            onPress={() => WebBrowser.openBrowserAsync('https://dashboard.stripe.com/dashboard')}
+            onPress={() => WebBrowser.openBrowserAsync('https://itunes.apple.com/us/app/stripe-dashboard/id978516833?mt=8')}
           >
-            <Text style={ButtonStyles.secondaryButtonText}>View Stripe Dashboard</Text>
+            <Text style={ButtonStyles.secondaryButtonText}>Download Stripe App</Text>
           </Button>
           <Button 
             block 

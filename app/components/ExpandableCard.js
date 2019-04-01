@@ -12,12 +12,15 @@ import {
   Badge,
   Spinner
 } from 'native-base';
+import { Dimensions } from 'react-native';
 import { Row } from 'react-native-easy-grid';
 import ExpandableCardStyles from 'app/styles/ExpandableCardStyles';
 import TypographyStyles from 'app/styles/generic/TypographyStyles';
 import CardStyles from 'app/styles/generic/CardStyles';
 import PropTypes from 'prop-types';
 import Colors from 'app/styles/Colors';
+
+const screenWidth = Dimensions.get('window').width;
 
 class ExpandableCard extends React.Component {
   static propTypes = {
@@ -77,9 +80,9 @@ class ExpandableCard extends React.Component {
                   <Row>
                     <H2 style={TypographyStyles.semiBoldH2}>{item.title}</H2>
                   </Row>
-                  <Row>
+                  <View style={{flexDirection: 'row', width: screenWidth-80, flexWrap: 'wrap'}}>
                     {this.getItemOptions(item.options)}
-                  </Row>
+                  </View>
                 </Body>
                 <Right>
                   {removable && !title && index === 0 ? 
@@ -126,7 +129,7 @@ class ExpandableCard extends React.Component {
           style={ExpandableCardStyles.optionWrapper}
           key={`${option}${index}`}
         >
-          <Text style={TypographyStyles.note}>{option}</Text>
+          <Text style={TypographyStyles.note}>{option}, </Text>
         </View>
       )
     });

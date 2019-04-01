@@ -96,6 +96,11 @@ class Store extends React.Component {
   render() {
     const selectedStoreId = this.props.navigation.getParam('storeId', null);
 
+    const manifest = Constants.manifest;
+    const buildNumber = manifest.ios.buildNumber;
+    const version = manifest.version;
+    const releaseChannel = manifest.releaseChannel;
+
     return (
       <Container style={ContainerStyles.container}>
         <Query query={GET_ORGANIZATION_STORES} pollInterval={60000} variables={{storeId: selectedStoreId}} fetchPolicy="cache-and-network">
