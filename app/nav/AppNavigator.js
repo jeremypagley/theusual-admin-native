@@ -4,6 +4,7 @@ import { createStackNavigator, createBottomTabNavigator } from 'react-navigation
 import Cart from 'app/scenes/Cart';
 import Profile from 'app/scenes/Profile';
 import Order from 'app/scenes/Order';
+import Menu from 'app/scenes/Menu';
 import Store from 'app/scenes/Store';
 import Products from 'app/scenes/Products';
 import Product from 'app/scenes/Product';
@@ -45,10 +46,17 @@ const StoresStack = createStackNavigator({
   Product: { screen: Product },
 }, reusableNavOptions);
 
+const MenuStack = createStackNavigator({
+  Menu: { screen: Menu },
+  Products: { screen: Products },
+  Product: { screen: Product },
+}, reusableNavOptions);
+
 const AppStack = createBottomTabNavigator({
   Stores: StoresStack,
   // Activity: ActivityStack,
   // Cart: CartStack,
+  Menu: MenuStack,
   Profile: ProfileStack,
 },
 {
@@ -71,8 +79,8 @@ const AppStack = createBottomTabNavigator({
       const { activeOrder } = screenProps;
       
       let iconName;
-      if (routeName === 'Activity') {
-        iconName = 'md-phone-portrait';
+      if (routeName === 'Menu') {
+        iconName = 'align-justify';
       } else if (routeName === 'Stores') {
         iconName = 'map-marker';
       } else if (routeName === 'Profile') {

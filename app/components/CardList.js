@@ -27,7 +27,7 @@ class CardList extends React.PureComponent {
         _id: PropTypes.string,
         title: PropTypes.string,
         subtitle: PropTypes.string
-      })  
+      })
     ),
     listTitle: PropTypes.string,
     handleItemPress: PropTypes.func,

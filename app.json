@@ -17,7 +17,9 @@
       "backgroundColor": "#FF4D73"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "enabled": true,
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 60000
     },
     "assetBundlePatterns": [
       "**/*"

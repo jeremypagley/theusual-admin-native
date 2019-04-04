@@ -20,7 +20,6 @@ const Styles = StyleSheet.create({
 
   content: {
     backgroundColor: Colors.BrandLightGrey,
-    marginTop: -70
   },
 
   tabContent: {

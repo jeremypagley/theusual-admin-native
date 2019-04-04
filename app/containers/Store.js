@@ -27,6 +27,7 @@ import gql from 'graphql-tag';
 import { Mutation, Query } from 'react-apollo';
 import LoadingIndicator from 'app/components/LoadingIndicator';
 import GenericError from 'app/components/GenericError';
+import StoreMenuContainer from 'app/containers/StoreMenu';
 import { Audio, Constants, Notifications, Permissions } from 'expo';
 
 const screenHeight = Dimensions.get('window').height;
@@ -169,7 +170,6 @@ class Store extends React.Component {
                 </Content>
               );
 
-              menuNode = this.getMenuCard(store);
               aboutNode = this.getAboutCard(store);
 
             }
@@ -204,7 +204,7 @@ class Store extends React.Component {
                   heading="Menu"
                 >
                   <Content style={ContainerStyles.tabContent} padder>
-                    {menuNode}
+                    <StoreMenuContainer navigation={this.props.navigation} />
                   </Content>
                 </Tab>
 

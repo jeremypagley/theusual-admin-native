@@ -9,6 +9,6 @@
 	<key>manifestUrl</key>
 	<string>exp://exp.host/@jeremykpagley/theusual-admin-native</string>
 	<key>releaseChannel</key>
-	<string>prod</string>
+	<string>default</string>
 </dict>
 </plist>

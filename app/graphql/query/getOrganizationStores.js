@@ -17,11 +17,46 @@ const OrganizationStoresQuery = gql`
         balance
         tips
       }
+
+      productCategories {
+        _id
+        title
+        products {
+          _id
+          title
+          description
+          price
+          productModifiers {
+            _id
+            title
+          }
+        }
+      }
+
+      products {
+        _id
+        title
+        description
+        price
+        productModifiers {
+          _id
+          title
+        }
+      }
+
+      productModifiers {
+        _id
+        title
+        options {
+          title
+          price
+        }
+      }
       
       stores {
         _id
-        title,
-        description,
+        title
+        description
         orderQueue {
           _id
           tip

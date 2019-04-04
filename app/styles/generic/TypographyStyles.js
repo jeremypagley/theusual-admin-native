@@ -105,6 +105,16 @@ const Styles = StyleSheet.create({
     fontFamily: 'montserrat-medium',
   },
 
+  iconButtonCardText: {
+    color: Colors.BrandRed,
+    fontSize: 20,
+    fontFamily: 'montserrat-medium',
+    paddingTop: 2,
+    paddingRight: 4,
+    paddingBottom: 4,
+    paddingLeft: 12,
+  },
+
 
   headerTitle: {
     fontSize: 16,
