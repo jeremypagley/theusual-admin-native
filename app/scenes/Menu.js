@@ -1,9 +1,10 @@
 import React from 'react';
 import MenuContainer from 'app/containers/Menu';
+import {Text} from 'react-native'
 
 class Menu extends React.Component {
   static navigationOptions = {
-    title: 'Menu',
+    title: 'Edit Menu',
   };
 
   render() {

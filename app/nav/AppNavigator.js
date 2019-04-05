@@ -4,13 +4,17 @@ import { createStackNavigator, createBottomTabNavigator } from 'react-navigation
 import Cart from 'app/scenes/Cart';
 import Profile from 'app/scenes/Profile';
 import Order from 'app/scenes/Order';
-import Menu from 'app/scenes/Menu';
+import EditMenu from 'app/scenes/Menu';
 import Store from 'app/scenes/Store';
 import Products from 'app/scenes/Products';
 import Product from 'app/scenes/Product';
 import Activity from 'app/scenes/Activity';
 import { Icon, Badge, View } from 'native-base';
 import Colors from 'app/styles/Colors';
+
+import EditableCategory from 'app/scenes/EditableCategory';
+import EditableProduct from 'app/scenes/EditableProduct';
+import EditableModifier from 'app/scenes/EditableModifier';
 
 const reusableNavOptions = {
   navigationOptions: ({ navigation }) => ({
@@ -47,16 +51,17 @@ const StoresStack = createStackNavigator({
 }, reusableNavOptions);
 
 const MenuStack = createStackNavigator({
-  Menu: { screen: Menu },
-  Products: { screen: Products },
-  Product: { screen: Product },
+  EditMenu: { screen: EditMenu, },
+  EditableCategory: { screen: EditableCategory },
+  EditableProduct: { screen: EditableProduct },
+  EditableModifier: { screen: EditableModifier },
 }, reusableNavOptions);
 
 const AppStack = createBottomTabNavigator({
   Stores: StoresStack,
   // Activity: ActivityStack,
   // Cart: CartStack,
-  Menu: MenuStack,
+  EditMenu: {screen: MenuStack, navigationOptions: {tabBarLabel: 'Edit Menu'}},
   Profile: ProfileStack,
 },
 {
@@ -79,8 +84,8 @@ const AppStack = createBottomTabNavigator({
       const { activeOrder } = screenProps;
       
       let iconName;
-      if (routeName === 'Menu') {
-        iconName = 'align-justify';
+      if (routeName === 'EditMenu') {
+        iconName = 'bars';
       } else if (routeName === 'Stores') {
         iconName = 'map-marker';
       } else if (routeName === 'Profile') {

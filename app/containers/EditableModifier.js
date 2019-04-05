@@ -59,6 +59,8 @@ class Menu extends React.Component {
   render() {
     const selectedStoreId = this.props.navigation.getParam('storeId', null);
 
+    console.log('productModifierForm=============: ',this.state.productModifierForm)
+
     return (
       <Container style={ContainerStyles.container}>
         <Query query={GET_ORGANIZATION_STORES} pollInterval={60000} fetchPolicy="cache-and-network">
@@ -75,9 +77,9 @@ class Menu extends React.Component {
               const products = organization.products
               const productModifiers = organization.productModifiers
 
-              categoriesNode = this._getCategoriesNode(productCategories, products);
+              categoriesNode = this._getCategoriesNode(productCategories);
+              productsNode = this._getProductsNode(products);
               modifiersNode = this._getProductModifiersNode(productModifiers);
-              productsNode = this._getProductsNode(products, productCategories, productModifiers);
             }
 
             return (
@@ -119,10 +121,10 @@ class Menu extends React.Component {
     );
   }
 
-  _getCategoriesNode = (productCategories, products) => {
+  _getCategoriesNode = (productCategories) => {
     return (
       <Container style={ContainerStyles.container}>
-        <Content padder style={ContainerStyles.tabContent}>
+        <Content padder style={ContainerStyles.content}>
           <View style={[CardStyles.card]}>
             <Mutation
               mutation={CREATE_PRODUCT_CATEGORY}
@@ -146,18 +148,12 @@ class Menu extends React.Component {
               }}
             >
               {(createProductCategory, { loading, error, data }) => {
-                if (error) return <GenericError message={error.message} />;
                 const loadingNode = loading ? <View style={{position: 'absolute', top: -30, left: -40}}><Spinner color={Colors.BrandRed} /></View> : null;
 
                 return (
                   <Card transparent>
-                    <CardItem header style={[CardStyles.itemHeader]}>
-                      <Left>
-                        <Text style={TypographyStyles.listTitle}>Create new</Text>
-                      </Left>
-                    </CardItem>
                     <Form>
-                      <Item style={{marginLeft: 20}}>
+                      <Item last>
                         <Input
                           onChangeText={value => this.setState({productCategoryForm: {title: value}})}
                           placeholder="enter title"
@@ -184,19 +180,17 @@ class Menu extends React.Component {
 
           <CardList
             data={this.getListData(productCategories)}
-            handleItemPress={(item) => this.onCategoryItemPress(item, products, productCategories)}
-            rightActionItem={<Icon name="create" style={{fontSize: 30, color: Colors.BrandBlack}} />}
-            title="Modify"
+            // handleItemPress={(item) => this.onItemPress(item, store)}
           />
         </Content>
       </Container>
     )
   }
 
-  _getProductsNode = (products, productCategories, productModifiers) => {
+  _getProductsNode = (products) => {
     return (
       <Container style={ContainerStyles.container}>
-        <Content padder style={ContainerStyles.tabContent}>
+        <Content padder style={ContainerStyles.content}>
           <View style={[CardStyles.card]}>
             <Mutation
               mutation={CREATE_PRODUCT}
@@ -220,31 +214,25 @@ class Menu extends React.Component {
               }}
             >
               {(createProduct, { loading, error, data }) => {
-                if (error) return <GenericError message={error.message} />;
                 const loadingNode = loading ? <View style={{position: 'absolute', top: -30, left: -40}}><Spinner color={Colors.BrandRed} /></View> : null;
 
                 return (
                   <Card transparent>
-                    <CardItem header style={[CardStyles.itemHeader]}>
-                      <Left>
-                        <Text style={TypographyStyles.listTitle}>Create new</Text>
-                      </Left>
-                    </CardItem>
                     <Form>
-                      <Item style={{marginLeft: 20}}>
+                      <Item>
                         <Input
                           onChangeText={value => this.handleProductChange('title', value)}
                           placeholder="enter title"
                         />
                       </Item>
-                      <Item style={{marginLeft: 20}}>
+                      <Item>
                         <Input
                           onChangeText={value => this.handleProductChange('price', parseFloat(value))}
                           placeholder="enter price (numeric only)"
                           keyboardType="numeric"
                         />
                       </Item>
-                      <Item style={{marginLeft: 20}}>
+                      <Item last>
                         <Input
                           onChangeText={value => this.handleProductChange('description', value)}
                           placeholder="enter description"
@@ -252,7 +240,7 @@ class Menu extends React.Component {
                       </Item>
                     </Form>
 
-                    <CardItem footer button onPress={() => createProduct()} style={[CardStyles.itemFooter, {marginTop: 10}]}>
+                    <CardItem footer button onPress={() => createProduct()} style={CardStyles.itemFooter}>
                       <Left />
                       <Right>
                         <View style={{marginTop: 10}}>
@@ -271,9 +259,7 @@ class Menu extends React.Component {
 
           <CardList
             data={this.getListData(products)}
-            title="Modify"
-            handleItemPress={(item) => this.onProductItemPress(item, products, productCategories, productModifiers)}
-            rightActionItem={<Icon name="create" style={{fontSize: 30, color: Colors.BrandBlack}} />}
+            // handleItemPress={(item) => this.onItemPress(item, store)}
           />
         </Content>
       </Container>
@@ -283,7 +269,7 @@ class Menu extends React.Component {
   _getProductModifiersNode = (modifiers) => {
     return (
       <Container style={ContainerStyles.container}>
-        <Content padder style={ContainerStyles.tabContent}>
+        <Content padder style={ContainerStyles.content}>
           <View style={[CardStyles.card]}>
             <Mutation
               mutation={CREATE_PRODUCT_MODIFIER}
@@ -312,7 +298,7 @@ class Menu extends React.Component {
                 return (
                   <Card transparent>
                     <Form>
-                      <Item style={{marginLeft: 20}}>
+                      <Item>
                         <Input
                           onChangeText={value => this.handleModifierChange('title', value)}
                           placeholder="enter set title"
@@ -471,16 +457,10 @@ class Menu extends React.Component {
     return description;
   }
 
-  onCategoryItemPress = (item, products, productCategories, store) => {
+  onItemPress = (item, store) => {
     const { navigation } = this.props;
-    const productCategory = productCategories.find(p => p._id === item._id);
-    navigation.navigate('EditableCategory', { productCategory, products });
-  }
-  
-  onProductItemPress = (item, products, productCategories, productModifiers, store) => {
-    const { navigation } = this.props;
-    const product = products.find(p => p._id === item._id);
-    navigation.navigate('EditableProduct', { productCategories, productModifiers, product });
+    const productCategory = store.productCategories.find(p => p._id === item._id);
+    navigation.navigate('Products', { productCategory, storeId: store._id });
   }
 
 }
