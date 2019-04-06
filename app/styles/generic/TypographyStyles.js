@@ -66,6 +66,12 @@ const Styles = StyleSheet.create({
     fontFamily: 'montserrat-regular'
   },
 
+  listSubtitle: {
+    fontSize: 16,
+    color: Colors.BrandDarkGrey,
+    fontFamily: 'montserrat-bold'
+  },
+
   listTitle: {
     fontSize: 20,
     color: Colors.BrandBlack,

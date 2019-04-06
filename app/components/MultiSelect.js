@@ -29,11 +29,14 @@ export default class MultiSelect extends Component {
           modalWithTouchable
           styles={{
             selectToggle: {
-              borderBottomColor: Colors.BrandGrey,
+              borderBottomColor: Colors.BrandBorderGrey,
               borderRadius: 5,
               borderBottomWidth: 1,
-              padding: 8,
-              marginLeft: 13,
+              paddingTop: 10,
+              paddingRight: 10,
+              paddingBottom: 10,
+              paddingLeft: 0,
+              marginLeft: 15,
               marginTop: 5
             },
             selectToggleText: {

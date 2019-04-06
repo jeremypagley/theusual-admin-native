@@ -26,7 +26,7 @@ import CardStyles from 'app/styles/generic/CardStyles';
 import Colors from 'app/styles/Colors';
 import TypographyStyles from 'app/styles/generic/TypographyStyles';
 import MultiSelect from 'app/components/MultiSelect';
-
+import ConfirmButton from 'app/components/ConfirmButton';
 
 const screenHeight = Dimensions.get('window').height;
 
@@ -54,70 +54,137 @@ class EditableProduct extends React.Component {
     return (
       <Container style={ContainerStyles.container}>
         <Content padder style={ContainerStyles.tabContent}>
-          <View style={[CardStyles.card]}>
-            <Mutation
-              mutation={EDIT_PRODUCT}
-              refetchQueries={(data) => {
-                return [{query: GET_ORGANIZATION_STORES}];
-              }}
-              variables={{productId: selectedProduct._id, title: this.state.title, price: this.state.price, description: this.state.description, modifiers: productModifiers}}
-              onCompleted={(data) => {
-                Toast.show({
-                  text: 'Product changes saved 👍',
-                  buttonText: 'Great',
-                  duration: 3000,
-                  type: 'success',
-                  style: {
-                    backgroundColor: Colors.BrandBlack,
-                    color: Colors.White
-                  }
-                })
-              }}
-            >
-              {(editProduct, { loading, error, data }) => {
-                if (error) return <GenericError message={error.message} />;
-                const loadingNode = loading ? <View style={{position: 'absolute', top: -30, left: -40}}><Spinner color={Colors.BrandRed} /></View> : null;
+          <Mutation
+            mutation={EDIT_PRODUCT}
+            refetchQueries={(data) => {
+              return [{query: GET_ORGANIZATION_STORES}];
+            }}
+            variables={{productId: selectedProduct._id, title: this.state.title, price: this.state.price, description: this.state.description, modifiers: productModifiers}}
+            onCompleted={(data) => {
+              Toast.show({
+                text: 'Product changes saved 👍',
+                buttonText: 'Great',
+                duration: 3000,
+                type: 'success',
+                style: {
+                  backgroundColor: Colors.BrandBlack,
+                  color: Colors.White
+                }
+              })
+            }}
+          >
+            {(editProduct, { loading, error, data }) => {
+              const loadingNode = loading ? <View style={{position: 'absolute', top: -30, left: -40}}><Spinner color={Colors.BrandRed} /></View> : null;
+              const errorNode = error ? <GenericError message={error.message} /> : null;
 
-                return (
-                  <Card transparent>
-                    <Form>
-                      <Item last stackedLabel>
-                        <Label>Set Title</Label>
-                        <Input
-                          onChangeText={value => this.setState({title: value})}
-                          placeholder="enter title"
-                          defaultValue={this.state.title}
-                        />
-                      </Item>
-                    </Form>
+              return (
+                <View>
+                  <View style={{alignSelf: 'flex-end'}}>
+                    {this.getDeleteBtn()}
+                  </View>
+                  <View style={[CardStyles.card]}>
+                    <Card transparent>
+                      {errorNode}
+                      <Form>
+                        <Item stackedLabel>
+                          <Label>Set Title</Label>
+                          <Input
+                            onChangeText={value => this.setState({title: value})}
+                            placeholder="enter title"
+                            defaultValue={this.state.title}
+                          />
+                        </Item>
+                        <Item stackedLabel>
+                          <Label>Set Description</Label>
+                          <Input
+                            onChangeText={value => this.setState({description: value})}
+                            placeholder="enter description"
+                            defaultValue={this.state.description}
+                          />
+                        </Item>
+                      </Form>
 
-                    <MultiSelect
-                      items={this.getModifierMultiItems(allModifiers)}
-                      selectText='Assign modifier sets'
-                      searchPlaceholderText="Search modifier set by name"
-                      onSelectedItemsChange={(val) => this.handleInputChange('productModifiers', val)}
-                      selectedItems={productModifiers ? productModifiers : []}
-                    />
+                      <MultiSelect
+                        items={this.getModifierMultiItems(allModifiers)}
+                        selectText='Assign modifier sets'
+                        searchPlaceholderText="Search modifier set by name"
+                        onSelectedItemsChange={(val) => this.handleInputChange('productModifiers', val)}
+                        selectedItems={productModifiers ? productModifiers : []}
+                      />
 
-                    <CardItem footer button onPress={() => editProduct()} style={[CardStyles.itemFooter, {marginTop: 24}]}>
-                      <Left />
-                      <Right>
-                        <View>
-                          <Text style={[CardStyles.itemButtonTitle]}>
-                            Save Changes
-                          </Text>
-                          {loadingNode}
-                        </View>
-                      </Right>
-                    </CardItem>
-                  </Card>
-                )
-              }}
-            </Mutation>
-          </View>
+                      <CardItem 
+                        footer 
+                        button 
+                        onPress={() => {
+                          editProduct();
+                          this.goBack();
+                        }} 
+                        style={[CardStyles.itemFooter, {marginTop: 24}]}
+                      >
+                        <Left />
+                        <Right>
+                          <View>
+                            <Text style={[CardStyles.itemButtonTitle]}>
+                              Save Changes
+                            </Text>
+                            {loadingNode}
+                          </View>
+                        </Right>
+                      </CardItem>
+                    </Card>
+                  </View>
+                </View>
+              )
+            }}
+          </Mutation>
         </Content>
       </Container>
     );
+  }
+
+  getDeleteBtn = () => {
+    const selectedProduct = this.props.navigation.getParam('product', null);
+
+    return (
+      <Mutation
+        mutation={DELETE_PRODUCT}
+        refetchQueries={(data) => {
+          return [{query: GET_ORGANIZATION_STORES}];
+        }}
+        variables={{productId: selectedProduct._id}}
+        onCompleted={(data) => {
+          Toast.show({
+            text: 'Modifier archived 👍',
+            buttonText: 'Great',
+            duration: 3000,
+            type: 'success',
+            style: {
+              backgroundColor: Colors.BrandBlack,
+              color: Colors.White
+            }
+          })
+        }}
+      >
+        {(deleteProduct, { loading, error, data }) => {
+          return (
+            <ConfirmButton
+              title="Delete Product"
+              confirmText="Delete Product"
+              confirmButtonText="Delete"
+              cancelButtonText="Cancel"
+              onPress={() => {
+                deleteProduct();
+                this.goBack();
+              }}
+            />
+          )
+        }}
+      </Mutation>
+    );
+  }
+
+  goBack = () => {
+    this.props.navigation.goBack();
   }
 
   getModifierMultiItems = (allModifiers) => {
@@ -146,6 +213,14 @@ class EditableProduct extends React.Component {
 const EDIT_PRODUCT = gql`
   mutation editProduct($productId: String!, $title: String!, $price: Float!, $description: String, $modifiers: [String], $storeId: String) {
     editProduct(productId: $productId, title: $title, price: $price, description: $description, modifiers: $modifiers, storeId: $storeId) {
+      _id,
+    }
+  }
+`
+
+const DELETE_PRODUCT = gql`
+  mutation deleteProduct($productId: String!) {
+    deleteProduct(productId: $productId) {
       _id,
     }
   }

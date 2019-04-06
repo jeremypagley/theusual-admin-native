@@ -59,6 +59,7 @@ class CardList extends React.PureComponent {
         <Body>
           <Text style={[TypographyStyles.listItemTitle, smallTitle ? {fontSize: 18} : {}, disabledStyles]}>{item.title}</Text>
           {item.subtitle ? <Text style={[TypographyStyles.noteListItem, disabledStyles]}>{item.subtitle}</Text> : null}
+          {item.noteTitle ? <Text style={[TypographyStyles.noteListItem, disabledStyles]}>{item.noteTitle}</Text> : null}
           {disabled ? <Text style={[TypographyStyles.noteListItem, disabledStyles]}>{disabledReasonText}</Text> : null}
         </Body>
         <Right>
@@ -73,7 +74,7 @@ class CardList extends React.PureComponent {
   }
 
   render() {
-    const { title, flatListProps, cardFooter } = this.props;
+    const { title, subtitle, flatListProps, cardFooter } = this.props;
     const titleNode = title ? (
       <CardItem header style={CardStyles.itemHeader}>
         <Left>
@@ -82,10 +83,19 @@ class CardList extends React.PureComponent {
       </CardItem>
     ) : null;
 
+    const subtitleNode = subtitle ? (
+      <CardItem header style={CardStyles.itemHeader}>
+        <Left>
+          <Text style={TypographyStyles.listSubtitle}>{subtitle}</Text>
+        </Left>
+      </CardItem>
+    ) : null;
+
     return (
       <View style={CardStyles.card}>
         <Card transparent>
           {titleNode}
+          {subtitleNode}
 
           <FlatList
             data={this.props.data}

@@ -26,7 +26,7 @@ import CardStyles from 'app/styles/generic/CardStyles';
 import Colors from 'app/styles/Colors';
 import TypographyStyles from 'app/styles/generic/TypographyStyles';
 import MultiSelect from 'app/components/MultiSelect';
-
+import ConfirmButton from 'app/components/ConfirmButton';
 
 const screenHeight = Dimensions.get('window').height;
 
@@ -53,70 +53,131 @@ class EditableCategory extends React.Component {
     return (
       <Container style={ContainerStyles.container}>
         <Content padder style={ContainerStyles.tabContent}>
-          <View style={[CardStyles.card]}>
-            <Mutation
-              mutation={EDIT_PRODUCT_CATEGORY}
-              refetchQueries={(data) => {
-                return [{query: GET_ORGANIZATION_STORES}];
-              }}
-              variables={{categoryId: selectedCategory._id, title: this.state.title, products: products}}
-              onCompleted={(data) => {
-                Toast.show({
-                  text: 'Category changes saved 👍',
-                  buttonText: 'Great',
-                  duration: 3000,
-                  type: 'success',
-                  style: {
-                    backgroundColor: Colors.BrandBlack,
-                    color: Colors.White
-                  }
-                })
-              }}
-            >
-              {(editProductCategory, { loading, error, data }) => {
-                if (error) return <GenericError message={error.message} />;
-                const loadingNode = loading ? <View style={{position: 'absolute', top: -30, left: -40}}><Spinner color={Colors.BrandRed} /></View> : null;
+          <Mutation
+            mutation={EDIT_PRODUCT_CATEGORY}
+            refetchQueries={(data) => {
+              return [{query: GET_ORGANIZATION_STORES}];
+            }}
+            variables={{categoryId: selectedCategory._id, title: this.state.title, products: products}}
+            onCompleted={(data) => {
+              Toast.show({
+                text: 'Category changes saved 👍',
+                buttonText: 'Great',
+                duration: 3000,
+                type: 'success',
+                style: {
+                  backgroundColor: Colors.BrandBlack,
+                  color: Colors.White
+                }
+              })
+            }}
+          >
+            {(editProductCategory, { loading, error, data }) => {
+              const errorNode = error ? <GenericError message={error.message} /> : null;
+              const loadingNode = loading ? <View style={{position: 'absolute', top: -30, left: -40}}><Spinner color={Colors.BrandRed} /></View> : null;
 
-                return (
-                  <Card transparent>
-                    <Form>
-                      <Item last stackedLabel>
-                        <Label>Title</Label>
-                        <Input
-                          onChangeText={value => this.setState({title: value})}
-                          placeholder="enter title"
-                          defaultValue={this.state.title}
-                        />
-                      </Item>
-                    </Form>
+              return (
+                <View>
+                  <View style={{alignSelf: 'flex-end'}}>
+                    {this.getDeleteBtn()}
+                  </View>
+                  <View style={[CardStyles.card]}>
+                    <Card transparent>
+                      {errorNode}
+                      
+                      <Form>
+                        <Item last stackedLabel>
+                          <Label>Title</Label>
+                          <Input
+                            onChangeText={value => this.setState({title: value})}
+                            placeholder="enter title"
+                            defaultValue={this.state.title}
+                          />
+                        </Item>
+                      </Form>
 
-                    <MultiSelect
-                      items={this.getProductMultiItems(allProducts)}
-                      selectText='Assign products'
-                      searchPlaceholderText="Search product by name"
-                      onSelectedItemsChange={(val) => this.handleInputChange('products', val)}
-                      selectedItems={products ? products : []}
-                    />
+                      <MultiSelect
+                        items={this.getProductMultiItems(allProducts)}
+                        selectText='Assign products'
+                        searchPlaceholderText="Search product by name"
+                        onSelectedItemsChange={(val) => this.handleInputChange('products', val)}
+                        selectedItems={products ? products : []}
+                      />
 
-                    <CardItem footer button onPress={() => editProductCategory()} style={[CardStyles.itemFooter, {marginTop: 24}]}>
-                      <Left />
-                      <Right>
-                        <View>
-                          <Text style={[CardStyles.itemButtonTitle]}>
-                            Save Changes
-                          </Text>
-                          {loadingNode}
-                        </View>
-                      </Right>
-                    </CardItem>
-                  </Card>
-                )
-              }}
-            </Mutation>
-          </View>
+                      <CardItem 
+                        footer 
+                        button 
+                        onPress={() => {
+                          editProductCategory();
+                          this.goBack();
+                        }} 
+                        style={[CardStyles.itemFooter, {marginTop: 24}]}
+                      >
+                        <Left />
+                        <Right>
+                          <View>
+                            <Text style={[CardStyles.itemButtonTitle]}>
+                              Save Changes
+                            </Text>
+                            {loadingNode}
+                          </View>
+                        </Right>
+                      </CardItem>
+                    </Card>
+                  </View>
+                </View>
+              )
+            }}
+          </Mutation>
         </Content>
       </Container>
     );
+  }
+
+
+  getDeleteBtn = () => {
+    const selectedCategory = this.props.navigation.getParam('productCategory', null);
+
+    return (
+      <Mutation
+        mutation={DELETE_PRODUCT_CATEGORY}
+        refetchQueries={(data) => {
+          return [{query: GET_ORGANIZATION_STORES}];
+        }}
+        variables={{categoryId: selectedCategory._id}}
+        onCompleted={(data) => {
+          Toast.show({
+            text: 'Modifier archived 👍',
+            buttonText: 'Great',
+            duration: 3000,
+            type: 'success',
+            style: {
+              backgroundColor: Colors.BrandBlack,
+              color: Colors.White
+            }
+          })
+        }}
+      >
+        {(deleteProductCategory, { loading, error, data }) => {
+          return (
+            <ConfirmButton
+              title="Delete Category"
+              confirmText="Delete Category"
+              confirmButtonText="Delete"
+              cancelButtonText="Cancel"
+              onPress={() => {
+                deleteProductCategory();
+                this.goBack();
+              }}
+            />
+          )
+        }}
+      </Mutation>
+    );
+  }
+
+  goBack = () => {
+    this.props.navigation.goBack();
   }
 
   getProductMultiItems = (allProducts) => {
@@ -145,6 +206,14 @@ class EditableCategory extends React.Component {
 const EDIT_PRODUCT_CATEGORY = gql`
   mutation editProductCategory($categoryId: String!, $title: String!, $products: [String], $storeId: String) {
     editProductCategory(categoryId: $categoryId, title: $title, products: $products, storeId: $storeId) {
+      _id,
+    }
+  }
+`
+
+const DELETE_PRODUCT_CATEGORY = gql`
+  mutation deleteProductCategory($categoryId: String!) {
+    deleteProductCategory(categoryId: $categoryId) {
       _id,
     }
   }

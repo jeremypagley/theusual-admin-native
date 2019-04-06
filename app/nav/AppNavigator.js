@@ -12,6 +12,7 @@ import Activity from 'app/scenes/Activity';
 import { Icon, Badge, View } from 'native-base';
 import Colors from 'app/styles/Colors';
 
+import EditableStore from 'app/scenes/EditableStore';
 import EditableCategory from 'app/scenes/EditableCategory';
 import EditableProduct from 'app/scenes/EditableProduct';
 import EditableModifier from 'app/scenes/EditableModifier';
@@ -52,6 +53,7 @@ const StoresStack = createStackNavigator({
 
 const MenuStack = createStackNavigator({
   EditMenu: { screen: EditMenu, },
+  EditableStore: { screen: EditableStore },
   EditableCategory: { screen: EditableCategory },
   EditableProduct: { screen: EditableProduct },
   EditableModifier: { screen: EditableModifier },

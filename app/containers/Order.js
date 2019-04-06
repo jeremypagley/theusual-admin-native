@@ -58,7 +58,7 @@ class Order extends React.Component {
               if (!organization) return null
               
               const listData = this.getListData(organization);
-              let title = 'Found';
+              let title = 'Select store to view order queue';
 
               if (listData.length < 1) title = 'No stores found';
               

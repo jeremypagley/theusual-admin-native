@@ -5,11 +5,6 @@ const OrganizationStoresQuery = gql`
     organizationStores(storeId: $storeId) {
       _id
       title
-      products {
-        _id,
-        title,
-        description
-      }
       users {
         _id
       }
@@ -21,6 +16,7 @@ const OrganizationStoresQuery = gql`
       productCategories {
         _id
         title
+        deleted
         products {
           _id
           title
@@ -38,6 +34,7 @@ const OrganizationStoresQuery = gql`
         title
         description
         price
+        deleted
         productModifiers {
           _id
           title
@@ -47,6 +44,7 @@ const OrganizationStoresQuery = gql`
       productModifiers {
         _id
         title
+        deleted
         options {
           title
           price
