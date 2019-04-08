@@ -20,6 +20,8 @@ import ContainerStyles from 'app/styles/generic/ContainerStyles';
 import CardStyles from 'app/styles/generic/CardStyles';
 import Colors from 'app/styles/Colors';
 import TypographyStyles from 'app/styles/generic/TypographyStyles';
+import ButtonStyles from 'app/styles/generic/ButtonStyles';
+
 import ExpandableCard from 'app/components/ExpandableCard';
 import QueueStatus from 'app/constants/queueStatus';
 import GET_ORGANIZATION_STORES from 'app/graphql/query/getOrganizationStores';
@@ -46,8 +48,6 @@ class Store extends React.Component {
 
   constructor(props) {
     super(props);
-
-    console.log(props)
 
     this.state = {
       previousPendingOrdersLength: null
@@ -116,6 +116,8 @@ class Store extends React.Component {
             let menuNode = <LoadingIndicator title={`Refreshing Active Orders`} />;
             let aboutNode = <LoadingIndicator title={`Refreshing Active Orders`} />;
 
+            let pnNode = null;
+
             if (data && data.organizationStores && !error) {
               const organization = data.organizationStores;
               const store = organization.stores.find(store => store._id === selectedStoreId);
@@ -175,6 +177,10 @@ class Store extends React.Component {
 
               aboutNode = this.getAboutCard(store);
 
+
+              // TODO: Implement PN's
+              // pnNode = store.pushNotificationToken ? null : this.getPNActionNode(store, refetch);
+
             }
 
             return (
@@ -186,6 +192,7 @@ class Store extends React.Component {
                   activeTextStyle={ContainerStyles.activeTabText}
                   heading="Active Orders"
                 >
+                  {pnNode}
                   {activeOrdersNode}
                 </Tab>
 
@@ -230,7 +237,40 @@ class Store extends React.Component {
     );
   }
 
-  registerForPushNotificationsAsync = async() => {
+  getPNActionNode = (store, refetch) => {
+    return (
+      <Mutation
+        mutation={EDIT_STORE}
+        onCompleted={(data) => {
+          Toast.show({
+            text: 'Store notifications activated 👍',
+            buttonText: 'Great',
+            duration: 3000,
+            type: 'success',
+            style: {
+              backgroundColor: Colors.BrandBlack,
+              color: Colors.White
+            }
+          });
+
+          refetch();
+        }}
+      >
+        {(editStore, { loading, error, data }) => {
+          return (
+            <Button 
+              style={ButtonStyles.secondaryButton}
+              onPress={() => this.registerForPushNotificationsAsync(store, editStore)}
+            >
+              <Text style={ButtonStyles.secondaryButtonText}>Activate store order notifications</Text>
+            </Button>
+            )
+          }}
+        </Mutation>
+    )
+  }
+
+  registerForPushNotificationsAsync = async (store, callback) => {
     const { status: existingStatus } = await Permissions.getAsync(
       Permissions.NOTIFICATIONS
     );
@@ -244,6 +284,7 @@ class Store extends React.Component {
       const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
       finalStatus = status;
     }
+
   
     // Stop here if the user did not grant permissions
     if (finalStatus !== 'granted') {
@@ -252,6 +293,8 @@ class Store extends React.Component {
   
     // Get the token that uniquely identifies this device
     let token = await Notifications.getExpoPushTokenAsync();
+
+    callback({variables: {storeId: store._id, categories: null, pushNotificationToken: token}});
   
     // POST the token to your backend server from where you can retrieve it to send push notifications.
     // return fetch(PUSH_ENDPOINT, {
@@ -568,4 +611,12 @@ const UPDATE_USER = gql`
   }
 `
 
-export default graphql(UPDATE_USER, { fetchPolicy: "cache-and-network" })(Store);
+const EDIT_STORE = gql`
+  mutation editStore($storeId: String! $categories: [String], $pushNotificationToken: String) {
+    editStore(storeId: $storeId, categories: $categories, pushNotificationToken: $pushNotificationToken) {
+      _id,
+    }
+  }
+`
+
+export default Store;
