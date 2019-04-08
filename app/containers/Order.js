@@ -49,7 +49,7 @@ class Order extends React.Component {
           </Item>
         </Header>
         <Content padder>
-          <Query query={GET_ORGANIZATION} pollInterval={600000}>
+          <Query query={GET_ORGANIZATION} pollInterval={60000}>
             {({ loading, error, data }) => {
               if (loading) return <LoadingIndicator title="Loading stores" />;
               if (error) return <GenericError message={error.message} />;

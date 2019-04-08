@@ -29,7 +29,7 @@ const getKeys = () => {
   const releaseChannel = getReleaseChannel();
   const manifestExtra = getManifestExtra();
   // const endpoint = 'http://172.31.99.30:4000/';
-  const endpoint = 'http://192.168.0.190:4000/';
+  const endpoint = 'http://192.168.0.23:4000/';
   let keys = {
     apiKey: '',
     // apiEndpoint: 'http://localhost:4000/graphql',
@@ -73,10 +73,10 @@ const getKeys = () => {
 
   // Return staging environment variables
   if (releaseChannel.indexOf('staging') !== -1) {
-    keys.apiKey = manifestExtra.PROD_API_KEY;
-    keys.apiEndpoint = manifestExtra.PROD_API_ENDPOINT;
-    keys.apiEndpointForgot = manifestExtra.PROD_API_ENDPOINT_FORGOT;
-    keys.apiEndpointTerms = manifestExtra.PROD_API_ENDPOINT_TERMS;
+    keys.apiKey = manifestExtra.DEV_API_KEY;
+    keys.apiEndpoint = manifestExtra.DEV_API_ENDPOINT;
+    keys.apiEndpointForgot = manifestExtra.DEV_API_ENDPOINT_FORGOT;
+    keys.apiEndpointTerms = manifestExtra.DEV_API_ENDPOINT_TERMS;
     keys.stripeClientId = manifestExtra.DEV_STRIPE_CLIENT_ID;
 
     return keys;

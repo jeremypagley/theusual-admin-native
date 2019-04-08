@@ -8,7 +8,7 @@
       "ios",
       "android"
     ],
-    "version": "1.2.5",
+    "version": "1.2.7",
     "orientation": "default",
     "icon": "./assets/images/icon.png",
     "splash": {
@@ -60,7 +60,7 @@
       "PROD_API_ENDPOINT": "https://theusual.io/graphql",
       "PROD_API_ENDPOINT_FORGOT": "https://theusual.io/forgot",
       "PROD_API_ENDPOINT_TERMS": "https://theusual.io/terms",
-      "PROD_STRIPE_CLIENT_ID": "ca_EguFTKCnfL5NtYxwDu2pc0cMsA7GDrCX",
+      "PROD_STRIPE_CLIENT_ID": "ca_EguFTKCnfL5NtYxwDu2pc0cMsA7GDrCX"
     }
   }
 }

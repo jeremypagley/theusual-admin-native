@@ -29,6 +29,7 @@ import LoadingIndicator from 'app/components/LoadingIndicator';
 import GenericError from 'app/components/GenericError';
 import StoreMenuContainer from 'app/containers/StoreMenu';
 import { Audio, Constants, Notifications, Permissions } from 'expo';
+import { graphql } from 'react-apollo';
 
 const screenHeight = Dimensions.get('window').height;
 
@@ -45,6 +46,8 @@ class Store extends React.Component {
 
   constructor(props) {
     super(props);
+
+    console.log(props)
 
     this.state = {
       previousPendingOrdersLength: null
@@ -225,6 +228,47 @@ class Store extends React.Component {
         </Query>
       </Container>
     );
+  }
+
+  registerForPushNotificationsAsync = async() => {
+    const { status: existingStatus } = await Permissions.getAsync(
+      Permissions.NOTIFICATIONS
+    );
+    let finalStatus = existingStatus;
+  
+    // only ask if permissions have not already been determined, because
+    // iOS won't necessarily prompt the user a second time.
+    if (existingStatus !== 'granted') {
+      // Android remote notification permissions are granted during the app
+      // install, so this will only ask on iOS
+      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+      finalStatus = status;
+    }
+  
+    // Stop here if the user did not grant permissions
+    if (finalStatus !== 'granted') {
+      return;
+    }
+  
+    // Get the token that uniquely identifies this device
+    let token = await Notifications.getExpoPushTokenAsync();
+  
+    // POST the token to your backend server from where you can retrieve it to send push notifications.
+    // return fetch(PUSH_ENDPOINT, {
+    //   method: 'POST',
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     token: {
+    //       value: token,
+    //     },
+    //     user: {
+    //       username: 'Brent',
+    //     },
+    //   }),
+    // });
   }
 
   getTipSums = (previousOrders) => {
@@ -516,4 +560,12 @@ const UPDATE_ORDER_QUEUE_STATUS = gql`
   }
 `
 
-export default Store;
+const UPDATE_USER = gql`
+  mutation updateUser($pushNotificationToken: String!) {
+    updateUser(pushNotificationToken: $pushNotificationToken) {
+      _id,
+    }
+  }
+`
+
+export default graphql(UPDATE_USER, { fetchPolicy: "cache-and-network" })(Store);
