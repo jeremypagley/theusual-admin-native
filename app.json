@@ -8,7 +8,7 @@
       "ios",
       "android"
     ],
-    "version": "1.2.5",
+    "version": "1.2.7",
     "orientation": "default",
     "icon": "./assets/images/icon.png",
     "splash": {
@@ -17,7 +17,9 @@
       "backgroundColor": "#FF4D73"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "enabled": true,
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 5000
     },
     "assetBundlePatterns": [
       "**/*"
@@ -50,15 +52,15 @@
       "publishManifestPath": "android/app/src/main/assets/shell-app-manifest.json"
     },
     "extra": {
-      "DEV_APP_ENDPOINT": "http://localhost:4000/graphql",
-      "DEV_API_ENDPOINT_FORGOT": "http://localhost:4000/forgot",
-      "DEV_API_ENDPOINT_TERMS": "http://localhost:4000/terms",
+      "DEV_APP_ENDPOINT": "http://50.17.66.251/graphql",
+      "DEV_API_ENDPOINT_FORGOT": "http://50.17.66.251/forgot",
+      "DEV_API_ENDPOINT_TERMS": "http://50.17.66.251/terms",
       "DEV_STRIPE_CLIENT_ID": "ca_EguFfQcjqGz1uYd7UHfCJIOwi0yvcukp",
       "PROD_API_KEY": "",
       "PROD_API_ENDPOINT": "https://theusual.io/graphql",
       "PROD_API_ENDPOINT_FORGOT": "https://theusual.io/forgot",
       "PROD_API_ENDPOINT_TERMS": "https://theusual.io/terms",
-      "PROD_STRIPE_CLIENT_ID": "ca_EguFTKCnfL5NtYxwDu2pc0cMsA7GDrCX",
+      "PROD_STRIPE_CLIENT_ID": "ca_EguFTKCnfL5NtYxwDu2pc0cMsA7GDrCX"
     }
   }
 }

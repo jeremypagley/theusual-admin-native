@@ -5,11 +5,6 @@ const OrganizationStoresQuery = gql`
     organizationStores(storeId: $storeId) {
       _id
       title
-      products {
-        _id,
-        title,
-        description
-      }
       users {
         _id
       }
@@ -17,11 +12,49 @@ const OrganizationStoresQuery = gql`
         balance
         tips
       }
+
+      productCategories {
+        _id
+        title
+        deleted
+        products {
+          _id
+          title
+          description
+          price
+          productModifiers {
+            _id
+            title
+          }
+        }
+      }
+
+      products {
+        _id
+        title
+        description
+        price
+        deleted
+        productModifiers {
+          _id
+          title
+        }
+      }
+
+      productModifiers {
+        _id
+        title
+        deleted
+        options {
+          title
+          price
+        }
+      }
       
       stores {
         _id
-        title,
-        description,
+        title
+        description
         orderQueue {
           _id
           tip

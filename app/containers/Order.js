@@ -49,7 +49,7 @@ class Order extends React.Component {
           </Item>
         </Header>
         <Content padder>
-          <Query query={GET_ORGANIZATION} pollInterval={600000}>
+          <Query query={GET_ORGANIZATION} pollInterval={60000}>
             {({ loading, error, data }) => {
               if (loading) return <LoadingIndicator title="Loading stores" />;
               if (error) return <GenericError message={error.message} />;
@@ -58,7 +58,7 @@ class Order extends React.Component {
               if (!organization) return null
               
               const listData = this.getListData(organization);
-              let title = 'Found';
+              let title = 'Select store to view order queue';
 
               if (listData.length < 1) title = 'No stores found';
               

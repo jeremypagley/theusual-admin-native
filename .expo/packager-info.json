@@ -1,10 +1,10 @@
 {
-  "devToolsPort": 19002,
+  "devToolsPort": 19006,
   "expoServerPort": null,
   "packagerPort": null,
   "packagerPid": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null,
+  "expoServerNgrokUrl": "https://kj-rrv.jeremykpagley.theusual-admin-native.exp.direct",
+  "packagerNgrokUrl": "https://packager.kj-rrv.jeremykpagley.theusual-admin-native.exp.direct",
+  "ngrokPid": 34435,
   "webpackServerPort": null
 }

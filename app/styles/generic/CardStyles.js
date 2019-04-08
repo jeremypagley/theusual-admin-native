@@ -33,6 +33,12 @@ const Styles = StyleSheet.create({
     fontFamily: 'montserrat-bold'
   },
 
+  itemButtonSecondaryTitle: {
+    color: Colors.BrandRed,
+    fontSize: 14,
+    fontFamily: 'montserrat-semibold'
+  },
+
   cardTipIndicator: {
     position: 'absolute', 
     bottom: 50, 

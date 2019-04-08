@@ -14,7 +14,7 @@ public class AppConstants {
   public static final String VERSION_NAME = "2.10.7";
   public static String INITIAL_URL = "exp://exp.host/@jeremykpagley/theusual-admin-native";
   public static final String SHELL_APP_SCHEME = "exp6d87efb2a26540d5a45114f5ceed0c25";
-  public static final String RELEASE_CHANNEL = "prod";
+  public static final String RELEASE_CHANNEL = "staging";
   public static boolean SHOW_LOADING_VIEW_IN_SHELL_APP = true;
   public static boolean ARE_REMOTE_UPDATES_ENABLED = true;
   public static final List<Constants.EmbeddedResponse> EMBEDDED_RESPONSES;
@@ -42,10 +42,15 @@ public class AppConstants {
         
         
         
+        
+        
+        
+        
+        
         // ADD EMBEDDED RESPONSES HERE
         // START EMBEDDED RESPONSES
         embeddedResponses.add(new Constants.EmbeddedResponse("https://exp.host/@jeremykpagley/theusual-admin-native", "assets://shell-app-manifest.json", "application/json"));
-        embeddedResponses.add(new Constants.EmbeddedResponse("https://d1wp6m56sqw74a.cloudfront.net/%40jeremykpagley%2Ftheusual-admin-native%2F1.2.5%2Fe791150e5fe494690b51779d2bdd29a8-32.0.0-android.js", "assets://shell-app.bundle", "application/javascript"));
+        embeddedResponses.add(new Constants.EmbeddedResponse("https://d1wp6m56sqw74a.cloudfront.net/%40jeremykpagley%2Ftheusual-admin-native%2F1.2.7%2F40d4343168c94b3c2645d1b53aea5dd1-32.0.0-android.js", "assets://shell-app.bundle", "application/javascript"));
         // END EMBEDDED RESPONSES
     EMBEDDED_RESPONSES = embeddedResponses;
   }

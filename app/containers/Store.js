@@ -20,6 +20,8 @@ import ContainerStyles from 'app/styles/generic/ContainerStyles';
 import CardStyles from 'app/styles/generic/CardStyles';
 import Colors from 'app/styles/Colors';
 import TypographyStyles from 'app/styles/generic/TypographyStyles';
+import ButtonStyles from 'app/styles/generic/ButtonStyles';
+
 import ExpandableCard from 'app/components/ExpandableCard';
 import QueueStatus from 'app/constants/queueStatus';
 import GET_ORGANIZATION_STORES from 'app/graphql/query/getOrganizationStores';
@@ -27,7 +29,9 @@ import gql from 'graphql-tag';
 import { Mutation, Query } from 'react-apollo';
 import LoadingIndicator from 'app/components/LoadingIndicator';
 import GenericError from 'app/components/GenericError';
+import StoreMenuContainer from 'app/containers/StoreMenu';
 import { Audio, Constants, Notifications, Permissions } from 'expo';
+import { graphql } from 'react-apollo';
 
 const screenHeight = Dimensions.get('window').height;
 
@@ -112,6 +116,8 @@ class Store extends React.Component {
             let menuNode = <LoadingIndicator title={`Refreshing Active Orders`} />;
             let aboutNode = <LoadingIndicator title={`Refreshing Active Orders`} />;
 
+            let pnNode = null;
+
             if (data && data.organizationStores && !error) {
               const organization = data.organizationStores;
               const store = organization.stores.find(store => store._id === selectedStoreId);
@@ -169,8 +175,11 @@ class Store extends React.Component {
                 </Content>
               );
 
-              menuNode = this.getMenuCard(store);
               aboutNode = this.getAboutCard(store);
+
+
+              // TODO: Implement PN's
+              // pnNode = store.pushNotificationToken ? null : this.getPNActionNode(store, refetch);
 
             }
 
@@ -183,6 +192,7 @@ class Store extends React.Component {
                   activeTextStyle={ContainerStyles.activeTabText}
                   heading="Active Orders"
                 >
+                  {pnNode}
                   {activeOrdersNode}
                 </Tab>
 
@@ -204,7 +214,7 @@ class Store extends React.Component {
                   heading="Menu"
                 >
                   <Content style={ContainerStyles.tabContent} padder>
-                    {menuNode}
+                    <StoreMenuContainer navigation={this.props.navigation} />
                   </Content>
                 </Tab>
 
@@ -225,6 +235,83 @@ class Store extends React.Component {
         </Query>
       </Container>
     );
+  }
+
+  getPNActionNode = (store, refetch) => {
+    return (
+      <Mutation
+        mutation={EDIT_STORE}
+        onCompleted={(data) => {
+          Toast.show({
+            text: 'Store notifications activated 👍',
+            buttonText: 'Great',
+            duration: 3000,
+            type: 'success',
+            style: {
+              backgroundColor: Colors.BrandBlack,
+              color: Colors.White
+            }
+          });
+
+          refetch();
+        }}
+      >
+        {(editStore, { loading, error, data }) => {
+          return (
+            <Button 
+              style={ButtonStyles.secondaryButton}
+              onPress={() => this.registerForPushNotificationsAsync(store, editStore)}
+            >
+              <Text style={ButtonStyles.secondaryButtonText}>Activate store order notifications</Text>
+            </Button>
+            )
+          }}
+        </Mutation>
+    )
+  }
+
+  registerForPushNotificationsAsync = async (store, callback) => {
+    const { status: existingStatus } = await Permissions.getAsync(
+      Permissions.NOTIFICATIONS
+    );
+    let finalStatus = existingStatus;
+  
+    // only ask if permissions have not already been determined, because
+    // iOS won't necessarily prompt the user a second time.
+    if (existingStatus !== 'granted') {
+      // Android remote notification permissions are granted during the app
+      // install, so this will only ask on iOS
+      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+      finalStatus = status;
+    }
+
+  
+    // Stop here if the user did not grant permissions
+    if (finalStatus !== 'granted') {
+      return;
+    }
+  
+    // Get the token that uniquely identifies this device
+    let token = await Notifications.getExpoPushTokenAsync();
+
+    callback({variables: {storeId: store._id, categories: null, pushNotificationToken: token}});
+  
+    // POST the token to your backend server from where you can retrieve it to send push notifications.
+    // return fetch(PUSH_ENDPOINT, {
+    //   method: 'POST',
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     token: {
+    //       value: token,
+    //     },
+    //     user: {
+    //       username: 'Brent',
+    //     },
+    //   }),
+    // });
   }
 
   getTipSums = (previousOrders) => {
@@ -511,6 +598,22 @@ class Store extends React.Component {
 const UPDATE_ORDER_QUEUE_STATUS = gql`
   mutation updateOrderQueueStatus($orderId: String!, $status: String!) {
     updateOrderQueueStatus(orderId: $orderId, status: $status) {
+      _id,
+    }
+  }
+`
+
+const UPDATE_USER = gql`
+  mutation updateUser($pushNotificationToken: String!) {
+    updateUser(pushNotificationToken: $pushNotificationToken) {
+      _id,
+    }
+  }
+`
+
+const EDIT_STORE = gql`
+  mutation editStore($storeId: String! $categories: [String], $pushNotificationToken: String) {
+    editStore(storeId: $storeId, categories: $categories, pushNotificationToken: $pushNotificationToken) {
       _id,
     }
   }

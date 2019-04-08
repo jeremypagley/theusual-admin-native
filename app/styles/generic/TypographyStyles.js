@@ -66,6 +66,12 @@ const Styles = StyleSheet.create({
     fontFamily: 'montserrat-regular'
   },
 
+  listSubtitle: {
+    fontSize: 16,
+    color: Colors.BrandDarkGrey,
+    fontFamily: 'montserrat-bold'
+  },
+
   listTitle: {
     fontSize: 20,
     color: Colors.BrandBlack,
@@ -103,6 +109,16 @@ const Styles = StyleSheet.create({
     color: Colors.BrandRed,
     fontSize: 16,
     fontFamily: 'montserrat-medium',
+  },
+
+  iconButtonCardText: {
+    color: Colors.BrandRed,
+    fontSize: 20,
+    fontFamily: 'montserrat-medium',
+    paddingTop: 2,
+    paddingRight: 4,
+    paddingBottom: 4,
+    paddingLeft: 12,
   },
 
 

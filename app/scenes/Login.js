@@ -94,6 +94,7 @@ class Login extends React.Component {
                     autoCorrect={false}
                     autoFocus
                     placeholder="email"
+                    textContentType="username"
                   />
                 </Item>
                 <Item>
@@ -103,6 +104,7 @@ class Login extends React.Component {
                     autoCorrect={false}
                     secureTextEntry
                     placeholder="password"
+                    textContentType="password"
                   />
                 </Item>
               </Form>

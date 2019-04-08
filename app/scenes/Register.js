@@ -119,6 +119,7 @@ class Register extends React.Component {
                     onChangeText={value => this.handleInputChange('firstName', value)}
                     autoCorrect={false}
                     placeholder="first name"
+                    textContentType="givenName"
                   />
                 </Item>
                 <Item>
@@ -126,6 +127,7 @@ class Register extends React.Component {
                     onChangeText={value => this.handleInputChange('lastName', value)}
                     autoCorrect={false}
                     placeholder="last name"
+                    textContentType="familyName"
                   />
                 </Item>
                 <Item>
@@ -135,6 +137,7 @@ class Register extends React.Component {
                     autoCapitalize="none"
                     autoCorrect={false}
                     placeholder="email"
+                    textContentType="username"
                   />
                 </Item>
                 <Item>
@@ -153,6 +156,7 @@ class Register extends React.Component {
                     autoCorrect={false}
                     secureTextEntry
                     placeholder="confirm password"
+                    textContentType="newPassword"
                   />
                 </Item>
               </Form>
