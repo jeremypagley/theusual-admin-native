@@ -55,7 +55,7 @@ class Order extends React.Component {
               if (error) return <GenericError message={error.message} />;
               
               const organization = data.organization;
-              if (!organization) return null
+              if (!organization) return <LoadingIndicator title="Fetching your stores" />
               
               const listData = this.getListData(organization);
               let title = 'Select store to view order queue';
@@ -69,7 +69,7 @@ class Order extends React.Component {
                   title={title}
                   loading={loading}
                 />
-              )
+              );
             }}
           </Query>
         </Content>
@@ -88,6 +88,7 @@ class Order extends React.Component {
 
     return data.stores.map((store) => {
       // Temp fix for when navigating to another stack calls this query but server doesnt return all values?
+
       if (!store.location) return null;
       return {
         _id: store._id,

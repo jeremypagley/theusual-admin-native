@@ -15,6 +15,7 @@ import { WebBrowser } from 'expo';
 import Auth from 'app/auth';
 
 const {
+  apiEndpoint,
   apiEndpointTerms
 } = Auth.getKeys();
 
@@ -85,6 +86,7 @@ class Login extends React.Component {
             {emailError && <GenericError message={emailError} style={{marginLeft: 10}} />}
             {passwordError && <GenericError message={passwordError} style={{marginLeft: 10}} />}
             <Card transparent>
+            {/* <Text>apiEndpoint: {apiEndpoint}</Text> */}
               <Form>
                 <Item>
                   <Input

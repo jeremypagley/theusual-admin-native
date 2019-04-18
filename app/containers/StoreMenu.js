@@ -58,7 +58,7 @@ class StoreMenu extends React.Component {
                     data={this.getListData(store.productCategories)}
                     handleItemPress={(item) => this.onItemPress(item, store)}
                   />
-                  <Mutation
+                  {/* <Mutation
                     mutation={CREATE_PRODUCT_CATEGORY}
                     refetchQueries={(data) => {
                       return [{query: GET_ORGANIZATION_STORES, variables: { storeId: selectedStoreId }}];
@@ -88,8 +88,8 @@ class StoreMenu extends React.Component {
                         </TouchableOpacity>
                       )
                     }}
-                  </Mutation>
-                  <Mutation
+                  </Mutation> */}
+                  {/* <Mutation
                     mutation={CREATE_PRODUCT}
                     refetchQueries={(data) => {
                       return [{query: GET_ORGANIZATION_STORES, variables: { storeId: selectedStoreId }}];
@@ -127,7 +127,7 @@ class StoreMenu extends React.Component {
                         </TouchableOpacity>
                       )
                     }}
-                  </Mutation>
+                  </Mutation> */}
                 </View>
               )
             }

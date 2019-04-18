@@ -37,12 +37,14 @@ const Styles = StyleSheet.create({
 
   tabText: {
     color: Colors.BrandBlack,
-    fontFamily: 'montserrat-medium'
+    fontFamily: 'montserrat-semibold',
+    fontSize: 12
   },
 
   activeTabText: {
     color: Colors.BrandRed,
-    fontFamily: 'montserrat-bold'
+    fontFamily: 'montserrat-bold',
+    fontSize: 12
   },
 
   tabBarUnderline: {

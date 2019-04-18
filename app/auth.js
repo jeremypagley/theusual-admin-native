@@ -40,6 +40,7 @@ const getKeys = () => {
     apiEndpointTerms: `${endpoint}terms`,
     stripeClientId: manifestExtra.DEV_STRIPE_CLIENT_ID,
   }
+  
 
   // Since releaseChannels are undefined in dev, return default.
   if (releaseChannel === undefined) {

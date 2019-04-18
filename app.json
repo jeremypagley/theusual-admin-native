@@ -8,7 +8,7 @@
       "ios",
       "android"
     ],
-    "version": "1.2.7",
+    "version": "1.2.9",
     "orientation": "default",
     "icon": "./assets/images/icon.png",
     "splash": {
@@ -27,7 +27,7 @@
     "ios": {
       "supportsTablet": true,
       "usesIcloudStorage": false,
-      "buildNumber": "1.4",
+      "buildNumber": "1.5",
       "infoPlist": {
         "privacyPolicy": "https://theusual.io/privacy-policy/"
       },
@@ -52,9 +52,9 @@
       "publishManifestPath": "android/app/src/main/assets/shell-app-manifest.json"
     },
     "extra": {
-      "DEV_APP_ENDPOINT": "http://50.17.66.251/graphql",
-      "DEV_API_ENDPOINT_FORGOT": "http://50.17.66.251/forgot",
-      "DEV_API_ENDPOINT_TERMS": "http://50.17.66.251/terms",
+      "DEV_API_ENDPOINT": "http://54.198.212.33/graphql",
+      "DEV_API_ENDPOINT_FORGOT": "http://54.198.212.33/forgot",
+      "DEV_API_ENDPOINT_TERMS": "http://54.198.212.33/terms",
       "DEV_STRIPE_CLIENT_ID": "ca_EguFfQcjqGz1uYd7UHfCJIOwi0yvcukp",
       "PROD_API_KEY": "",
       "PROD_API_ENDPOINT": "https://theusual.io/graphql",
