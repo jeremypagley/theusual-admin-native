@@ -32,6 +32,7 @@ import GenericError from 'app/components/GenericError';
 import StoreMenuContainer from 'app/containers/StoreMenu';
 import { Audio, Constants, Notifications, Permissions } from 'expo';
 import { graphql } from 'react-apollo';
+var PushNotification = require('react-native-push-notification');
 
 const screenHeight = Dimensions.get('window').height;
 
@@ -179,7 +180,7 @@ class Store extends React.Component {
 
 
               // TODO: Implement PN's
-              // pnNode = store.pushNotificationToken ? null : this.getPNActionNode(store, refetch);
+              pnNode = store.pushNotificationToken ? null : this.getPNActionNode(store, refetch);
 
             }
 
@@ -271,6 +272,47 @@ class Store extends React.Component {
   }
 
   registerForPushNotificationsAsync = async (store, callback) => {
+    PushNotification.configure({
+
+      // (optional) Called when Token is generated (iOS and Android)
+      onRegister: function(token) {
+          console.log( 'TOKEN:', token );
+      },
+  
+      // (required) Called when a remote or local notification is opened or received
+      onNotification: function(notification) {
+          console.log( 'NOTIFICATION:', notification );
+  
+          // process the notification
+  
+          // required on iOS only (see fetchCompletionHandler docs: https://facebook.github.io/react-native/docs/pushnotificationios.html)
+          notification.finish(PushNotificationIOS.FetchResult.NoData);
+      },
+  
+      // ANDROID ONLY: GCM or FCM Sender ID (product_number) (optional - not required for local notifications, but is need to receive remote push notifications)
+      senderID: "YOUR GCM (OR FCM) SENDER ID",
+  
+      // IOS ONLY (optional): default: all - Permissions to register.
+      permissions: {
+          alert: true,
+          badge: true,
+          sound: true
+      },
+  
+      // Should the initial notification be popped automatically
+      // default: true
+      popInitialNotification: true,
+  
+      /**
+        * (optional) default: true
+        * - Specified if permissions (ios) and token (android and ios) will requested or not,
+        * - if not, you must call PushNotificationsHandler.requestPermissions() later
+        */
+      requestPermissions: true,
+  });
+  }
+
+  registerForPushNotificationsAsyncExpo = async (store, callback) => {
     const { status: existingStatus } = await Permissions.getAsync(
       Permissions.NOTIFICATIONS
     );
@@ -285,6 +327,9 @@ class Store extends React.Component {
       finalStatus = status;
     }
 
+    console.log('finalStatus: ', finalStatus)
+
+
   
     // Stop here if the user did not grant permissions
     if (finalStatus !== 'granted') {
@@ -292,9 +337,11 @@ class Store extends React.Component {
     }
   
     // Get the token that uniquely identifies this device
-    let token = await Notifications.getExpoPushTokenAsync();
+    Notifications.getExpoPushTokenAsync().then(token => console.log('token: ', token)).catch(err => console.log('err: ', err));
 
-    callback({variables: {storeId: store._id, categories: null, pushNotificationToken: token}});
+    
+
+    // callback({variables: {storeId: store._id, categories: null, pushNotificationToken: token}});
   
     // POST the token to your backend server from where you can retrieve it to send push notifications.
     // return fetch(PUSH_ENDPOINT, {
