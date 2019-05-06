@@ -130,7 +130,7 @@ class OrderStatus extends React.Component {
           </CardItem>
 
           {/*This is a CardItem of type footer */}
-          <PaymentManager open={this.state.displayPaymentManagerModal} onModalToggle={this.togglePaymentManagerModal} />
+          {/* <PaymentManager open={this.state.displayPaymentManagerModal} onModalToggle={this.togglePaymentManagerModal} /> */}
         </Card>
       </View>
     );
