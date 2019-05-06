@@ -1,9 +1,9 @@
 {
   "devToolsPort": 19002,
-  "expoServerPort": null,
-  "packagerPort": null,
-  "packagerPid": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null
+  "expoServerPort": 19000,
+  "packagerPort": 19001,
+  "packagerPid": 43745,
+  "expoServerNgrokUrl": "https://ke-nqd.jeremykpagley.theusual-admin-native.exp.direct",
+  "packagerNgrokUrl": "https://packager.ke-nqd.jeremykpagley.theusual-admin-native.exp.direct",
+  "ngrokPid": 43765
 }
