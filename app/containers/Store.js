@@ -177,9 +177,7 @@ class Store extends React.Component {
 
               aboutNode = this.getAboutCard(store);
 
-
-              // TODO: Implement PN's
-              // pnNode = store.pushNotificationToken ? null : this.getPNActionNode(store, refetch);
+              pnNode = store.pushNotificationToken || this.state.pushNotificationToken ? null : this.getPNActionNode(store, refetch);
 
             }
 
@@ -285,6 +283,7 @@ class Store extends React.Component {
       finalStatus = status;
     }
 
+    console.log('=====finalStatus: ', finalStatus)
   
     // Stop here if the user did not grant permissions
     if (finalStatus !== 'granted') {
@@ -293,6 +292,10 @@ class Store extends React.Component {
   
     // Get the token that uniquely identifies this device
     let token = await Notifications.getExpoPushTokenAsync();
+
+    console.log('=====token: ', token)
+
+    this.setState({pushNotificationToken: token});
 
     callback({variables: {storeId: store._id, categories: null, pushNotificationToken: token}});
   

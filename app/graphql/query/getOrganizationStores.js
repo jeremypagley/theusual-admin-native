@@ -55,6 +55,7 @@ const OrganizationStoresQuery = gql`
         _id
         title
         description
+        pushNotificationToken
         orderQueue {
           _id
           tip
