@@ -29,7 +29,7 @@ const getKeys = () => {
   const releaseChannel = getReleaseChannel();
   const manifestExtra = getManifestExtra();
   // const endpoint = 'http://172.31.99.30:4000/';
-  const endpoint = 'http://192.168.0.10:4000/';
+  const endpoint = 'http://192.168.1.59:4000/';
   let keys = {
     apiKey: '',
     // apiEndpoint: 'http://localhost:4000/graphql',

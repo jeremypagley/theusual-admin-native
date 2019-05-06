@@ -283,8 +283,6 @@ class Store extends React.Component {
       finalStatus = status;
     }
 
-    console.log('=====finalStatus: ', finalStatus)
-  
     // Stop here if the user did not grant permissions
     if (finalStatus !== 'granted') {
       return;
@@ -293,10 +291,7 @@ class Store extends React.Component {
     // Get the token that uniquely identifies this device
     let token = await Notifications.getExpoPushTokenAsync();
 
-    console.log('=====token: ', token)
-
     this.setState({pushNotificationToken: token});
-
     callback({variables: {storeId: store._id, categories: null, pushNotificationToken: token}});
   
     // POST the token to your backend server from where you can retrieve it to send push notifications.
@@ -387,7 +382,6 @@ class Store extends React.Component {
           buttonText: 'Got it',
           duration: 3000,
         });
-
 
         // Note we are not sending local notifications as they dont show up in the lock screen.
         // we will need to rafactor stores in organizations to have unique users per store so that push notifications
