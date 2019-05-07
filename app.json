@@ -1,6 +1,6 @@
 {
     "expo": {
-        "name": "theusual-admin-native",
+        "name": "theusual_admin_native",
         "slug": "theusual-admin-native",
         "privacy": "unlisted",
         "sdkVersion": "32.0.0",
@@ -27,13 +27,11 @@
         "ios": {
             "supportsTablet": true,
             "usesIcloudStorage": false,
-            "buildNumber": "1.4",
+            "buildNumber": "1.6",
             "infoPlist": {
                 "privacyPolicy": "https://theusual.io/privacy-policy/"
             },
-            "bundleIdentifier": "io.theusual.vendor.native",
-            "publishBundlePath": "ios/theusual-admin-native/Supporting/shell-app.bundle",
-            "publishManifestPath": "ios/theusual-admin-native/Supporting/shell-app-manifest.json"
+            "bundleIdentifier": "io.theusual.vendor.native"
         },
         "androidStatusBar": {
             "backgroundColor": "#DB4C65"
@@ -41,16 +39,13 @@
         "primaryColor": "#DB4C65",
         "android": {
             "package": "io.theusual.vendor.native",
-            "versionCode": 1,
-            "publishBundlePath": "android/app/src/main/assets/shell-app.bundle",
-            "publishManifestPath": "android/app/src/main/assets/shell-app-manifest.json"
+            "versionCode": 1
         },
         "extra": {
-            "DEV_APP_ENDPOINT": "http://50.17.66.251/graphql",
-            "DEV_API_ENDPOINT_FORGOT": "http://50.17.66.251/forgot",
-            "DEV_API_ENDPOINT_TERMS": "http://50.17.66.251/terms",
+            "DEV_APP_ENDPOINT": "http://54.198.212.33/graphql",
+            "DEV_API_ENDPOINT_FORGOT": "http://54.198.212.33/forgot",
+            "DEV_API_ENDPOINT_TERMS": "http://54.198.212.33/terms",
             "DEV_STRIPE_CLIENT_ID": "ca_EguFfQcjqGz1uYd7UHfCJIOwi0yvcukp",
-            "PROD_API_KEY": "",
             "PROD_API_ENDPOINT": "https://theusual.io/graphql",
             "PROD_API_ENDPOINT_FORGOT": "https://theusual.io/forgot",
             "PROD_API_ENDPOINT_TERMS": "https://theusual.io/terms",
