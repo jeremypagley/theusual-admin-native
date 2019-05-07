@@ -41,6 +41,13 @@ const getKeys = () => {
     stripeClientId: manifestExtra.DEV_STRIPE_CLIENT_ID,
   }
 
+  console.log('manifestExtra: ', manifestExtra)
+
+  keys.apiEndpoint = manifestExtra.DEV_APP_ENDPOINT;
+  keys.apiEndpointForgot = manifestExtra.DEV_API_ENDPOINT_FORGOT;
+  keys.apiEndpointTerms = manifestExtra.DEV_API_ENDPOINT_TERMS;
+  keys.stripeClientId = manifestExtra.DEV_STRIPE_CLIENT_ID;
+
   // Since releaseChannels are undefined in dev, return default.
   if (releaseChannel === undefined) {
     if (keys.apiEndpoint.length === 0) {
@@ -73,7 +80,6 @@ const getKeys = () => {
 
   // Return staging environment variables
   if (releaseChannel.indexOf('staging') !== -1) {
-    keys.apiKey = manifestExtra.DEV_API_KEY;
     keys.apiEndpoint = manifestExtra.DEV_API_ENDPOINT;
     keys.apiEndpointForgot = manifestExtra.DEV_API_ENDPOINT_FORGOT;
     keys.apiEndpointTerms = manifestExtra.DEV_API_ENDPOINT_TERMS;
@@ -84,7 +90,6 @@ const getKeys = () => {
 
   // This would pick up prod-v1, prod-v2, prod-v3
   if (releaseChannel.indexOf('prod') !== -1) {
-    keys.apiKey = manifestExtra.PROD_API_KEY;
     keys.apiEndpoint = manifestExtra.PROD_API_ENDPOINT;
     keys.apiEndpointForgot = manifestExtra.PROD_API_ENDPOINT_FORGOT;
     keys.apiEndpointTerms = manifestExtra.PROD_API_ENDPOINT_TERMS;
