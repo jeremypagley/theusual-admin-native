@@ -175,8 +175,7 @@ class Store extends React.Component {
                 </Content>
               );
 
-              aboutNode = this.getAboutCard(store);
-
+              aboutNode = this.getAboutCard(store, refetch);
               pnNode = store.pushNotificationToken || this.state.pushNotificationToken ? null : this.getPNActionNode(store, refetch);
 
             }
@@ -530,13 +529,13 @@ class Store extends React.Component {
     })
   }
 
-  getAboutCard = (store) => {
+  getAboutCard = (store, refetch) => {
     const storeHours = store.hours;
 
     const startTime = moment(storeHours.start).format('h:mm a');
     const endTime = moment(storeHours.end).format('h:mm a');
-    const storeOpened = Time.getStoreOpened(storeHours);
-    const openedTitle = storeOpened ? '(Open)' : '(Closed)';
+    const storeOpened = store.open;
+    const openedTitle = storeOpened ? 'Store is open' : 'Store is closed';
 
     return (
       <View style={CardStyles.card}>
@@ -548,14 +547,42 @@ class Store extends React.Component {
           <CardItem>
             <Body>
               <Text style={TypographyStyles.note}>{store.description}</Text>
+              <Text style={TypographyStyles.note}>{openedTitle}</Text>
+              <Text style={TypographyStyles.note}>Phone: {store.phone}</Text>
+              <Text style={TypographyStyles.note}>Website: {store.website}</Text>
             </Body>
           </CardItem>
 
           <CardItem footer style={CardStyles.itemFooter}>
             <Body>
-              <Text style={TypographyStyles.note}>Hours: {startTime} - {endTime} {openedTitle}</Text>
-              <Text style={TypographyStyles.note}>Phone: {store.phone}</Text>
-              <Text style={TypographyStyles.note}>Website: {store.website}</Text>
+              <Mutation
+                mutation={EDIT_OPEN_STORE}
+                onCompleted={(data) => {
+                  Toast.show({
+                    text: 'Store open status updated 👍',
+                    buttonText: 'Great',
+                    duration: 3000,
+                    type: 'success',
+                    style: {
+                      backgroundColor: Colors.BrandBlack,
+                      color: Colors.White
+                    }
+                  });
+
+                  refetch();
+                }}
+              >
+              {(editOpenStore, { loading, error, data }) => {
+                return (
+                  <Button 
+                    style={ButtonStyles.secondaryButton}
+                    onPress={() => editOpenStore({variables: {storeId: store._id}})}
+                  >
+                    <Text style={ButtonStyles.secondaryButtonText}>{storeOpened ? 'Close Store' : 'Open Store'}</Text>
+                  </Button>
+                  )
+                }}
+              </Mutation>
             </Body>
           </CardItem>
         </Card>
@@ -611,6 +638,14 @@ const UPDATE_USER = gql`
 const EDIT_STORE = gql`
   mutation editStore($storeId: String! $categories: [String], $pushNotificationToken: String) {
     editStore(storeId: $storeId, categories: $categories, pushNotificationToken: $pushNotificationToken) {
+      _id,
+    }
+  }
+`
+
+const EDIT_OPEN_STORE = gql`
+  mutation editOpenStore($storeId: String!) {
+    editOpenStore(storeId: $storeId) {
       _id,
     }
   }
