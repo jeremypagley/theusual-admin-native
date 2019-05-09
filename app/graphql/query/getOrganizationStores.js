@@ -84,6 +84,7 @@ const OrganizationStoresQuery = gql`
           }
           queueStatus
         }
+        open
         hours {
           start
           end
